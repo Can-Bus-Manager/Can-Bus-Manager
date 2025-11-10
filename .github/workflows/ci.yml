@@ -1,0 +1,42 @@
+name: C++ Qt CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y qt6-base-dev qt6-tools-dev qt6-tools-dev-tools cmake build-essential clang-tidy
+
+      - name: Configure CMake
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Build
+        run: cmake --build build --config Release -j$(nproc)
+
+      - name: Run clang-tidy
+        run: clang-tidy src/*.cpp -p build
+
+      - name: Run unit tests
+        run: |
+          cd build
+          ctest --output-on-failure
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: CanBusSimulator-Build
+          path: build/
