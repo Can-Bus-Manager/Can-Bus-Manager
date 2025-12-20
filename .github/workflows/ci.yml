@@ -54,7 +54,7 @@ jobs:
       - name: Run Clang-Format Check
         run: |
           cmake --build build --target format
-          git diff --exit-cod
+          git diff --exit-code
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
