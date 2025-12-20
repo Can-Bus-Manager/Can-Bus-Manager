@@ -1,29 +1,125 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.16)
 
-project(CanBusSimulator LANGUAGES CXX)
+# 1. Project Configuration
+project(CanBusManager
+        VERSION 1.0.0
+        LANGUAGES CXX
+)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    find_program(CLANG_TIDY_EXE NAMES clang-tidy)
-    if(CLANG_TIDY_EXE)
-        set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
-    else()
-        message(WARNING "clang-tidy not found; skipping static analysis")
+# 2. Options
+option(ENABLE_TESTS "Build tests using GoogleTest and Benchmark" ON)
+option(ENABLE_CLANG_TIDY "Enable static analysis with Clang-Tidy" ON)
+option(ENABLE_DOCS "Enable the documentation target" ON)
+option(ENABLE_COVERAGE "Enable code coverage reporting" OFF)
+
+# Compiler Flags
+if(ENABLE_COVERAGE)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        add_compile_options(--coverage -O0 -g)
+        add_link_options(--coverage)
     endif()
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+# 3. Static Analysis (Clang-Tidy)
+if(ENABLE_CLANG_TIDY)
+    find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
+    if(CLANG_TIDY_EXE)
+        message(STATUS "Clang-Tidy found: ${CLANG_TIDY_EXE}")
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=-*,bugprone-*,performance-*,portability-*,modernize-*")
+    else()
+        message(WARNING "Clang-Tidy enabled but not found.")
+    endif()
+endif()
 
-add_executable(${PROJECT_NAME} src/main.cpp)
-target_link_libraries(${PROJECT_NAME} Qt6::Widgets)
+# 4. Dependencies (Runtime Libraries)
+find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(Threads REQUIRED)
 
-enable_testing()
-add_subdirectory(external/googletest)
-include_directories(external/googletest/googletest/include)
+add_subdirectory(external/entt)
+add_subdirectory(external/libsockcanpp)
 
-add_executable(unit_tests tests/test_main.cpp)
-target_link_libraries(unit_tests gtest gtest_main)
+set(RAPIDCSV_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/rapidcsv/src")
 
-add_test(NAME SampleTest COMMAND unit_tests)
+# 5. Core Library
+set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp")
+
+file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
+list(FILTER SOURCE_FILES EXCLUDE REGEX "src/app_root/entry_point/main.cpp")
+
+add_library(${PROJECT_NAME}Lib STATIC ${SOURCE_FILES})
+
+target_include_directories(${PROJECT_NAME}Lib PUBLIC
+        src
+        ${RAPIDCSV_INCLUDE_DIR}
+)
+
+target_link_libraries(${PROJECT_NAME}Lib PUBLIC
+        Qt6::Widgets
+        EnTT::EnTT
+        sockcanpp
+        Threads::Threads
+)
+
+# 6. Executable
+add_executable(${PROJECT_NAME} ${ENTRY_POINT_FILE})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
+
+# 7. Documentation
+if(ENABLE_DOCS)
+    add_subdirectory(doc)
+endif()
+
+# 8. Testing
+if(ENABLE_TESTS)
+    enable_testing()
+
+    set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+
+    add_subdirectory(external/googletest)
+    add_subdirectory(external/benchmark)
+
+    function(add_bus_test TEST_NAME TEST_DIR LINK_LIB)
+        file(GLOB_RECURSE TEST_SOURCES "${TEST_DIR}/*.cpp")
+        if(TEST_SOURCES)
+            add_executable(${TEST_NAME} ${TEST_SOURCES})
+            target_link_libraries(${TEST_NAME} PRIVATE ${PROJECT_NAME}Lib ${LINK_LIB})
+            add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+        endif()
+    endfunction()
+
+    add_bus_test(UnitTests        "tests/unit"        GTest::gtest_main)
+    add_bus_test(IntegrationTests "tests/integration" GTest::gtest_main)
+    add_bus_test(SystemTests      "tests/system"      GTest::gtest_main)
+    add_bus_test(PerformanceTests "tests/performance" benchmark::benchmark_main)
+
+    if(TARGET UnitTests AND TARGET IntegrationTests)
+        set_tests_properties(IntegrationTests PROPERTIES DEPENDS UnitTests)
+    endif()
+
+    if(TARGET IntegrationTests AND TARGET SystemTests)
+        set_tests_properties(SystemTests PROPERTIES DEPENDS IntegrationTests)
+    endif()
+
+    if(TARGET SystemTests AND TARGET PerformanceTests)
+        set_tests_properties(PerformanceTests PROPERTIES DEPENDS SystemTests)
+    endif()
+
+    if(ENABLE_COVERAGE)
+        find_program(LCOV_PATH lcov)
+        find_program(GENHTML_PATH genhtml)
+
+        if(LCOV_PATH AND GENHTML_PATH)
+            add_custom_target(coverage_report
+                    COMMAND ${LCOV_PATH} --directory . --capture --output-file coverage.info --ignore-errors mismatch,empty
+                    COMMAND ${LCOV_PATH} --remove coverage.info '/usr/*' '${CMAKE_SOURCE_DIR}/external/*' '${CMAKE_SOURCE_DIR}/tests/*' --output-file coverage.info --ignore-errors empty
+                    COMMAND ${GENHTML_PATH} coverage.info --output-directory coverage_html --ignore-errors empty
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                    COMMENT "Processing coverage data into HTML..."
+            )
+        endif()
+    endif()
+endif()

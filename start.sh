@@ -1,0 +1,110 @@
+#!/bin/bash
+set -e
+
+BUILD_DIR="build"
+DOC_DIR="doc"
+PROJECT_NAME="CanBusManager"
+CORES=$(nproc 2>/dev/null || echo 4)
+
+CLEAN_BUILD=false
+RUN_TESTS=true
+GEN_DOCS=true
+ENABLE_COV=false
+BUILD_TYPE="Release"
+GENERATOR=""
+
+if grep -q Microsoft /proc/version; then
+    export DISPLAY=:0
+fi
+
+usage() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  -c,  --clean      Remove build directory before starting"
+    echo "  -d,  --dev        Dev Mode: Use Ninja generator and Debug build"
+    echo "  -cov, --coverage   Enable Coverage (forces Debug mode)"
+    echo "  -nt, --no-tests   Skip building and running tests"
+    echo "  -nd, --no-docs    Skip generating documentation"
+    echo "  -h,  --help       Show this help message"
+    exit 0
+}
+
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        -c|--clean)    CLEAN_BUILD=true ;;
+        -d|--dev)      BUILD_TYPE="Debug"; GENERATOR="-G Ninja" ;;
+        -cov|--coverage) ENABLE_COV=true; BUILD_TYPE="Debug"; GENERATOR="-G Ninja" ;;
+        -nt|--no-tests) RUN_TESTS=false ;;
+        -nd|--no-docs)  GEN_DOCS=false ;;
+        -h|--help)     usage ;;
+        *) echo "Unknown option: $1"; usage ;;
+    esac
+    shift
+done
+
+if [ "$CLEAN_BUILD" = true ]; then
+    echo "--- Cleaning Build Directory ---"
+    if [ -d "$BUILD_DIR" ]; then
+            echo "Removing $BUILD_DIR..."
+            rm -rf "$BUILD_DIR"
+    fi
+
+    if [ -d "$DOC_DIR" ]; then
+        echo "Cleaning $DOC_DIR (preserving CMakeLists.txt and Doxyfile.in)..."
+        find "$DOC_DIR" -mindepth 1 -maxdepth 1 \
+                    ! -name 'CMakeLists.txt' \
+                    ! -name 'Doxyfile.in' \
+                    -exec rm -rf {} +
+    fi
+fi
+
+echo "--- 1. Format and Submodules ---"
+if command -v clang-format &> /dev/null; then
+    find src/ tests/ -iname *.h -o -iname *.cpp | xargs clang-format -i
+fi
+git submodule update --init --recursive
+
+echo "--- 2. Configuring Project ---"
+TEST_OPTS="-DENABLE_TESTS=$( [ "$RUN_TESTS" = true ] && echo "ON" || echo "OFF" )"
+DOC_OPTS="-DENABLE_DOCS=$( [ "$GEN_DOCS" = true ] && echo "ON" || echo "OFF" )"
+COV_OPTS="-DENABLE_COVERAGE=$( [ "$ENABLE_COV" = true ] && echo "ON" || echo "OFF" )"
+
+cmake -S . -B $BUILD_DIR \
+      $GENERATOR \
+      -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+      $TEST_OPTS \
+      $DOC_OPTS \
+      $COV_OPTS \
+      -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6
+
+echo "--- 3. Building Project ---"
+cmake --build $BUILD_DIR --parallel $CORES
+
+if [ "$GEN_DOCS" = true ] && command -v doxygen &> /dev/null; then
+    echo "--- 4. Generating Documentation ---"
+    cmake --build $BUILD_DIR --target docs
+else
+    echo "--- 4. Skipping Documentation ---"
+fi
+
+if [ "$RUN_TESTS" = true ]; then
+    echo "--- 5. Running Tests ---"
+    (cd $BUILD_DIR && ctest --output-on-failure)
+    if [ "$ENABLE_COV" = true ]; then
+            echo "--- Generating Coverage Report ---"
+            cmake --build $BUILD_DIR --target coverage_report
+            echo "Coverage report: $BUILD_DIR/coverage_html/index.html"
+        fi
+else
+    echo "--- 5. Skipping Tests ---"
+fi
+
+echo "--- 6. Launching App ---"
+APP_PATH="./$BUILD_DIR/$PROJECT_NAME"
+if [ -f "$APP_PATH" ]; then
+    echo "--- Launching $PROJECT_NAME ($BUILD_TYPE) ---"
+    "$APP_PATH"
+else
+    echo "Error: Binary not found at $APP_PATH"
+    exit 1
+fi

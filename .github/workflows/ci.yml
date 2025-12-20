@@ -9,7 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,13 +20,30 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y qt6-base-dev qt6-tools-dev qt6-tools-dev-tools cmake build-essential clang-tidy
+          sudo apt install -y \
+            qt6-base-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools \
+            cmake \
+            ninja-build \
+            build-essential \
+            clang-tidy \
+            doxygen \
+            graphviz
 
       - name: Configure CMake
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DENABLE_TESTS=ON \
+            -DENABLE_DOCS=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Build
         run: cmake --build build --config Release -j$(nproc)
+
+      - name: Generate Documentation
+        run: cmake --build build --target docs
 
       - name: Run clang-tidy
         run: clang-tidy src/*.cpp -p build
@@ -34,6 +52,12 @@ jobs:
         run: |
           cd build
           ctest --output-on-failure
+
+      - name: Run Clang-Format Check
+        run: |
+          sudo apt install -y clang-format
+          cmake --build build --target format
+          git diff --exit-code
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

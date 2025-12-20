@@ -39,3 +39,14 @@
 
 # debug information files
 *.dwo
+
+# Idea
+.idea
+
+# Doc
+doc/*
+!doc/Doxyfile.in
+!doc/CMakeLists.txt
+
+# Build
+build/
