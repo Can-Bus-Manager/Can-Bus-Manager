@@ -25,7 +25,7 @@ class EventBroker
 
     void update();
 
-    entt::dispatcher& getDispatcher()
+    auto getDispatcher() -> entt::dispatcher&
     {
         return dispatcher;
     }

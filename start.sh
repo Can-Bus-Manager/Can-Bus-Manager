@@ -58,13 +58,10 @@ if [ "$CLEAN_BUILD" = true ]; then
     fi
 fi
 
-echo "--- 1. Format and Submodules ---"
-if command -v clang-format &> /dev/null; then
-    find src/ tests/ -iname *.h -o -iname *.cpp | xargs clang-format -i
-fi
+echo "--- 1. Submodules ---"
 git submodule update --init --recursive
 
-echo "--- 2. Configuring Project ---"
+echo "--- 2. Configuring Project & Format ---"
 TEST_OPTS="-DENABLE_TESTS=$( [ "$RUN_TESTS" = true ] && echo "ON" || echo "OFF" )"
 DOC_OPTS="-DENABLE_DOCS=$( [ "$GEN_DOCS" = true ] && echo "ON" || echo "OFF" )"
 COV_OPTS="-DENABLE_COVERAGE=$( [ "$ENABLE_COV" = true ] && echo "ON" || echo "OFF" )"
@@ -76,6 +73,10 @@ cmake -S . -B $BUILD_DIR \
       $DOC_OPTS \
       $COV_OPTS \
       -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6
+
+if command -v clang-format &> /dev/null; then
+     cmake --build build --target format
+fi
 
 echo "--- 3. Building Project ---"
 cmake --build $BUILD_DIR --parallel $CORES

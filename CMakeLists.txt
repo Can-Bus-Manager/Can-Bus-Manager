@@ -130,6 +130,7 @@ if(ENABLE_TESTS)
     endif()
 endif()
 
+#9. Format
 find_program(CLANG_FORMAT_EXE NAMES "clang-format")
 if(CLANG_FORMAT_EXE)
     file(GLOB_RECURSE ALL_SOURCE_FILES
