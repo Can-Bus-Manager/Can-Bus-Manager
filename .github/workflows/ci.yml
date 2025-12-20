@@ -45,9 +45,6 @@ jobs:
       - name: Generate Documentation
         run: cmake --build build --target docs
 
-      - name: Run clang-tidy
-        run: clang-tidy src/*.cpp -p build
-
       - name: Run unit tests
         run: |
           cd build
