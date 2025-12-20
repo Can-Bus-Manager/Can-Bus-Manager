@@ -21,7 +21,7 @@
 ####  Quick Install 
 Run this command to install all dependencies at once:
 ```bash
-sudo apt update && sudo apt install -y build-essential cmake ninja-build qt6-base-dev qt6-tools-dev qt6-tools-dev-tools doxygen graphviz lcov
+sudo apt update && sudo apt install -y build-essential cmake clang-tidy clang-format ninja-build qt6-base-dev qt6-tools-dev qt6-tools-dev-tools doxygen graphviz lcov
 ```
 The project uses a unified control script to manage the build pipeline. Ensure the script is executable before first use:
 `chmod +x start.sh`

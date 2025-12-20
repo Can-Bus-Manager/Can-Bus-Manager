@@ -29,7 +29,7 @@ if(ENABLE_CLANG_TIDY)
     find_program(CLANG_TIDY_EXE NAMES "clang-tidy")
     if(CLANG_TIDY_EXE)
         message(STATUS "Clang-Tidy found: ${CLANG_TIDY_EXE}")
-        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=-*,bugprone-*,performance-*,portability-*,modernize-*")
+        set(DO_CLANG_TIDY "${CLANG_TIDY_EXE};-header-filter=${CMAKE_SOURCE_DIR}/src/.*")
     else()
         message(WARNING "Clang-Tidy enabled but not found.")
     endif()
@@ -51,6 +51,9 @@ file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
 list(FILTER SOURCE_FILES EXCLUDE REGEX "src/app_root/entry_point/main.cpp")
 
 add_library(${PROJECT_NAME}Lib STATIC ${SOURCE_FILES})
+if(CLANG_TIDY_EXE)
+    set_target_properties(${PROJECT_NAME}Lib PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
+endif()
 
 target_include_directories(${PROJECT_NAME}Lib PUBLIC
         src
@@ -66,6 +69,9 @@ target_link_libraries(${PROJECT_NAME}Lib PUBLIC
 
 # 6. Executable
 add_executable(${PROJECT_NAME} ${ENTRY_POINT_FILE})
+if(CLANG_TIDY_EXE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
+endif()
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}Lib)
 
 # 7. Documentation
@@ -122,4 +128,19 @@ if(ENABLE_TESTS)
             )
         endif()
     endif()
+endif()
+
+find_program(CLANG_FORMAT_EXE NAMES "clang-format")
+if(CLANG_FORMAT_EXE)
+    file(GLOB_RECURSE ALL_SOURCE_FILES
+            "src/*.cpp" "src/*.hpp"
+            "tests/*.cpp" "tests/*.hpp"
+    )
+
+    add_custom_target(format
+            COMMAND ${CLANG_FORMAT_EXE} -i ${ALL_SOURCE_FILES}
+            COMMENT "Formatting source code with clang-format..."
+    )
+else()
+    message(WARNING "clang-format not found. 'format' target will not be available.")
 endif()

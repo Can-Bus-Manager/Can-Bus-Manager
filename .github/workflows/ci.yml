@@ -28,6 +28,7 @@ jobs:
             ninja-build \
             build-essential \
             clang-tidy \
+            clang-format \
             doxygen \
             graphviz
 
@@ -52,9 +53,8 @@ jobs:
 
       - name: Run Clang-Format Check
         run: |
-          sudo apt install -y clang-format
           cmake --build build --target format
-          git diff --exit-code
+          git diff --exit-cod
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
