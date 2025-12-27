@@ -6,21 +6,19 @@
 #define CANBUSSIMULATOR_EVENTBROKER_HPP
 
 #include <entt/entt.hpp>
+
 #include "core/interface/IEventBroker.hpp"
 
-
-class EventBroker final : IEventBroker {
-    public:
+class EventBroker final : IEventBroker
+{
+   public:
     void update() override;
 
    protected:
     void publishImpl(std::type_index type, const void* event) override;
     void enqueueImpl(std::type_index type, const void* event) override;
 
-    void subscribeImpl(
-        std::type_index type,
-        std::function<void(const void*)> callback
-    ) override;
+    void subscribeImpl(std::type_index type, std::function<void(const void*)> callback) override;
 
     void unsubscribeAllImpl(std::type_index type) override;
 
