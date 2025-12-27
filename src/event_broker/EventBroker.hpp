@@ -8,7 +8,7 @@
 #include <entt/entt.hpp>
 #include "core/interface/IEventBroker.hpp"
 
-/** TEST */
+
 class EventBroker final : IEventBroker {
     public:
     void update() override;
