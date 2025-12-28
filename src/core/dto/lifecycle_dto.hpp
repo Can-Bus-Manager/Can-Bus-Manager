@@ -12,4 +12,4 @@ struct ModuleDiagnostics {
     bool wasError;
     std::string errorMessage;
 };
-} // namespace Core
+}  // namespace Core

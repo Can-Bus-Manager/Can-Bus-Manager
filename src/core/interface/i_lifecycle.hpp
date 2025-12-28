@@ -21,11 +21,11 @@ class ILifecycle
      */
     explicit ILifecycle(IEventBroker& broker) : m_eventBroker(broker)
     {
-        m_startConn =
-            m_eventBroker.subscribe<AppStartedEvent>([this](const AppStartedEvent&) -> void { onStart(); });
+        m_startConn = m_eventBroker.subscribe<AppStartedEvent>(
+            [this](const AppStartedEvent&) -> void { onStart(); });
 
-        m_stopConn =
-            m_eventBroker.subscribe<AppStoppedEvent>([this](const AppStoppedEvent&) -> void { onStop(); });
+        m_stopConn = m_eventBroker.subscribe<AppStoppedEvent>(
+            [this](const AppStoppedEvent&) -> void { onStop(); });
     }
 
     /**
