@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QScrollArea>
-#include "monitoring/model/signal_graph_model.hpp"
 #include "signal_graph.hpp"
 
 #endif  // CANBUSMANAGER_GRAPH_LIST_VIEW_HPP
@@ -16,10 +15,12 @@ public:
 
     void appendDataToGraph(DecodedSignal& signal);
 
+    void deleteGraph(DecodedSignal& signal);
+
 private:
     QVBoxLayout* m_layout;
     QScrollArea* m_scrollArea;
     QList<SignalGraph*> m_signal_graphs;
 
-    void newSignalGraph(DecodedSignal& signal);
+    void newGraph(DecodedSignal& signal);
 };

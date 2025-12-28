@@ -2,6 +2,7 @@
 #define CANBUSMANAGER_MONITORING_TAB_HPP
 
 #include <QSplitter>
+#include <QSortFilterProxyModel>
 
 #include "core/dto/can_frame.hpp"
 #include "core/interface/IEventBroker.hpp"
@@ -24,14 +25,12 @@ class MonitoringTab : public ITabComponent , public QWidget
         std::unique_ptr<Core::ILifecycle> can_handler;
 
         SignalTreeModel* m_treeModel;
-        QSortFilterProxyModel* m_treeProxy;
-
-        SignalGraphModel* m_graphModel;
+        QSortFilterProxyModel* m_treeProxy; //For data filtering
 
         SignalTreeView* m_signalsView;
         GraphListView* m_graphListView;
 
         SignalTreeDelegate* m_signalDelegate;
 
-        QSplitter* m_splitter;
+        QSplitter* m_splitter; //For Signals and Graphs scalable split view
 };
