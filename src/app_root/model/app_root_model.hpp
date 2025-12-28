@@ -1,0 +1,8 @@
+//
+// Created by jemand on 28.12.25.
+//
+
+#ifndef CANBUSMANAGER_APP_ROOT_MODEL_HPP
+#define CANBUSMANAGER_APP_ROOT_MODEL_HPP
+
+#endif  // CANBUSMANAGER_APP_ROOT_MODEL_HPP
