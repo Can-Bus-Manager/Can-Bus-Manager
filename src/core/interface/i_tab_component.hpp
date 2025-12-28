@@ -39,8 +39,8 @@ class ITabComponent : public QObject, public ILifecycle
 
     /**
      * @brief Returns the Qt widget associated with this tab.
-     * @details The root window or tab manager will call this to retrieve the
-     * visual representation of the component for embedding into the GUI.
+     * @details The App Root will call this to retrieve the
+     * visual representation of the Tab for embedding into the GUI.
      * @return QWidget* Pointer to the tab's root widget.
      */
     virtual auto getView() -> QWidget* = 0;

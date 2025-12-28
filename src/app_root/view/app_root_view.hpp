@@ -1,10 +1,9 @@
 #pragma once
 
-#include <QAbstractItemDelegate>
-#include <QAbstractItemModel>
 #include <QStackedWidget>
 #include <QTabBar>
 #include <QWidget>
+#include <QVBoxLayout>
 #include <vector>
 
 #include "core/interface/i_tab_component.hpp"
@@ -16,20 +15,14 @@ namespace AppRoot {
  * @brief The main UI Shell (Compositor).
  * @details
  * Manages a QTabBar at the top and a QStackedWidget for the main content.
- * It is a pure container that receives its data and rendering logic via DI.
+ * It uses a standard QVBoxLayout to stack the navigation and content areas.
  */
-class AppRootView : public QAbstractItemView
+class AppRootView : public QWidget
 {
     Q_OBJECT
    public:
     explicit AppRootView(QWidget* parent = nullptr);
-    ~AppRootView() override;
-
-    /**
-     * @brief Injects the Model and Delegate into the view.
-     * @details The Model provides tab info, while the Delegate paints the shell.
-     */
-    void setMvd(QAbstractItemModel* model, QAbstractItemDelegate* delegate);
+    ~AppRootView() override = default;
 
     /**
      * @brief Populates the navigation and content areas.
@@ -37,9 +30,32 @@ class AppRootView : public QAbstractItemView
      */
     void setTabs(const std::vector<Core::ITabComponent*>& tabs);
 
-   private:
+private slots:
+ /**
+  * @brief Handles tab switching to keep the stack in sync.
+  */
+ void handleTabChanged(int index);
+
+private:
+    /**
+     * @brief The tab bar populated by the options provided in the m_tabs.
+     */
     QTabBar* m_tabBar;
+
+    /**
+     * @brief The different Widgets of the tabs with one selected.
+     */
     QStackedWidget* m_contentStack;
+
+    /**
+     * @brief Layout to order The m_tabBar and m_contentStack.
+     */
+    QVBoxLayout* m_mainLayout;
+
+    /**
+     * @brief Internal tracking of the components to map indices back to the interface.
+     */
+    QList<Core::ITabComponent*> m_tabs;
 };
 
 }  // namespace AppRoot
