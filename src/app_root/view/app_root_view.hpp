@@ -18,7 +18,7 @@ namespace AppRoot {
  * Manages a QTabBar at the top and a QStackedWidget for the main content.
  * It is a pure container that receives its data and rendering logic via DI.
  */
-class AppRootView : public QWidget
+class AppRootView : public QAbstractItemView
 {
     Q_OBJECT
    public:

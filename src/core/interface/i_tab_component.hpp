@@ -1,6 +1,8 @@
 #pragma once
 #include <QWidget>
-#include <string>
+#include <QString>
+#include <QIcon>
+#include <QObject>
 
 #include "i_lifecycle.hpp"
 
@@ -10,48 +12,88 @@ namespace Core {
  * @brief Interface for a UI component that represents a single tab in the application.
  *
  * This class combines the application lifecycle (Start/Stop) with the UI requirements
- * needed to render within a Qt environment.
+ * needed to render a Tab inside our Qt based GUI. It inherits from QObject to support
+ * signaling UI changes like title or icon updates.
  */
-class ITabComponent : public ILifecycle
+class ITabComponent : public QObject, public ILifecycle
 {
+    Q_OBJECT
+
    public:
     /**
      * @brief Constructs the tab component.
      * @param broker Reference to the event broker for communication.
+     * @param id A unique internal identifier for this tab instance.
      * @param title The display name of the tab in the UI.
+     * @param icon The icon displayed next to the Title.
      */
-    ITabComponent(IEventBroker& broker, std::string title)
-        : ILifecycle(broker), m_title(std::move(title))
+    ITabComponent(IEventBroker& broker, QString id, QString title, QIcon icon = QIcon())
+        : ILifecycle(broker), m_id(std::move(id)), m_title(std::move(title)), m_icon(std::move(icon))
     {
     }
 
     /**
      * @brief Virtual destructor.
      */
-    virtual ~ITabComponent() override = default;
+    ~ITabComponent() override = default;
 
     /**
      * @brief Returns the Qt widget associated with this tab.
-     * * @details The root window or tab manager will call this to retrieve the
+     * @details The root window or tab manager will call this to retrieve the
      * visual representation of the component for embedding into the GUI.
      * @return QWidget* Pointer to the tab's root widget.
      */
-    virtual QWidget* getView() = 0;
+    virtual auto getView() -> QWidget* = 0;
+
+    /**
+     * @brief Returns the icon associated with this tab.
+     * @return QIcon The tab icon.
+     */
+    [[nodiscard]] virtual auto getIcon() const -> QIcon
+    {
+        return m_icon;
+    }
 
     /**
      * @brief Returns the display title of the tab.
-     * @return const std::string& The title string.
+     * @return const QString& The title string.
      */
-    const std::string& getTitle() const
+    [[nodiscard]] auto getTitle() const -> const QString&
     {
         return m_title;
     }
 
+    /**
+     * @brief Returns the unique identifier of the tab.
+     * @return const QString& The unique ID string.
+     */
+    [[nodiscard]] auto getId() const -> const QString&
+    {
+        return m_id;
+    }
+
+   signals:
+    /**
+     * @brief Emitted when the tab's metadata (title or icon) changes.
+     * @details The Tab Manager should connect to this to refresh the tab bar UI.
+     */
+    void updated();
+
    protected:
+    /**
+     * @brief Unique identifier for the tab instance.
+     */
+    QString m_id;
+
     /**
      * @brief Display title used by the UI container.
      */
-    std::string m_title;
+    QString m_title;
+
+    /**
+     * @brief The Icon next to the display Title.
+     */
+    QIcon m_icon;
 };
 
 }  // namespace Core
