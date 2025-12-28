@@ -1,0 +1,25 @@
+#ifndef CANBUSMANAGER_GRAPH_LIST_VIEW_HPP
+#define CANBUSMANAGER_GRAPH_LIST_VIEW_HPP
+
+#include <QWidget>
+#include <QVBoxLayout>
+#include <QScrollArea>
+#include "monitoring/model/signal_graph_model.hpp"
+#include "signal_graph.hpp"
+
+#endif  // CANBUSMANAGER_GRAPH_LIST_VIEW_HPP
+
+class GraphListView : public QWidget {
+    Q_OBJECT
+public:
+    explicit GraphListView(QWidget* parent = nullptr);
+
+    void appendDataToGraph(DecodedSignal& signal);
+
+private:
+    QVBoxLayout* m_layout;
+    QScrollArea* m_scrollArea;
+    QList<SignalGraph*> m_signal_graphs;
+
+    void newSignalGraph(DecodedSignal& signal);
+};

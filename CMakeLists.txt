@@ -45,7 +45,23 @@ add_subdirectory(external/libsockcanpp)
 set(RAPIDCSV_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/rapidcsv/src")
 
 # 5. Core Library
-set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp")
+set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp"
+        src/monitoring/model/signal_tree_model.cpp
+        src/monitoring/model/signal_tree_model.hpp
+        src/monitoring/delegate/signal_tree_delegate.cpp
+        src/monitoring/delegate/signal_tree_delegate.hpp
+        src/monitoring/view/signal_tree_view.cpp
+        src/monitoring/view/signal_tree_view.hpp
+        src/core/dto/decoded_signal.hpp
+        src/core/dto/can_frame.hpp
+        src/monitoring/view/monitoring_tab.cpp
+        src/monitoring/view/monitoring_tab.hpp
+        src/monitoring/view/graph_list_view.cpp
+        src/monitoring/view/graph_list_view.hpp
+        src/monitoring/model/signal_graph_model.cpp
+        src/monitoring/model/signal_graph_model.hpp
+        src/monitoring/view/signal_graph.cpp
+        src/monitoring/view/signal_graph.hpp)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
 list(FILTER SOURCE_FILES EXCLUDE REGEX "src/app_root/entry_point/main.cpp")
