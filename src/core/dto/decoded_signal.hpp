@@ -1,6 +1,8 @@
 #ifndef CANBUSMANAGER_DECODED_SIGNAL_HPP
 #define CANBUSMANAGER_DECODED_SIGNAL_HPP
+#include <qvariant.h>
 
+#endif  // CANBUSMANAGER_DECODED_SIGNAL_HPP
 class DecodedSignal
 {
 public:
@@ -16,4 +18,3 @@ private:
     QString unit;
     QVariant rawVal; //Encoded part-signal
 };
-#endif  // CANBUSMANAGER_DECODED_SIGNAL_HPP

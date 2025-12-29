@@ -37,7 +37,7 @@ class SignalTreeModel : public QAbstractItemModel {
 
         struct FrameNode {
             CanFrame frame;
-            QVector<SignalNode> signals;
+            QVector<SignalNode> allSignals;
             Qt::CheckState checked;
         };
 
