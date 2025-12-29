@@ -14,7 +14,8 @@ namespace Core {
 /**
  * @brief Structure of the received can event when a can message is received and used in raw form
  */
-struct ReceivedCanRaw final : public Event {
+struct ReceivedCanRaw final : public Event
+{
     std::time_t receiveTime;
     std::array<char, 8> data;
     char messageId;
@@ -23,7 +24,8 @@ struct ReceivedCanRaw final : public Event {
  * @brief Structure of the received can event when a can message is received and used in dbc decoded
  * form
  */
-struct ReceivedCanDbc final : public Event {
+struct ReceivedCanDbc final : public Event
+{
     std::time_t receiveTime;
     std::unordered_map<std::string, double> parsedMessage;
     char messageId;
@@ -31,7 +33,8 @@ struct ReceivedCanDbc final : public Event {
 /**
  * @brief Structure of the send can event, when an already encoded message should be sent
  */
-struct SendCanMessageRaw final : public Event {
+struct SendCanMessageRaw final : public Event
+{
     std::array<char, 8> data;
     char messageId;
 };
@@ -39,7 +42,8 @@ struct SendCanMessageRaw final : public Event {
  * @brief Structure of the send can event, when a message should be sent based on the current DBC
  * config
  */
-struct SendCanMessageDbc final : public Event {
+struct SendCanMessageDbc final : public Event
+{
     std::unordered_map<std::string, double> values;
     char messageId;
 };
