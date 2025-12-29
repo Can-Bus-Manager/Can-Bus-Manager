@@ -3,6 +3,8 @@
 #include <qvariant.h>
 
 #endif  // CANBUSMANAGER_DECODED_SIGNAL_HPP
+
+namespace Core {
 class DecodedSignal
 {
 public:
@@ -18,3 +20,4 @@ private:
     QString unit;
     QVariant rawVal; //Encoded part-signal
 };
+}

@@ -4,6 +4,8 @@
 #include <QDateTime>
 #include "decoded_signal.hpp"
 
+#endif  // CANBUSMANAGER_CAN_FRAME_HPP
+namespace Core {
 class CanFrame
 {
 public:
@@ -20,4 +22,4 @@ private:
     QByteArray payload;
     QVector<DecodedSignal> decodedSignals;
 };
-#endif  // CANBUSMANAGER_CAN_FRAME_HPP
+}
