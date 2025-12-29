@@ -6,20 +6,17 @@
 #define CANBUSMANAGER_CAN_COMMUNICATION_HANDLER_HPP
 #include <list>
 
-
-#include "i_can_parser.hpp"
 #include "core/interface/i_lifecycle.hpp"
-
-
+#include "i_can_parser.hpp"
 
 namespace CanHandler {
 class CanCommunicationHandler final : Core::ILifecycle
 {
-public:
-    explicit CanCommunicationHandler(Core::IEventBroker& event_broker): ILifecycle(event_broker)
-    {
+   public:
+    explicit CanCommunicationHandler(Core::IEventBroker& event_broker)
+        : ILifecycle(event_broker){
 
-    };
+          };
     /**
      * @brief Called automatically when the application publishes AppStartedEvent.
      */
@@ -28,10 +25,10 @@ public:
      * @brief Called automatically when the application publishes AppStoppedEvent.
      */
     void onStop() override;
-private:
+
+   private:
     std::list<ICanParser> can_handlers;
 };
-}
+}  // namespace CanHandler
 
-
-#endif //CANBUSMANAGER_CAN_COMMUNICATION_HANDLER_HPP
+#endif  // CANBUSMANAGER_CAN_COMMUNICATION_HANDLER_HPP
