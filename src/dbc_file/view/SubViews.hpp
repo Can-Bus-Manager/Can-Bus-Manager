@@ -19,7 +19,6 @@ public:
     Q_OBJECT
 
     explicit DbcLoadPage(QWidget* parent = nullptr);
-    ~LoadPage() override = default;
 
     signals:
         /**
