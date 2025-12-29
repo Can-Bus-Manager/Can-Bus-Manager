@@ -5,14 +5,12 @@
 #ifndef CANBUSMANAGER_DBC_EVENT_HPP
 #define CANBUSMANAGER_DBC_EVENT_HPP
 
-#include "event.hpp"#include "event.hpp"
+#include "event.hpp"
 namespace Core {
 /**
  * @brief This structure contains the event for a new DBC structure to be used for de-/encoding
  */
-struct NewDbcEvent : Event
-{
-
+struct NewDbcConfigEvent : Event {
 };
-}
-#endif //CANBUSMANAGER_DBC_EVENT_HPP
+}  // namespace Core
+#endif  // CANBUSMANAGER_DBC_EVENT_HPP

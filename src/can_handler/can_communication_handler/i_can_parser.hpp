@@ -7,16 +7,17 @@
 #include "CanMessage.hpp"
 #include "core/interface/i_event_broker.hpp"
 
-
 namespace CanHandler {
-class ICanParser {
-public:
+class ICanParser
+{
+   public:
     explicit ICanParser(Core::IEventBroker& eventBroker) : broker(eventBroker) {}
     virtual ~ICanParser() = default;
     virtual void parseReceivedMessage(const sockcanpp::CanMessage* canMessage);
-private:
+
+   private:
     Core::IEventBroker& broker;
 };
-}
+}  // namespace CanHandler
 
-#endif //CANBUSMANAGER_I_CAN_HANDLER_HPP
+#endif  // CANBUSMANAGER_I_CAN_HANDLER_HPP
