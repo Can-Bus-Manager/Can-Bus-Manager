@@ -1,8 +1,5 @@
 #pragma once
 
-#include <QAbstractItemDelegate>
-#include <QAbstractItemModel>
-#include <QAbstractItemView>
 #include <memory>
 #include <vector>
 
@@ -74,7 +71,7 @@ class AppRoot
      * @relationship "Instantiates" AppRootModel pointer.
      * @related AppRootModel
      */
-    std::unique_ptr<QAbstractItemModel> m_model;
+    std::unique_ptr<AppRootModel> m_model;
 
     /**
      * @brief Pointer to the Delegate component of the app root to instantiate it.
@@ -90,12 +87,11 @@ class AppRoot
      */
     std::unique_ptr<AppRootView> m_mainView;
 
-    /**
-     * @brief Registry of tab components for internal iteration.
-     * @relationship "Manages" ITabComponent pointers.
-     * @related Core::ITabComponent
+    /** * @brief Memory ownership of the tab components.
+     * @details The Model only holds raw pointers; this vector ensures the objects
+     * live as long as the AppRoot kernel.
      */
-    std::vector<Core::ITabComponent*> m_tabs;
+    std::vector<std::unique_ptr<Core::ITabComponent>> m_tabs;
 };
 
 }  // namespace AppRoot

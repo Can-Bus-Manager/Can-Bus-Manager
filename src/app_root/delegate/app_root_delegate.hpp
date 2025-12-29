@@ -23,8 +23,8 @@ class AppRootDelegate : public QAbstractItemDelegate
                const QModelIndex& index) const override;
 
     /** @brief Returns the size required for the rendered elements. */
-    [[nodiscard]] auto sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const
-        -> QSize override;
+    [[nodiscard]] auto sizeHint(const QStyleOptionViewItem& option,
+                                const QModelIndex& index) const -> QSize override;
 };
 
 }  // namespace AppRoot

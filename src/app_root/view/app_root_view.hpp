@@ -2,10 +2,11 @@
 
 #include <QStackedWidget>
 #include <QTabBar>
-#include <QWidget>
 #include <QVBoxLayout>
-#include <vector>
+#include <QWidget>
 
+#include "app_root/delegate/app_root_delegate.hpp"
+#include "app_root/model/app_root_model.hpp"
 #include "core/interface/i_tab_component.hpp"
 
 namespace AppRoot {
@@ -25,18 +26,40 @@ class AppRootView : public QWidget
     ~AppRootView() override = default;
 
     /**
-     * @brief Populates the navigation and content areas.
-     * @param tabs Vector of components to be rendered as tab pages.
+     * @brief Injects the model and sets up synchronization logic.
+     * @param model Pointer to the data model.
      */
-    void setTabs(const std::vector<Core::ITabComponent*>& tabs);
+    void setModel(AppRootModel* model);
 
-private slots:
- /**
-  * @brief Handles tab switching to keep the stack in sync.
-  */
- void handleTabChanged(int index);
+    /**
+     * @brief Sets the delegate for custom tab bar rendering.
+     * @param delegate Pointer to the tab delegate.
+     */
+    void setDelegate(AppRootDelegate* delegate);
 
-private:
+   private slots:
+    /**
+     * @brief Reacts to model changes to add tabs in the UI.
+     */
+    void onRowsInserted(const QModelIndex& parent, int first, int last);
+
+    /**
+     * @brief Reacts to model changes to remove tabs in the UI.
+     */
+    void onRowsAboutToBeRemoved(const QModelIndex& parent, int first, int last);
+
+    /**
+     * @brief Handles metadata changes (title/icon) from the model.
+     */
+    void onDataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight,
+                       const QList<int>& roles);
+
+    /**
+     * @brief Handles tab switching to keep the stack in sync.
+     */
+    void handleTabChanged(int index);
+
+   private:
     /**
      * @brief The tab bar populated by the options provided in the m_tabs.
      */
@@ -53,9 +76,9 @@ private:
     QVBoxLayout* m_mainLayout;
 
     /**
-     * @brief Internal tracking of the components to map indices back to the interface.
+     * @brief Pointer to the injected model.
      */
-    QList<Core::ITabComponent*> m_tabs;
+    AppRootModel* m_model = nullptr;
 };
 
 }  // namespace AppRoot

@@ -1,29 +1,80 @@
 #pragma once
 
-#include <QAbstractItemModel>
+#include <QAbstractListModel>
+#include <QList>
+
+#include "core/interface/i_tab_component.hpp"
 
 namespace AppRoot {
 
 /**
  * @class AppRootModel
  * @brief Concrete implementation of the AppRoot data model.
- * @details Manages the data structures required for the AppRoot module
- * and provides them via the QAbstractItemModel interface.
+ * @details Manages a collection of ITabComponent instances and provides
+ * them to the View/Delegate
  */
-class AppRootModel : public QAbstractItemModel
+class AppRootModel : public QAbstractListModel
 {
     Q_OBJECT
+
    public:
+    /**
+     * @enum TabRoles
+     * @brief Custom roles for accessing ITabComponent specific data.
+     */
+    enum TabRoles { IdRole = Qt::UserRole + 1, ComponentRole };
+
+    /**
+     * @brief Constructs the model.
+     * @param parent The parent QObject.
+     */
     explicit AppRootModel(QObject* parent = nullptr);
+
+    /**
+     * @brief Virtual destructor.
+     */
     ~AppRootModel() override = default;
 
-    // Standard QAbstractItemModel interface overrides...
-    [[nodiscard]] auto index(int row, int column, const QModelIndex& parent) const
-        -> QModelIndex override;
-    [[nodiscard]] auto parent(const QModelIndex& index) const -> QModelIndex override;
-    [[nodiscard]] auto rowCount(const QModelIndex& parent) const -> int override;
-    [[nodiscard]] auto columnCount(const QModelIndex& parent) const -> int override;
-    [[nodiscard]] auto data(const QModelIndex& index, int role) const -> QVariant override;
+    /**
+     * @brief Returns the number of tabs in the model.
+     * @param parent The parent index (unused in list models).
+     * @return int The count of tab components.
+     */
+    [[nodiscard]] int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+
+    /**
+     * @brief Retrieves data for a specific tab and role.
+     * @param index The index of the tab.
+     * @param role The requested data role (DisplayRole, DecorationRole, etc.).
+     * @return QVariant The data associated with the role.
+     */
+    [[nodiscard]] QVariant data(const QModelIndex& index,
+                                int role = Qt::DisplayRole) const override;
+
+    /**
+     * @brief Appends a tab and connects its 'updated()' signal to the model's 'dataChanged'.
+     * @param component Pointer to the ITabComponent implementation.
+     */
+    void addTab(Core::ITabComponent* component);
+
+    /**
+     * @brief Removes a tab component from the model by its unique ID.
+     * @param id The unique identifier string.
+     */
+    void removeTab(const QString& id);
+
+    /**
+     * @brief Utility getter to retrieve the component at a specific row.
+     * @param row The row index.
+     * @return Core::ITabComponent* The component pointer, or nullptr if out of bounds.
+     */
+    [[nodiscard]] auto componentAt(int row) const -> Core::ITabComponent*;
+
+   private:
+    /**
+     * @brief Internal storage of tab components.
+     */
+    QList<Core::ITabComponent*> m_tabs;
 };
 
 }  // namespace AppRoot

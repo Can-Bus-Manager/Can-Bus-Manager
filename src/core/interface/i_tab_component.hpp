@@ -1,8 +1,14 @@
 #pragma once
-#include <QWidget>
-#include <QString>
+
+#ifndef __cpp_constinit
+#define QT_CONSTINIT
+#endif
+
 #include <QIcon>
+#include <QMetaType>
 #include <QObject>
+#include <QString>
+#include <QWidget>
 
 #include "i_lifecycle.hpp"
 
@@ -28,7 +34,10 @@ class ITabComponent : public QObject, public ILifecycle
      * @param icon The icon displayed next to the Title.
      */
     ITabComponent(IEventBroker& broker, QString id, QString title, QIcon icon = QIcon())
-        : ILifecycle(broker), m_id(std::move(id)), m_title(std::move(title)), m_icon(std::move(icon))
+        : ILifecycle(broker),
+          m_id(std::move(id)),
+          m_title(std::move(title)),
+          m_icon(std::move(icon))
     {
     }
 
@@ -97,3 +106,9 @@ class ITabComponent : public QObject, public ILifecycle
 };
 
 }  // namespace Core
+/**
+ * @brief Register the interface pointer with Qt's Meta-Type system.
+ * @details This allows Core::ITabComponent* to be stored inside a QVariant,
+ * which is required for the ComponentRole in the model's data() method.
+ */
+Q_DECLARE_METATYPE(Core::ITabComponent*)
