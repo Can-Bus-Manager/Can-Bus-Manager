@@ -7,8 +7,7 @@
 #include <list>
 #include <string>
 namespace Core {
-struct DbcSignalDescription
-{
+struct DbcSignalDescription {
     std::string signalName;
     bool multiplexer;
     std::string multiplexedBy;
@@ -23,27 +22,23 @@ struct DbcSignalDescription
     std::string unit;
     std::list<std::string> receivers;
 };
-struct DbcMessageDescription
-{
+struct DbcMessageDescription {
     uint messageId;
     std::string messageName;
     uint messageSize;
     std::string transmitterName;
     std::list<DbcSignalDescription> signalDescriptions;
 };
-struct DbcValueDescription
-{
+struct DbcValueDescription {
     double value;
     std::string meaning;
 };
-struct DbcSignalValueDescription
-{
+struct DbcSignalValueDescription {
     uint messageId;
     std::string signalName;
     std::list<DbcSignalDescription> signalDescriptions;
 };
-struct DbcConfig
-{
+struct DbcConfig {
     std::list<std::string> nodeDefinitions;
     std::list<DbcMessageDescription> messageDefinitions;
     std::list<DbcSignalDescription> signalValueDescriptions;
