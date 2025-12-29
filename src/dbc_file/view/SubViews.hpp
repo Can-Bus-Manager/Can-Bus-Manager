@@ -27,7 +27,7 @@ public:
          * This signal is triggered either by dropping a file onto the widget
          * or by selecting a file via the file dialog.
          *
-         * @param filePath The absolute path to the selected DBC file
+         * @param filePath The absolute path to the selected DBC file.
          */
         void fileSelected(const QString& filePath);
 
