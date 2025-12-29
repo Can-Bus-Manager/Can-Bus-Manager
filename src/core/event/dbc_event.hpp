@@ -10,7 +10,8 @@ namespace Core {
 /**
  * @brief This structure contains the event for a new DBC structure to be used for de-/encoding
  */
-struct NewDbcConfigEvent : Event {
+struct NewDbcConfigEvent : Event
+{
 };
 }  // namespace Core
 #endif  // CANBUSMANAGER_DBC_EVENT_HPP

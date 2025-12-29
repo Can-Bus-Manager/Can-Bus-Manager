@@ -10,15 +10,14 @@
 #include <unordered_map>
 
 #include "event.hpp"
+#include "core/dto/can_dto.hpp"
 namespace Core {
 /**
  * @brief Structure of the received can event when a can message is received and used in raw form
  */
 struct ReceivedCanRaw final : public Event
 {
-    std::time_t receiveTime;
-    std::array<char, 8> data;
-    char messageId;
+    RawCanMessage canMessage;
 };
 /**
  * @brief Structure of the received can event when a can message is received and used in dbc decoded
@@ -26,17 +25,14 @@ struct ReceivedCanRaw final : public Event
  */
 struct ReceivedCanDbc final : public Event
 {
-    std::time_t receiveTime;
-    std::unordered_map<std::string, double> parsedMessage;
-    char messageId;
+    DbcCanMessage canMessage;
 };
 /**
  * @brief Structure of the send can event, when an already encoded message should be sent
  */
 struct SendCanMessageRaw final : public Event
 {
-    std::array<char, 8> data;
-    char messageId;
+    RawCanMessage canMessage;
 };
 /**
  * @brief Structure of the send can event, when a message should be sent based on the current DBC
@@ -44,8 +40,7 @@ struct SendCanMessageRaw final : public Event
  */
 struct SendCanMessageDbc final : public Event
 {
-    std::unordered_map<std::string, double> values;
-    char messageId;
+    DbcCanMessage canMessage;
 };
 };  // namespace Core
 #endif  // CANBUSMANAGER_CAN_EVENT_HPP
