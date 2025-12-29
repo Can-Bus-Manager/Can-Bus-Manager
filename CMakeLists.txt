@@ -46,21 +46,6 @@ set(RAPIDCSV_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/rapidcsv/src")
 
 # 5. Core Library
 set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp"
-        src/dbc_file/model/DbcItem.hpp
-        src/dbc_file/model/DbcModel.hpp
-        src/dbc_file/view/DbcView.hpp
-        src/dbc_file/view/SubViews.hpp
-        src/dbc_file/DbcComponent.hpp
-        src/core/enum/DbcItemType.hpp
-        src/core/dto/DbcDtos.hpp
-        src/core/event/event.hpp
-        src/core/event/lifecycle_event.hpp
-        src/core/dto/lifecycle_dto.hpp
-        src/core/event/dbc_event.hpp
-        src/core/interface/i_tab_component.hpp
-        src/core/interface/i_lifecycle.hpp
-        src/core/interface/i_event_broker.hpp
-        src/dbc_file/delegate/DbcDelegate.hpp
 )
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
