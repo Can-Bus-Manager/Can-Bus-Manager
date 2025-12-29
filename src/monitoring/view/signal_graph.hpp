@@ -3,21 +3,21 @@
 #include <QWidget>
 #include "monitoring/model/signal_graph_model.hpp"
 #include "core/dto/decoded_signal.hpp"
-
+#endif  // CANBUSMANAGER_SIGNAL_GRAPH_HPP
+namespace Monitoring {
 class SignalGraph : QWidget
 {
     Q_OBJECT
     public:
-        explicit SignalGraph(const DecodedSignal& signal,
-                          QWidget* parent = nullptr);
-        ~SignalGraph();
+    explicit SignalGraph(const DecodedSignal& signal,
+                      QWidget* parent = nullptr);
+    ~SignalGraph();
 
-        void appendDataToGraph(DecodedSignal& signal);
-        void deleteGraph(DecodedSignal& signal);
-        void update();
+    void appendDataToGraph(DecodedSignal& signal);
+    void deleteGraph(DecodedSignal& signal);
+    void update();
 
-    private:
-        SignalGraphModel model;
+private:
+    SignalGraphModel model;
 };
-
-#endif  // CANBUSMANAGER_SIGNAL_GRAPH_HPP
+}

@@ -3,13 +3,16 @@
 #include <QStyledItemDelegate>
 
 #endif  // CANBUSMANAGER_SIGNAL_TREE_DELEGATE_HPP
+
+namespace Monitoring {
 class SignalTreeDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
     public:
-        explicit SignalTreeDelegate(QObject* parent = nullptr);
-        ~SignalTreeDelegate() override = default;
+    explicit SignalTreeDelegate(QObject* parent = nullptr);
+    ~SignalTreeDelegate() override = default;
 
-        QString displayText(const QVariant& value,
-                    const QLocale& locale) const override;
+    QString displayText(const QVariant& value,
+                const QLocale& locale) const override;
 };
+}

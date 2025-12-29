@@ -6,9 +6,11 @@
 #include "monitoring/model/signal_tree_model.hpp"
 
 #endif  // CANBUSMANAGER_SIGNAL_TREE_VIEW_HPP
+namespace Monitoring {
 class SignalTreeView : public QTreeView
 {
     Q_OBJECT
     public:
     explicit SignalTreeView(QWidget *parent = nullptr);
 };
+}

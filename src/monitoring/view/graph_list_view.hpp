@@ -8,6 +8,7 @@
 
 #endif  // CANBUSMANAGER_GRAPH_LIST_VIEW_HPP
 
+namespace Monitoring {
 class GraphListView : public QWidget {
     Q_OBJECT
 public:
@@ -24,3 +25,4 @@ private:
 
     void newGraph(DecodedSignal& signal);
 };
+}
