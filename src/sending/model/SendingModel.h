@@ -2,15 +2,20 @@
 #define SENDINGMODEL_H
 #include <cstdint>
 #include <vector>
-#include <QAbstractTableModel>
+#include <QAbstractTableModel> // oder QAbstractItemModel
+#include "IEventBroker.h"
 
 
-
-struct SendingMessageConfig {
-    bool isActive;
-    uint32_t canId;
-    std::vector<uint8_t> payload;
-    int cycleTime;
-
+//move to core?
+struct MessageConfig {
+    uint32_t canId;           
+    std::vector<uint8_t> data; 
+    int cycleTimeMs;
+    bool isCyclicActive;
+    bool isDbcBased;
+    QTimer* timer = nullptr;
 };
+
+std::vector<MessageConfig> m_messages;
+
 #endif
