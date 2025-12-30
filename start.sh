@@ -22,7 +22,7 @@ usage() {
     echo "Options:"
     echo "  -c,  --clean      Remove build directory before starting"
     echo "  -d,  --dev        Dev Mode: Use Ninja generator and Debug build"
-    echo "  -cov, --coverage   Enable Coverage (forces Debug mode)"
+    echo "  -cov, --coverage  Enable Coverage (forces Debug mode)"
     echo "  -nt, --no-tests   Skip building and running tests"
     echo "  -nd, --no-docs    Skip generating documentation"
     echo "  -h,  --help       Show this help message"
