@@ -16,15 +16,15 @@ class CanDbcHandler final : public ICanParser
     {
         dbcSendEventConnection = eventBroker.subscribe<Core::SendCanMessageDbc>(
             [this](const Core::SendCanMessageDbc& event) -> void { handleSendMessage(event); });
-        dbcConfigChangeConnection = eventBroker.subscribe<Core::NewDbcConfigEvent>(
-            [this](const Core::NewDbcConfigEvent& event) -> void { handleNewDbc(event); });
+        dbcConfigChangeConnection = eventBroker.subscribe<Core::DBCParsedEvent>(
+            [this](const Core::DBCParsedEvent& event) -> void { handleNewDbc(event); });
     };
     ~CanDbcHandler() override = default;
+private:
     void parseReceivedMessage(const sockcanpp::CanMessage* canMessage) override;
     void handleSendMessage(const Core::SendCanMessageDbc& event);
-    void handleNewDbc(const Core::NewDbcConfigEvent& event);
+    void handleNewDbc(const Core::DBCParsedEvent& event);
 
-   private:
     Core::Connection dbcSendEventConnection;
     Core::Connection dbcConfigChangeConnection;
 };
