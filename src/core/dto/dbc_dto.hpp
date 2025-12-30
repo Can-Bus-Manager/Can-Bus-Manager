@@ -42,6 +42,7 @@ struct DbcConfig {
     std::list<std::string> nodeDefinitions;
     std::list<DbcMessageDescription> messageDefinitions;
     std::list<DbcSignalValueDescription> signalValueDescriptions;
+    std::list<std::string> comments;
 };
 }  // namespace Core
 #endif  // CANBUSMANAGER_DBC_DTO_HPP

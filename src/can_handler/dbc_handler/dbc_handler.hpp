@@ -56,6 +56,12 @@ private:
      * @return The parsed list of nodes or a null pointer if no list of nodes was parsed
      */
     auto parseNodes(std::string& file) -> std::list<std::string>;
+    /**
+     * @brief tries to parse the start of the provided file to a comment (CM_:)
+     * @param file The provided rest of a DBC file (truncated to after the signal if a comment is parsed)
+     * @return The parsed comment or a null pointer if no comment was parsed
+     */
+    auto parseComment(std::string& file) -> std::string;
 
     Core::Connection parseNewDbcConnection;
 };
