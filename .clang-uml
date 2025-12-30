@@ -1,0 +1,34 @@
+compilation_database_dir: build
+output_directory: doc/diagrams
+diagrams:
+  core_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    using_namespace:
+      - CanBusManager
+    include:
+      namespaces:
+        - Core
+  app_root_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    using_namespace:
+      - CanBusManager
+    include:
+      namespaces:
+        - AppRoot
+  overall_class_diagram:
+      type: class
+      glob:
+        - src/**/*.cpp
+        - src/**/*.hpp
+      using_namespace:
+        - CanBusManager
+      include:
+        namespaces:
+          - AppRoot
+          - Core

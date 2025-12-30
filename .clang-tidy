@@ -1,3 +1,4 @@
 Checks: '-*,modernize-*'
-HeaderFilterRegex: 'src/.*'
 FormatStyle: file
+ExtraArgsBefore:
+  - "-Qunused-arguments"

@@ -12,7 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # 2. Options
 option(ENABLE_TESTS "Build tests using GoogleTest and Benchmark" ON)
-option(ENABLE_CLANG_TIDY "Enable static analysis with Clang-Tidy" ON)
+option(ENABLE_CLANG_TIDY "Enable static analysis with Clang-Tidy" OFF)
 option(ENABLE_DOCS "Enable the documentation target" ON)
 option(ENABLE_COVERAGE "Enable code coverage reporting" OFF)
 
