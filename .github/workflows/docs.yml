@@ -24,10 +24,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Doxygen
+      - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y doxygen graphviz
+          sudo apt update
+          sudo apt install -y \
+            qt6-base-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools \
+            cmake \
+            ninja-build \
+            build-essential \
+            clang-tidy \
+            clang-format \
+            doxygen \
+            graphviz
 
       - name: Configure CMake
         run: cmake -B build
