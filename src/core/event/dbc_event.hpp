@@ -5,15 +5,15 @@
 #ifndef CANBUSMANAGER_DBC_EVENT_HPP
 #define CANBUSMANAGER_DBC_EVENT_HPP
 
-#include "event.hpp"
 #include "core/dto/dbc_dto.hpp"
+#include "event.hpp"
 namespace Core {
 
 /**
- * @brief Structure of the event fired when dbc file has successfully been parsed by the CAN Handler.
+ * @brief Structure of the event fired when dbc file has successfully been parsed by the CAN
+ * Handler.
  */
-struct DBCParsedEvent final : Event
-{
+struct DBCParsedEvent final : Event {
     DbcConfig config;
     std::string filePath;
 };
@@ -21,8 +21,7 @@ struct DBCParsedEvent final : Event
 /**
  * @brief Structure of the event fired when dbc file parsing failed.
  */
-struct DBCParseErrorEvent final : Event
-{
+struct DBCParseErrorEvent final : Event {
     std::string errorMessage;
     std::string filePath;
 };
@@ -30,9 +29,8 @@ struct DBCParseErrorEvent final : Event
 /**
  * @brief Structure of the event fired when a dbc file is requested to be parsed.
  */
-struct ParseDBCRequestEvent final : Event
-{
+struct ParseDBCRequestEvent final : Event {
     std::string filePath;
 };
-}
+}  // namespace Core
 #endif  // CANBUSMANAGER_DBC_EVENT_HPP

@@ -20,7 +20,8 @@ class CanDbcHandler final : public ICanParser
             [this](const Core::DBCParsedEvent& event) -> void { handleNewDbc(event); });
     };
     ~CanDbcHandler() override = default;
-private:
+
+   private:
     void parseReceivedMessage(const sockcanpp::CanMessage* canMessage) override;
     void handleSendMessage(const Core::SendCanMessageDbc& event);
     void handleNewDbc(const Core::DBCParsedEvent& event);
