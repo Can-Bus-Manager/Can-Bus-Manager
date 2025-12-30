@@ -6,12 +6,33 @@
 #define CANBUSMANAGER_DBC_EVENT_HPP
 
 #include "event.hpp"
+#include "core/dto/dbc_dto.hpp"
 namespace Core {
+
 /**
- * @brief This structure contains the event for a new DBC structure to be used for de-/encoding
+ * @brief Structure of the event fired when dbc file has successfully been parsed by the CAN Handler.
  */
-struct NewDbcConfigEvent : Event
+struct DBCParsedEvent final : Event
 {
+    DbcConfig config;
+    std::string filePath;
 };
-}  // namespace Core
+
+/**
+ * @brief Structure of the event fired when dbc file parsing failed.
+ */
+struct DBCParseErrorEvent final : Event
+{
+    std::string errorMessage;
+    std::string filePath;
+};
+
+/**
+ * @brief Structure of the event fired when a dbc file is requested to be parsed.
+ */
+struct ParseDBCRequestEvent final : Event
+{
+    std::string filePath;
+};
+}
 #endif  // CANBUSMANAGER_DBC_EVENT_HPP
