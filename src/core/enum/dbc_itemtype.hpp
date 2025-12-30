@@ -12,7 +12,7 @@ namespace Core
 {
     enum class DbcItemType
     {
-        Root, Ecu, Message, Signal
+        Root, Overview, Ecu, Message, Signal
     };
 }
 #endif  // CANBUSMANAGER_DBCITEMTYPE_HPP
