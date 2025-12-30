@@ -10,17 +10,15 @@
 #include <unordered_map>
 
 namespace Core {
-struct RawCanMessage
-{
+struct RawCanMessage {
     std::time_t receiveTime;
     std::array<char, 8> data;
     char messageId;
 };
-struct DbcCanMessage
-{
+struct DbcCanMessage {
     std::time_t receiveTime;
     std::unordered_map<std::string, double> signalValues;
     char messageId;
 };
-}
-#endif //CANBUSMANAGER_CAN_DTO_HPP
+}  // namespace Core
+#endif  // CANBUSMANAGER_CAN_DTO_HPP
