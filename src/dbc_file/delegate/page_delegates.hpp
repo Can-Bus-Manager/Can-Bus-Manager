@@ -7,47 +7,69 @@
 #include <QTreeView>
 #include <QPainter>
 #include <QEvent>
-#include "core/enum/dbc_itemtype.hpp"
+
 
 namespace Dbc {
 
+// ==============================================================================
+// 1. Overview Lists Delegate (Overview Page)
+// ==============================================================================
+
 /**
- * @brief A custom delegate to render the list items (in ECUs and Messages overviews) in the Overview Page.
+ * @class OverviewListsDelegate
+ * @brief Renders items in the ECU and Message overview lists as "Cards".
  *
- * It draws items as "Cards" containing:
- * - A rounded border background.
- * - An icon on the left.
- * - The name text.
- * - A badge (gray box with count) on the right.
+ * @details
+ * Used in the QListViews on the Overview Page.
+ * Draws a rounded rectangle containing an icon, the name, and a statistic badge.
  */
 class OverviewListsDelegate : public QStyledItemDelegate {
     Q_OBJECT
 public:
     explicit OverviewListsDelegate(QObject* parent = nullptr);
+    ~OverviewListsDelegate() override = default;
 
     /**
-     * @brief Renders the card visualization of the list items.
+     * @brief Paints a rounded card with an icon and a count badge.
+     *
+     * @caller Qt View (QListView) during paint events.
+     *
+     * @details
+     * 1. Draws a rounded rectangle background.
+     * 2. Draws a placeholder icon on the left.
+     * 3. Draws the item name (DisplayRole) in the center.
+     * 4. Fetches `Role_MsgChildCount` (for ECUs) or `Role_ChildCount` (Messages)
+     *    and draws it inside a gray badge on the right.
+     *
+     * @param painter The painter object used for drawing.
+     * @param option Contains geometry (rect) and state (selected/hovered).
+     * @param index The model index providing the data.
      */
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
     /**
-     * @brief Defines the fixed size for each card in the grid.
+     * @brief Determines the size of the card.
+     *
+     * @caller Qt View layout system.
+     * @return A fixed size (e.g., 200x50px) to ensure proper grid alignment.
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
 
 
+// ==============================================================================
+// 2. ECU Tree Delegate (ECU Page)
+// ==============================================================================
 
 /**
- * @brief Custom delegate to render the ECU Hierarchy as expandable "Cards" for the Ecus page.
+ * @class EcuTreeDelegate
+ * @brief Renders the ECU Hierarchy content as cards.
  *
- * Card design hierarchy:
- * - **ECU (Level 0):** Large Card, Icon, Name, Message Count Badge, Expansion Arrow on the right.
- * - **Message (Level 1):** Header-like row, Name, ID Badge, Signals Count Badge.
- * - **Signal (Level 2):** Detail row, Name, Value Range, Unit Badge.
- *
- * Interaction:
- * - Handles mouse clicks on the right-aligned expansion arrow to toggle the TreeView state.
+ * @details
+ * Used in the QTreeView on the ECU Page.
+ * - **Expansion:** Relies on the standard QTreeView expansion (arrow on the left).
+ * - **Visualization:** Draws custom "Cards" next to the standard arrow/indentation.
+ * - **Structure:** Differentiates visuals based on `Role_ItemType` (ECU, Message, Signal).
  */
 class EcuTreeDelegate : public QStyledItemDelegate {
     Q_OBJECT
@@ -55,56 +77,55 @@ class EcuTreeDelegate : public QStyledItemDelegate {
 public:
     /**
      * @brief Constructs the delegate.
-     * @param view Pointer to the specific TreeView (needed to control expansion state).
-     * @param parent Parent object.
+     * @param view Reference to the TreeView (useful for checking indentation logic if needed).
      */
     explicit EcuTreeDelegate(QTreeView* view, QObject* parent = nullptr);
+    ~EcuTreeDelegate() override = default;
 
     /**
      * @brief Renders the item content based on its DbcItemType.
+     *
+     * @caller Qt View (QTreeView) during paint events.
+     *
+     * @details
+     * - **ECU:** Draws a large card frame, bold name, and Message Count Badge.
+     * - **Message:** Draws a header-like row with an ID Badge.
+     * - **Signal:** Draws a detail row with value range [min, max] and Unit Badge.
      */
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
     /**
-     * @brief Calculates the height of the rows (ECUs are taller than Signals).
+     * @brief Calculates height based on Item Type.
+     *
+     * @caller Qt View layout system.
+     * @return Larger height for ECUs (Header), smaller height for Signals (Detail).
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-    /**
-     * @brief Handles user interactions (specifically clicking the expand arrow).
-     * Replaces standard TreeView expansion logic for the right-aligned arrow.
-     */
-    bool editorEvent(QEvent* event, QAbstractItemModel* model, const QStyleOptionViewItem& option, const QModelIndex& index) override;
-
 private:
-    /**
-     * @brief Helper to calculate the exact geometry of the expansion arrow/chevron.
-     * Used in both paint() (to draw) and editorEvent() (to detect clicks).
-     */
-    QRect getExpandButtonRect(const QRect& itemRect) const;
-
     // --- Painting Helpers ---
     void paintEcuCard(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
     void paintMessageRow(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
     void paintSignalRow(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
-    /**
-     * @brief Draws a rounded badge with text (e.g., "rpm" or "0x120").
-     */
+    /** @brief Helper to draw a rounded gray badge with text. */
     void drawBadge(QPainter* painter, const QRect& rect, const QString& text, const QColor& bg, const QColor& fg) const;
 
-    QTreeView* m_treeView; // Reference to control expand/collapse
+    QTreeView* m_treeView;
 };
 
+
+// ==============================================================================
+// 3. Message Signal Card Delegate (Message Detail Pane)
+// ==============================================================================
+
 /**
- * @brief Renders the detailed Signal cards in the Message Detail View (Bottom Pane).
+ * @class MessagesSignalCardDelegate
+ * @brief Renders detailed Signal cards in the bottom pane of the Messages Page.
  *
- * VISUALS:
- * - Draws a container with a rounded border.
- * - **Header:** Signal Name (Bold) + Unit Badge (gray box, right aligned).
- * - **Grid Layout:** Renders attributes like Start Bit, Length, Factor, Offset, Min, Max
- *   in a structured grid layout within the card.
- * - **Footer:** Receiver Node.
+ * @details
+ * Used in the Detail View (QListView) when a message is selected.
+ * Displays all technical signal attributes (StartBit, Length, Factor, etc.) in a grid layout.
  */
 class MessagesSignalCardDelegate : public QStyledItemDelegate {
     Q_OBJECT
@@ -113,46 +134,44 @@ public:
     ~MessagesSignalCardDelegate() override = default;
 
     /**
-     * @brief Renders the complete card visualization.
+     * @brief Paints a complex grid layout for technical signal attributes.
      *
-     * Uses QPainter to draw:
-     * 1. A rounded rectangle border (The Card).
-     * 2. The Header section (Name & Unit).
-     * 3. A 2x4 or 4x2 grid for the numeric attributes.
-     * 4. The Footer section.
+     * @caller Qt View (QListView) during paint events.
+     *
+     * @details
+     * Retrieves specific data using Custom Roles (`Role_StartBit`, `Role_Factor`, etc.)
+     * regardless of column indices.
+     * 1. Draws a card border.
+     * 2. Header: Name + Unit.
+     * 3. Grid: Draws labels ("Start Bit") and values ("0") in a structured layout.
      */
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
     /**
-     * @brief Defines the size of the card.
-     *
-     * Calculates a fixed height sufficient to display the Header,
-     * the Grid of attributes, and the Footer (approx. 120-150px based on design).
+     * @brief Returns a large fixed height.
+     * @caller Qt View layout system.
+     * @return Height sufficient to fit the header, grid, and footer (~120px).
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 private:
-    /**
-     * @brief Helper to draw a text label with a value below it (for the grid).
-     * e.g. "Start Bit" (gray) -> "0" (black).
-     */
     void drawGridItem(QPainter* painter, const QRect& rect, const QString& label, const QString& value) const;
-
-    /**
-     * @brief Helper to draw a rounded badge (used for the Unit).
-     */
     void drawBadge(QPainter* painter, const QRect& rect, const QString& text) const;
 };
 
+
+// ==============================================================================
+// 4. Signal Table Delegate (Global Signals Page)
+// ==============================================================================
+
 /**
- * @brief Custom delegate for the global Signals Table (SRS 6.5).
+ * @class SignalTableDelegate
+ * @brief Renders cells for the global Signals Table.
  *
- * VISUALS:
- * - **Standard Columns:** Renders text normally (Name, Unit, etc.).
- * - **Message Column:** Renders a composite view:
- *   [ ID Badge (Gray) ]  [ Message Name ]
- * - **Formatting:** Can handle conditional formatting (e.g. adding "Bit" to length,
- *   formatting range as "[min, max]").
+ * @details
+ * Used in the main Signals Page (QTableView).
+ * Provides custom rendering for specific columns (like Message ID badges) while
+ * maintaining standard text rendering for others.
  */
 class SignalTableDelegate : public QStyledItemDelegate {
     Q_OBJECT
@@ -162,14 +181,21 @@ public:
     ~SignalTableDelegate() override = default;
 
     /**
-     * @brief Renders the cells.
-     * Special handling for the "Message" column to draw the ID badge.
+     * @brief Renders the cell content with special handling for the Message Column.
+     *
+     * @caller Qt View (QTableView) during paint events.
+     *
+     * @details
+     * 1. Checks if the column corresponds to the "Message" column.
+     * 2. If yes: Draws a gray badge with the Message ID (`Role_Id`) and the Message Name.
+     * 3. If no: Falls back to standard text rendering (optionally formatting hex/units via `initStyleOption` logic if implemented).
      */
     void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
     /**
-     * @brief Returns size hint.
-     * Ensures rows are tall enough for the badges.
+     * @brief Ensures rows are tall enough for badges.
+     * @caller Qt View layout system.
+     * @return Height to fit the ID badge (usually slightly taller than standard text).
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };

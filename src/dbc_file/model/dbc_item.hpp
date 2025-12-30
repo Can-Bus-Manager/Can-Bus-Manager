@@ -2,57 +2,101 @@
 // Created by Adrian Rupp on 24.12.25.
 //
 #pragma once
-#include <QList>
+
 #include <QVariant>
 #include <memory>
 #include <vector>
+
+// Ensure this path is correct in your project structure
 #include "core/enum/dbc_itemtype.hpp"
 
 namespace Dbc {
 
 /**
- * @class dbc_item
- * @brief Represents a single node in the DBC-Tree structure.
- * Nodes have types as defined ind Core::DbcItemType
- * A node holds a set of children notes (Root: ECU nodes and one Overview node; ECU: Message nodes;
- * Messages: Signal nodes), several data items (e.g. for messages: Name, ID, Dlc,...) and a pointer
- * to its parent node
+ * @brief Represents a single node in the internal DBC tree structure.
+ *
+ * This class serves as the generic container for the DbcModel. It holds the data
+ * for all types of nodes (Root, ECU, Message, Signal) and manages the
+ * parent-child relationships required by QAbstractItemModel.
+ *
+ * Data Storage:
+ * The member `m_data` holds a list of QVariants corresponding to the columns/attributes.
+ * The mapping of which column index holds which attribute (e.g., 0=Name, 1=StartBit)
+ * is managed by the logic in DbcModel::data().
  */
-class dbc_item
+class DbcItem
 {
 public:
     /**
      * @brief Constructs a new item.
      * @param data The column data for this item (Name, Value, Unit, etc.).
-     * @param type The semantic type (ECU, Message, Signal, Root, Overview).
+     * @param type The semantic type (ECU, Message, Signal).
      * @param parent The parent item (nullptr for root).
      */
-    explicit dbc_item(const QList<QVariant>& data, Core::DbcItemType type, dbc_item* parent = nullptr);
-    ~dbc_item() = default;
+    explicit DbcItem(const QList<QVariant>& data, Core::DbcItemType type, DbcItem* parent = nullptr);
 
-//-- Tree navigation methods--
+    /**
+     * @brief Destructor. Automatically destroys all children (via unique_ptr).
+     */
+    ~DbcItem();
 
-    void appendChild(std::unique_ptr<dbc_item> child);
+    // --- Tree Structure Management ---
 
-    [[nodiscard]] auto childAt(int row) const -> dbc_item*;
+    /**
+     * @brief Adds a child node to this item.
+     * The item takes ownership of the child.
+     */
+    void appendChild(std::unique_ptr<DbcItem> child);
+
+    /**
+     * @brief Returns the child at the specific row index.
+     * @return Pointer to the child or nullptr if index is out of bounds.
+     */
+    [[nodiscard]] auto child(int row) const -> DbcItem*;
+
+    /**
+     * @brief Returns the number of children (rows).
+     */
     [[nodiscard]] auto childCount() const -> int;
+
+    /**
+     * @brief Returns the parent item.
+     */
+    [[nodiscard]] auto parent() const -> DbcItem*;
+
+    /**
+     * @brief Returns the row index of this item relative to its parent.
+     * Returns 0 if this is the root item.
+     */
+    [[nodiscard]] auto row() const -> int;
+
+    // --- Data Access ---
+
+    /**
+     * @brief Returns the number of data columns stored in this item.
+     */
     [[nodiscard]] auto columnCount() const -> int;
 
-    // Data Access
+    /**
+     * @brief Returns the data stored at the specific column index.
+     * Used by the Model to fulfill data() requests.
+     */
     [[nodiscard]] auto data(int column) const -> QVariant;
 
-    // Metadata Access
-    [[nodiscard]] auto row() const -> int;
-    [[nodiscard]] auto parent() const -> dbc_item*;
+    /**
+     * @brief Returns the semantic type of the item.
+     * Used by Proxies to filter items (e.g., show only Messages).
+     */
     [[nodiscard]] auto type() const -> Core::DbcItemType;
 
 private:
     Core::DbcItemType m_type;
-    std::vector<std::unique_ptr<dbc_item>> m_children;
-    dbc_item* m_parent;
+    DbcItem* m_parent; // Raw pointer (non-owning) to prevent circular references
 
-    // Holds the displayable data for columns.
-    // E.g. for Signal: [Name, StartBit, Length, Factor, Offset, Min, Max, Unit, Receiver...]
+    // Ownership of children is managed here
+    std::vector<std::unique_ptr<DbcItem>> m_children;
+
+    // Stores values for: Name, ID/StartBit, DLC/Length, etc.
     QList<QVariant> m_data;
 };
 
