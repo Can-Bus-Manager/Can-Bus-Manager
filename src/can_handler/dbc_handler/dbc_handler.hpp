@@ -13,7 +13,9 @@ class DbcHandler final : Core::ILifecycle
     explicit DbcHandler(Core::IEventBroker& eventBroker) : Core::ILifecycle(eventBroker)
     {
         parseNewDbcConnection = eventBroker.subscribe<Core::ParseDBCRequestEvent>(
-            [this](const Core::ParseDBCRequestEvent& event) -> void { parseNewDbc(event); });
+            [this](const Core::ParseDBCRequestEvent& event) -> void {
+                parseNewDbc(event);
+            });
     };
     ~DbcHandler() override;
 
@@ -59,15 +61,15 @@ class DbcHandler final : Core::ILifecycle
     auto parseSignalValue(std::string& file) -> Core::DbcSignalValueDescription;
     /**
      * @brief tries to parse the start of the provided file to a list of nodes (BU_:)
-     * @param file The provided rest of a DBC file (truncated to after the signal if a list of nodes
-     * is parsed)
+     * @param file The provided rest of a DBC file
+     * (truncated to after the signal if a list of nodes is parsed)
      * @return The parsed list of nodes or a null pointer if no list of nodes was parsed
      */
     auto parseNodes(std::string& file) -> std::list<std::string>;
     /**
      * @brief tries to parse the start of the provided file to a comment (CM_:)
-     * @param file The provided rest of a DBC file (truncated to after the signal if a comment is
-     * parsed)
+     * @param file The provided rest of a DBC file
+     * (truncated to after the signal if a comment is parsed)
      * @return The parsed comment or a null pointer if no comment was parsed
      */
     auto parseComment(std::string& file) -> std::string;

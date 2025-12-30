@@ -14,7 +14,9 @@ class CanRawHandler final : ICanParser
     explicit CanRawHandler(Core::IEventBroker& eventBroker) : ICanParser(eventBroker)
     {
         rawSendEventConnection = eventBroker.subscribe<Core::SendCanMessageRaw>(
-            [this](const Core::SendCanMessageRaw& event) -> void { handleSendMessage(event); });
+            [this](const Core::SendCanMessageRaw& event) -> void {
+                handleSendMessage(event);
+            });
     };
     ~CanRawHandler() override = default;
     void parseReceivedMessage(const sockcanpp::CanMessage* canMessage) override;
