@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install dependencies
         run: |
@@ -40,7 +42,12 @@ jobs:
             graphviz
 
       - name: Configure CMake
-        run: cmake -B build
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DENABLE_TESTS=OFF \
+            -DENABLE_DOCS=ON \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Run Doxygen
         run: |
