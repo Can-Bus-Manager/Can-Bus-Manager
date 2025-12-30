@@ -1,163 +1,184 @@
 //
-// Created by Adrian Rupp on 29.12.25.
+// Created by Adrian Rupp on 30.12.25.
 //
 #pragma once
 
+#include <QSortFilterProxyModel>
+#include <QAbstractProxyModel>
 #include <QList>
 #include <QPersistentModelIndex>
-#include <QSortFilterProxyModel>
 
-// Required for DbcItemType enum
+// Required for DbcItemType enum & Roles
 #include "core/enum/dbc_itemtype.hpp"
+#include "../model/dbc_roles.hpp"
 
 namespace Dbc {
 
+// ==============================================================================
+// 1. Flat List Proxy
+// ==============================================================================
+
 /**
- * @brief A proxy model that flattens a hierarchical tree structure into a linear list.
+ * @class FlatListProxy
+ * @brief Flattens a hierarchical tree structure into a linear list based on item type.
  *
- * USE CASE:
- * Used for the "Overview" lists and the "All Messages"/"All Signals" tables.
+ * @details
+ * **USE CASE:**
+ * Used for "Overview Page" lists (ECUs, Messages) and "Messages/Signals Page" tables.
  *
- * CAPABILITIES:
- * 1. Flattening: Recursively collects items of a specific type.
- * 2. Search: Filters by text (Search Bar).
- * 3. Categorization: Filters by specific attributes (Filter Box), e.g., "Sending ECUs".
+ * **MECHANISM:**
+ * It does NOT use QSortFilterProxyModel because it structurally transforms the data
+ * (Tree -> List). It performs a manual recursive scan to find all items of `m_targetType`.
  */
 class FlatListProxy : public QAbstractProxyModel {
     Q_OBJECT
 
 public:
     /**
-     * @brief Constructs the FlatListProxy.
-     * @param targetType The specific item type to collect (e.g., DbcItemType::Message).
-     * @param parent The parent QObject.
+     * @brief Constructs the proxy for a specific target type.
+     * @param targetType The DbcItemType to collect (e.g. Message).
+     * @param parent Parent object.
      */
     explicit FlatListProxy(Core::DbcItemType targetType, QObject* parent = nullptr);
     ~FlatListProxy() override = default;
 
     /**
-     * @brief Updates the search filter text (Search Bar).
-     * Triggers a re-scan of the tree.
-     * @param text The text to search for (case-insensitive) in the item names.
+     * @brief Updates the search filter. Triggers rebuildMapping().
+     * @caller DbcView::on...FilterTextChanged().
+     * @param text Case-insensitive search string.
      */
     void setSearchFilter(const QString& text);
 
     /**
-     * @brief Updates the category filter (Filter Box).
-     * Triggers a re-scan of the tree.
-     *
-     * @param index The index selected in the ComboBox (e.g., 0="All", 1="Sending").
-     * The interpretation of this index depends on the targetType implementation in scanNode.
+     * @brief Updates the category filter. Triggers rebuildMapping().
+     * @caller DbcView::on...FilterTypeChanged().
+     * @param index The selected index from the UI ComboBox (0 = All).
      */
     void setFilterCategory(int index);
 
-
     // --- QAbstractProxyModel Interface Implementation ---
 
+    /**
+     * @brief Maps Source Index (Tree) -> Proxy Index (List).
+     * @caller Qt Views (selection handling) and Delegates.
+     */
     [[nodiscard]] auto mapFromSource(const QModelIndex& sourceIndex) const -> QModelIndex override;
+
+    /**
+     * @brief Maps Proxy Index (List) -> Source Index (Tree).
+     * @caller DbcView (to get the real index for Master-Detail selection) and Delegates.
+     */
     [[nodiscard]] auto mapToSource(const QModelIndex& proxyIndex) const -> QModelIndex override;
 
     [[nodiscard]] auto index(int row, int column, const QModelIndex& parent = QModelIndex()) const -> QModelIndex override;
     [[nodiscard]] auto parent(const QModelIndex& child) const -> QModelIndex override;
-
     [[nodiscard]] auto rowCount(const QModelIndex& parent = QModelIndex()) const -> int override;
     [[nodiscard]] auto columnCount(const QModelIndex& parent = QModelIndex()) const -> int override;
 
+    /**
+     * @brief Sets the source model and connects signals for auto-updates.
+     * @caller DbcView::setSourceModel().
+     */
     void setSourceModel(QAbstractItemModel* sourceModel) override;
 
 public slots:
     /**
-     * @brief Scans the source tree and rebuilds the internal index mapping.
-     * Called automatically when model changes, search text changes, or category changes.
+     * @brief Scans the source tree and rebuilds the internal index list.
+     * @caller
+     * - Internal: When filters change via setSearchFilter/setFilterCategory.
+     * - Signal: When sourceModel emits modelReset or layoutChanged.
      */
     void rebuildMapping();
 
 private:
     /**
-     * @brief Recursive helper to traverse the source tree.
-     * Checks m_filterText AND m_filterCategory to decide inclusion.
+     * @brief Recursive scanner helper.
+     * @caller Internal (rebuildMapping).
+     * @details Scans the tree and appends matching indices to m_mapping if they match
+     * Type, SearchText, and FilterCategory.
      */
     void scanNode(const QModelIndex& parent);
 
-    /** @brief The type of items this proxy should display (e.g., Message). */
     Core::DbcItemType m_targetType;
-
-    /** @brief The current search filter string. */
     QString m_filterText;
+    int m_filterCategory = 0;
 
-    /** @brief The current filter category index (0 = All). */
-    int m_filterCategory;
-
-    /**
-     * @brief The core mapping structure.
-     */
+    /** @brief The flattened list of persistent pointers to the source items. */
     QList<QPersistentModelIndex> m_mapping;
 };
 
+
+// ==============================================================================
+// 2. Tree Filter Proxy
+// ==============================================================================
+
 /**
- * @brief A proxy model that filters a tree structure while preserving hierarchy.
+ * @class TreeFilterProxy
+ * @brief A proxy that maintains the tree hierarchy but filters nodes by text and type.
  *
- * USE CASE:
- * Used for the "ECUs" page (Tree View).
+ * @details
+ * **USE CASE:**
+ * Used for the "ECUs Page" (Tree View).
  *
- * CAPABILITIES:
- * 1. Hierarchy: Maintains the Root -> ECU -> Message structure.
- * 2. Search: Filters nodes by text (Search Bar).
- * 3. Categorization: Filters nodes by attributes via ComboBox (e.g., "Sending Nodes").
- * 4. Cleanup: Automatically hides the "Overview" metadata row.
+ * **LOGIC:**
+ * - Hides the "Overview" metadata row.
+ * - Filters ECUs/Messages based on search text (Search Bar).
+ * - Filters ECUs based on category (Filter Box).
+ * - Maintains parent-child relationship (Recursive Filtering).
  */
 class TreeFilterProxy : public QSortFilterProxyModel {
     Q_OBJECT
 
 public:
-    /**
-     * @brief Constructs the TreeFilterProxy.
-     * @param parent The parent QObject.
-     */
     explicit TreeFilterProxy(QObject* parent = nullptr);
     ~TreeFilterProxy() override = default;
+
     /**
-     * @brief Updates the search filter text.
-     * @param text The text to search for (case-insensitive) in the item names.
+     * @brief Updates the search filter string.
+     * @caller DbcView::onEcuFilterTextChanged().
      */
     void setSearchFilter(const QString& text);
 
     /**
-     * @brief Updates the category filter (Filter Box).
-     * @param index The index selected in the ComboBox (e.g., 0="All", 1="Sending Nodes").
+     * @brief Updates the category filter (e.g., "Sending Nodes").
+     * @caller DbcView::onEcuFilterTypeChanged().
      */
     void setFilterCategory(int index);
 
 protected:
     /**
-     * @brief Decides whether a row should be included in the model.
+     * @brief Decides if a row is included in the view.
+     * @caller Qt Internal (QSortFilterProxyModel) whenever the filter changes.
      *
-     * LOGIC:
-     * 1. Hides the "Overview" item (Metadata).
-     * 2. Checks if the item matches the Search Text.
-     * 3. Checks if the item matches the Filter Category.
-     * 4. Uses recursive filtering: If a child matches, the parent is automatically shown.
+     * Logic:
+     * 1. Hides `Role_ItemType == Overview`.
+     * 2. Checks search text against DisplayRole.
+     * 3. Checks category index against model data.
      */
     [[nodiscard]] auto filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const -> bool override;
 
 private:
-    /** @brief The current search filter string. */
     QString m_filterText;
-
-    /** @brief The current filter category index (0 = All). */
-    int m_filterCategory;
+    int m_filterCategory = 0;
 };
 
+
+// ==============================================================================
+// 3. Single Message Proxy
+// ==============================================================================
+
 /**
- * @brief A proxy model that restricts the view to the children of a specific node.
+ * @class SingleMessageProxy
+ * @brief A proxy that isolates the children of a specific parent node.
  *
- * USE CASE:
- * Used for the "Message Detail View" (Bottom Pane).
+ * @details
+ * **USE CASE:**
+ * Used for the "Message Detail View" (Bottom Pane of Messages Tab).
  * It displays ALL signals belonging to the currently selected Message.
  *
- * LOGIC:
+ * **LOGIC:**
  * It filters out everything except the direct children (Signals) of the
- * configured parent index (the selected Message). No text or category filtering is applied.
+ * configured parent index.
  */
 class SingleMessageProxy : public QSortFilterProxyModel {
     Q_OBJECT
@@ -168,22 +189,23 @@ public:
 
     /**
      * @brief Sets the target message whose signals should be displayed.
-     * @param parentIndex The model index of the Message in the source model.
+     * @caller DbcView::onMessageSelected().
+     * @param parentIndex The index of the Message in the source model.
      *
-     * Calling this triggers an automatic update (invalidate) of the view.
+     * Calling this triggers an invalidation of the filter.
      */
     void setFilterParentIndex(const QModelIndex& parentIndex);
 
 protected:
     /**
-     * @brief Decides whether a row should be included.
+     * @brief Decides if a row is included.
+     * @caller Qt Internal (QSortFilterProxyModel).
      *
-     * Returns true ONLY if the row's parent matches m_parentIndex.
+     * Logic: Returns true ONLY if `sourceParent == m_parentIndex`.
      */
     [[nodiscard]] auto filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const -> bool override;
 
 private:
-    /** @brief The index of the currently selected Message (Source Model). */
     QModelIndex m_parentIndex;
 };
 

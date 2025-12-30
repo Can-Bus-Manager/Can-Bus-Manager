@@ -3,12 +3,9 @@
 //
 #pragma once
 
-#include <qboxlayout.h>
-
-#include <QDataWidgetMapper>
-#include <QListView>
-#include <QStackedWidget>
 #include <QWidget>
+#include <QStackedWidget>
+#include <memory>
 
 #include "subviews.hpp"
 #include "proxies.hpp"
@@ -16,12 +13,17 @@
 namespace Dbc {
 
 /**
+ * @class DbcView
  * @brief The main container for the DBC Tab (Composite View).
  *
- * RESPONSIBILITIES:
- * 1. Layout: Manages the Sidebar and the Page Stack (Load, Overview, ECUs, Messages, Signals).
- * 2. Data Wiring: Creates the specific Proxy Models needed for each page and connects them.
- * 3. Interaction Logic: connects Search Bars and Filter Combos from the pages to the Proxies.
+ * @details
+ * **RESPONSIBILITIES:**
+ * 1. **Layout:** Manages the Sidebar navigation and the central Page Stack
+ *    (Load, Overview, ECUs, Messages, Signals).
+ * 2. **Data Wiring:** Owns the Proxy Models, connects them to the Source Model,
+ *    and injects them into the specific Pages.
+ * 3. **Interaction Logic:** Connects Search Bars, Filter Combos, and Selection Signals
+ *    from the Pages to the corresponding Proxies.
  */
 class DbcView : public QWidget {
     Q_OBJECT
@@ -33,72 +35,138 @@ public:
     /**
      * @brief Initializes the view with the source data.
      *
-     * This method is called by the Component after the DBC file is parsed.
-     * It instantiates all Proxy Models, injects the source model into them,
-     * and sets the proxies on the respective Pages.
+     * @caller DbcComponent::onDbcParsed().
+     *
+     * @details
+     * 1. Instantiates all Proxy Models.
+     * 2. Injects the source model into proxies.
+     * 3. Calls `setModel()` on all Sub-Pages using the correct proxies.
+     * 4. Sets up internal signal-slot connections for filtering.
+     *
+     * @param model The raw DbcModel containing the data tree.
      */
     void setSourceModel(QAbstractItemModel* model);
 
     /**
+     * @brief Sets the formatting delegate for tables.
+     *
+     * @caller DbcComponent (Constructor).
+     *
+     * @details
+     * Applies the `DbcDelegate` to the Messages Master Table and the Signals Table
+     * to ensure Hex values and Units are displayed correctly.
+     */
+    void setDataItemDelegate(QAbstractItemDelegate* delegate);
+
+    /**
      * @brief Unlocks navigation (Sidebar) after a successful file load.
      *
+     * @caller DbcComponent::onDbcParsed().
+     *
+     * @details
      * Initially, only the LoadPage is accessible. Once data is loaded,
-     * the Component calls this to enable switching to Overview/ECUs/etc.
+     * this enables the sidebar so the user can switch views.
      */
     void setNavigationEnabled(bool enabled);
 
 signals:
     /**
      * @brief Forwarded signal from LoadPage.
-     * Tells the DbcComponent that the user has selected a file to parse.
+     *
+     * @details Tells the DbcComponent that the user has selected a file to parse
+     * (via Drag & Drop or File Dialog).
+     *
+     * @param filePath The absolute path to the file.
      */
     void fileLoadRequested(const QString& filePath);
 
 private slots:
     /**
      * @brief Handles sidebar navigation to switch the active page in the stack.
+     * @caller Sidebar QListView (clicked signal).
      */
     void onSidebarSelectionChanged(const QModelIndex& index);
 
     // --- ECU PAGE INTERACTION ---
+
+    /**
+     * @brief Updates the tree proxy search filter.
+     * @caller EcusPage (search bar).
+     */
     void onEcuFilterTextChanged(const QString& text);
+
+    /**
+     * @brief Updates the tree proxy category filter.
+     * @caller EcusPage (combo box).
+     */
     void onEcuFilterTypeChanged(int index);
 
     // --- MESSAGES PAGE INTERACTION ---
+
+    /**
+     * @brief Updates the messages flat list proxy search filter.
+     * @caller MessagesPage (master search bar).
+     */
     void onMessageFilterTextChanged(const QString& text);
+
+    /**
+     * @brief Updates the messages flat list proxy category filter.
+     * @caller MessagesPage (master combo box).
+     */
     void onMessageFilterTypeChanged(int index);
 
     /**
      * @brief Master-Detail Logic for Messages Page.
      *
-     * Called when a row is selected in the Message Master Table.
-     * 1. Maps the proxy index to the source index.
-     * 2. Updates the m_messageDetailProxy to show children of this message.
-     * 3. Updates the Detail View title.
+     * @caller MessagesPage (selection changed signal).
+     *
+     * @details
+     * 1. Maps the proxy index (List) to the source index (Tree).
+     * 2. Updates the `m_messageDetailProxy` to show children of this message.
+     * 3. Updates the Title in the Detail View.
+     * 4. Shows the Detail Pane.
      */
     void onMessageSelected(const QModelIndex& proxyIndex);
 
     // --- SIGNALS PAGE INTERACTION ---
 
     /**
-     * @brief Updates the m_allSignalsProxy search filter.
+     * @brief Updates the all-signals proxy search filter.
+     * @caller SignalsPage (search bar).
      */
     void onSignalFilterTextChanged(const QString& text);
+
     /**
-     * @brief Updates the m_allSignalsProxy category filter (e.g. Unit).
+     * @brief Updates the all-signals proxy category filter (e.g. Unit).
+     * @caller SignalsPage (combo box).
      */
     void onSignalFilterTypeChanged(int index);
 
 private:
+    /**
+     * @brief Initializes layout, creates sidebar, stack, and page instances.
+     * @caller Constructor.
+     */
     void setupUi();
+
+    /**
+     * @brief Helper to instantiate all Page Widgets.
+     * @caller setupUi().
+     */
     void createSubViews();
+
+    /**
+     * @brief Helper to connect Page signals (Search/Select) to View slots.
+     * @caller setSourceModel().
+     */
     void setupConnections();
 
     // --- UI Structure ---
     QListView* m_sidebarList;
     QStackedWidget* m_contentStack;
 
-    // --- Pages (Raw pointers because Qt manages their memory via parent) ---
+    // --- Pages ---
+    // (Raw pointers because Qt manages their memory via parent/layout)
     LoadPage* m_loadPage;
     OverviewPage* m_overviewPage;
     EcusPage* m_ecuPage;
@@ -134,10 +202,10 @@ private:
     std::unique_ptr<SingleMessageProxy> m_messageDetailProxy;
 
     /**
-     * @brief Flat list of the Signals in the system.
-     * Used for the Signals Page.
+     * @brief Flat list of ALL Signals in the system.
+     * Used for the Signals Page table.
      */
-    std::unique_ptr<FlatListProxy> m_signalsProxy;
+    std::unique_ptr<FlatListProxy> m_allSignalsProxy;
 };
 
-} // namespace CanBusManager::Dbc
+} // namespace Dbc

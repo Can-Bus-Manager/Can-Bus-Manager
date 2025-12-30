@@ -1,109 +1,145 @@
 //
-// Created by Adrian Rupp on 29.12.25.
+// Created by Adrian Rupp on 30.12.25.
 //
 #pragma once
 
-#include <QWidget>
+
 #include <QTableView>
 #include <QTreeView>
 #include <QLineEdit>
-#include <QComboBox> // Added for the filter box
+#include <QComboBox>
 
 namespace Dbc {
 
+// ==============================================================================
+// 1. Searchable Filter Table
+// ==============================================================================
+
 /**
  * @class SearchableFilterTable
- * @brief Combines a TableView with a Search Bar and a Filter ComboBox on top.
+ * @brief A reusable compound widget containing a Search Bar (top), Filter Combo (top), and Table (bottom).
  *
- * Layout:
+ * @details
+ * **Layout:**
  * [ Search Bar ......... ] [ Filter Combo ]
  * [ Table View                            ]
- * [ ...                                   ]
+ *
+ * Used for lists that require flat data representation (Messages, Signals).
  */
-class SearchableFilterTable : public QWidget
-{
+class SearchableFilterTable : public QWidget {
     Q_OBJECT
+
 public:
     explicit SearchableFilterTable(QWidget* parent = nullptr);
+    ~SearchableFilterTable() override = default;
 
     /**
      * @brief Returns the internal table view.
+     * @caller Parent Page (to set models/delegates).
      */
-    [[nodiscard]] auto getTableView() const -> QTableView*;
+    [[nodiscard]] auto tableView() const -> QTableView*;
 
     /**
-     * @brief Returns the search line edit (e.g. to set placeholder text).
+     * @brief Returns the search line edit.
+     * @caller Parent Page (e.g. to set placeholder text).
      */
-    [[nodiscard]] auto getSearchBar() const -> QLineEdit*;
+    [[nodiscard]] auto searchBar() const -> QLineEdit*;
 
     /**
-     * @brief Returns the filter combo box (e.g. to add filter options).
+     * @brief Returns the filter combo box.
+     * @caller Parent Page (to add items like "All Units").
      */
-    [[nodiscard]] auto getFilterCombo() const -> QComboBox*;
+    [[nodiscard]] auto filterComboBox() const -> QComboBox*;
 
 signals:
     /**
      * @brief Emitted when the text in the search bar changes.
+     * @caller Internal QLineEdit signal.
+     * @param text The current search string.
      */
-    void searchTextChanged(const QString& text);
+    void filterTextChanged(const QString& text);
 
     /**
-     * @brief Emitted when the selection in the filter combo box changes.
+     * @brief Emitted when the user selects a different item in the combo box.
+     * @caller Internal QComboBox signal.
+     * @param index The index of the selected item.
      */
-    void filterIndexChanged(int index);
+    void filterTypeChanged(int index);
 
 private:
+    /**
+     * @brief Initializes layout and connections.
+     * @caller Constructor.
+     */
+    void setupUi();
+
     QTableView* m_tableView;
     QLineEdit* m_searchBar;
     QComboBox* m_filterCombo;
 };
 
+
+// ==============================================================================
+// 2. Searchable Filter Tree
+// ==============================================================================
+
 /**
  * @class SearchableFilterTree
- * @brief Combines a TreeView with a Search Bar and a Filter ComboBox on top.
+ * @brief A reusable compound widget containing a Search Bar (top), Filter Combo (top), and Tree (bottom).
  *
- * Layout:
+ * @details
+ * **Layout:**
  * [ Search Bar ......... ] [ Filter Combo ]
  * [ Tree View                             ]
- * [ ...                                   ]
+ *
+ * Used for hierarchical data representation (ECUs).
  */
-class SearchableFilterTree : public QWidget
-{
+class SearchableFilterTree : public QWidget {
     Q_OBJECT
 
 public:
     explicit SearchableFilterTree(QWidget* parent = nullptr);
+    ~SearchableFilterTree() override = default;
 
     /**
      * @brief Returns the internal tree view.
+     * @caller Parent Page (to set models/delegates).
      */
-    [[nodiscard]] auto getTreeView() const -> QTreeView*;
+    [[nodiscard]] auto treeView() const -> QTreeView*;
 
     /**
      * @brief Returns the search line edit.
      */
-    [[nodiscard]] auto getSearchBar() const -> QLineEdit*;
+    [[nodiscard]] auto searchBar() const -> QLineEdit*;
 
     /**
      * @brief Returns the filter combo box.
      */
-    [[nodiscard]] auto getFilterCombo() const -> QComboBox*;
+    [[nodiscard]] auto filterComboBox() const -> QComboBox*;
 
 signals:
     /**
      * @brief Emitted when the text in the search bar changes.
+     * @caller Internal QLineEdit signal.
      */
-    void searchTextChanged(const QString& text);
+    void filterTextChanged(const QString& text);
 
     /**
-     * @brief Emitted when the selection in the filter combo box changes.
+     * @brief Emitted when the user selects a different item in the combo box.
+     * @caller Internal QComboBox signal.
      */
-    void filterIndexChanged(int index);
+    void filterTypeChanged(int index);
 
 private:
+    /**
+     * @brief Initializes layout and connections.
+     * @caller Constructor.
+     */
+    void setupUi();
+
     QTreeView* m_treeView;
     QLineEdit* m_searchBar;
-    QComboBox* m_filterCombo; // New Filter Box
+    QComboBox* m_filterCombo;
 };
 
 } // namespace Dbc

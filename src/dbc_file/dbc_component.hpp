@@ -1,34 +1,42 @@
 //
-// Created by Adrian Rupp on 29.12.25.
+// Created by Adrian Rupp on 25.12.25.
 //
 #pragma once
 
 #include <memory>
 
-#include "core/event/dbc_event.hpp"
 
 // Core Interfaces
 #include "core/interface/i_tab_component.hpp"
 #include "core/interface/i_event_broker.hpp"
 
 // MVD Classes
-#include "dbc_file/model/dbc_model.hpp"
-#include "dbc_file/view/dbc_view.hpp"
-#include "delegates.hpp" // Für DbcDelegate
+#include "model/dbc_model.hpp"
+#include "view/dbc_view.hpp"
+#include "delegate/dbc_delegate.hpp"
+
+// Forward declarations for Events
+namespace Core::Events {
+    struct DbcParsedEvent;
+    struct DbcParseErrorEvent;
+}
 
 namespace Dbc {
+
 /**
- * @brief The Controller/Manager for the DBC module.
+ * @class DbcComponent
+ * @brief The Controller/Composition Root for the DBC module.
  *
- * RESPONSIBILITIES:
- * - Implements the Core::ITabComponent interface to integrate into the main application.
- * - Owns the Model-View-Delegate stack (Lifecycle Management).
- * - Acts as the bridge between the UI (DbcView) and the System (EventBroker).
+ * @details
+ * **RESPONSIBILITIES:**
+ * - Implements the `Core::ITabComponent` interface to integrate into the AppRoot.
+ * - **Lifecycle Management:** Creates and owns the Model, View, and Delegate.
+ * - **Wiring:** Connects the View (Signals) to the System (EventBroker) and vice versa.
  *
- * DATA FLOW:
- * - User Input (View) -> Component -> EventBroker (Publish Command)
- * - System Event (Broker) -> Component -> View (Update UI State)
- * - System Event (Broker) -> Model (Update Data directly)
+ * **DATA FLOW:**
+ * - User Input (View) -> Component -> EventBroker (Publish `ParseDbcRequestEvent`)
+ * - System Event (`DbcParsedEvent`) -> Component -> View (Unlock Navigation)
+ * - System Event (`DbcParsedEvent`) -> Model (Update Data)
  */
 class DbcComponent : public Core::ITabComponent {
     Q_OBJECT
@@ -37,8 +45,10 @@ public:
     /**
      * @brief Constructs the component.
      *
-     * Initializes the Model, View, and Delegate, connects signals/slots,
-     * and subscribes to relevant system events.
+     * @caller AppRoot (Module Loader).
+     *
+     * @details
+     * Initializes the MVD stack, connects signals/slots, and subscribes to system events.
      *
      * @param broker Reference to the system-wide EventBroker.
      */
@@ -46,15 +56,15 @@ public:
 
     /**
      * @brief Destructor.
-     * Cleans up the MVD stack. Connections to the broker are automatically released
-     * via the Core::Connection RAII handles.
+     * Cleans up the MVD stack. Broker connections are released automatically via RAII.
      */
     ~DbcComponent() override;
 
     // --- Core::ITabComponent Interface Implementation ---
 
     /**
-     * @brief Returns the main widget (DbcView) for display in the AppRoot.
+     * @brief Returns the main widget (DbcView) for display in the application window.
+     * @caller AppRoot.
      */
     auto getView() -> QWidget* override;
 
@@ -74,8 +84,11 @@ private slots:
     /**
      * @brief Handles the file load request from the View.
      *
-     * Triggered when the user drops a file or selects one via dialog.
-     * Publishes a ParseDbcRequestEvent to the EventBroker.
+     * @caller DbcView::fileLoadRequested signal.
+     *
+     * @details
+     * Creates a `ParseDbcRequestEvent` with the file path and publishes it
+     * to the EventBroker. The CAN Handler will process this request.
      *
      * @param filePath The absolute path to the file.
      */
@@ -85,33 +98,43 @@ private:
     /**
      * @brief Callback: Triggered when a DBC file was successfully parsed.
      *
-     * Note: The Model updates itself automatically via its own subscription.
-     * This callback is used to update the UI state (e.g., unlock navigation sidebar).
+     * @caller EventBroker (lambda callback).
+     *
+     * @details
+     * Used to update the UI state (e.g., call `m_view->setNavigationEnabled(true)`).
+     * The Model updates its data automatically via its own subscription.
      */
-    void onDbcParsed(const Core::DBCParsedEvent& event);
+    void onDbcParsed(const Core::Events::DbcParsedEvent& event);
 
     /**
      * @brief Callback: Triggered when parsing failed.
-     * Shows an error message to the user (e.g., via QMessageBox).
+     * @caller EventBroker (lambda callback).
+     * @details Shows an error message to the user (e.g., via QMessageBox).
      */
-    void onDbcParseError(const Core::DBCParseErrorEvent& event);
+    void onDbcParseError(const Core::Events::DbcParseErrorEvent& event);
 
     /**
      * @brief Sets up internal connections between View signals and Component slots.
+     * @caller Constructor.
      */
     void setupConnections();
 
     // --- Members ---
 
-    // 1. Ownership of MVD Stack
-    std::unique_ptr<DbcModel> m_model;       // The Data (Smart Model)
-    std::unique_ptr<DbcView> m_view;         // The UI (Composite View)
+    /** @brief Ownership of the Data Model (Smart Model). */
+    std::unique_ptr<DbcModel> m_model;
 
-    // The delegate for generic Hex/Unit formatting (passed to View)
+    /** @brief Ownership of the Composite View. */
+    std::unique_ptr<DbcView> m_view;
+
+    /** @brief Ownership of the Formatting Delegate (passed to View). */
     std::unique_ptr<DbcDelegate> m_delegate;
 
-    // 2. Event Subscriptions (RAII Handles)
+    /** @brief RAII Handle for success event subscription. */
     Core::Connection m_parseSuccessConn;
+
+    /** @brief RAII Handle for error event subscription. */
     Core::Connection m_parseErrorConn;
 };
-}
+
+} // namespace Dbc
