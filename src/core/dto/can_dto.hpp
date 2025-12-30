@@ -6,8 +6,8 @@
 #define CANBUSMANAGER_CAN_DTO_HPP
 #include <array>
 #include <ctime>
+#include <list>
 #include <string>
-#include <unordered_map>
 
 namespace Core {
 struct RawCanMessage {
@@ -17,8 +17,12 @@ struct RawCanMessage {
 };
 struct DbcCanMessage {
     std::time_t receiveTime;
-    std::unordered_map<std::string, double> signalValues;
+    std::list<DbcCanMessage> signalValues;
     char messageId;
+};
+struct DbcCanSignal {
+    std::string name;
+    double value;
 };
 }  // namespace Core
 #endif  // CANBUSMANAGER_CAN_DTO_HPP

@@ -14,7 +14,7 @@ class CanCommunicationHandler final : Core::ILifecycle
 {
    public:
     explicit CanCommunicationHandler(Core::IEventBroker& event_broker)
-        : ILifecycle(event_broker){
+        : ILifecycle(event_broker) {
 
           };
     /**

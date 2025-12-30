@@ -1,46 +1,139 @@
 #ifndef CANBUSMANAGER_SIGNAL_TREE_MODEL_HPP
 #define CANBUSMANAGER_SIGNAL_TREE_MODEL_HPP
 #include <QAbstractItemModel>
-#include "core/dto/can_frame.hpp"
-#include "core/dto/decoded_signal.hpp"
+
+#include "core/dto/can_dto.hpp"
 
 #endif  // CANBUSMANAGER_SIGNAL_TREE_MODEL_HPP
+
+/**
+ * @namespace Monitoring
+ * @brief Contains data models and UI components for CAN signal monitoring.
+ */
 namespace Monitoring {
-class SignalTreeModel : public QAbstractItemModel {
+
+/**
+ * @class SignalTreeModel
+ * @brief Hierarchical model representing CAN frames and their contained signals.
+ *
+ * SignalTreeModel implements a two-level tree structure:
+ * - Top level: CAN frames
+ * - Child level: Signals belonging to each frame
+ *
+ * The model supports checkable items, allowing users to select or deselect
+ * individual signals for visualization. Selection changes are communicated
+ * via dedicated Qt signals, enabling loose coupling with visualization
+ * components.
+ */
+class SignalTreeModel : public QAbstractItemModel
+{
     Q_OBJECT
-    public:
+   public:
+    /**
+     * @brief Constructs the signal tree model.
+     *
+     * @param parent Optional Qt parent object.
+     */
     explicit SignalTreeModel(QObject* parent = nullptr);
 
-    QModelIndex index(int row, int column,
-                  const QModelIndex& parent) const override;
-    QModelIndex parent(const QModelIndex& index) const override;
-    int rowCount(const QModelIndex& parent) const override;
-    int columnCount(const QModelIndex& parent) const override;
-    QVariant data(const QModelIndex& index, int role) const override;
-    Qt::ItemFlags flags(const QModelIndex& index) const override;
-    bool setData(const QModelIndex& index,
-             const QVariant& value,
-             int role) override;
+    /**
+     * @name QAbstractItemModel interface implementation
+     * @{
+     */
 
-public slots:
-    void onFrameReceived(const Core::CanFrame& frame);
+    /**
+     * @brief Returns the model index for the given row and column.
+     */
+    [[nodiscard]] auto index(int row, int column, const QModelIndex& parent) const
+        -> QModelIndex override;
 
-    signals:
-        void signalChecked(const Core::DecodedSignal& signal);
-    void signalUnchecked(const Core::DecodedSignal& signal);
+    /**
+     * @brief Returns the parent index of a given model index.
+     */
+    [[nodiscard]] auto parent(const QModelIndex& index) const -> QModelIndex override;
 
-private:
+    /**
+     * @brief Returns the number of rows under the given parent.
+     */
+    [[nodiscard]] auto rowCount(const QModelIndex& parent) const -> int override;
+
+    /**
+     * @brief Returns the number of columns for the given parent.
+     */
+    [[nodiscard]] auto columnCount(const QModelIndex& parent) const -> int override;
+
+    /**
+     * @brief Returns the data stored for the given index and role.
+     */
+    [[nodiscard]] auto data(const QModelIndex& index, int role) const -> QVariant override;
+
+    /**
+     * @brief Returns the item flags for the given model index.
+     *
+     * Enables checkable and selectable behavior for frames and signals.
+     */
+    [[nodiscard]] auto flags(const QModelIndex& index) const -> Qt::ItemFlags override;
+
+    /**
+     * @brief Updates the data stored at the given index.
+     *
+     * Primarily used to handle check state changes initiated by the view.
+     */
+    auto setData(const QModelIndex& index, const QVariant& value, int role) -> bool override;
+
+   public slots:
+    /**
+    * @brief Updates the model when a CAN frame is received.
+    *
+    * Adds new frames or updates existing ones and refreshes the signal
+    * values associated with the frame.
+    *
+    * @param message Reference to the received CAN message.
+    */
+    void onFrameReceived(Core::DbcCanMessage& message);
+
+   signals:
+    /**
+     * @brief Emitted when a signal is checked by the user.
+     *
+     * Used to trigger creation or activation of a corresponding graph.
+     */
+    void signalChecked(Core::DbcCanSignal& signal);
+
+    /**
+     * @brief Emitted when a signal is unchecked by the user.
+     *
+     * Used to trigger removal of the corresponding graph.
+     */
+    void signalUnchecked(Core::DbcCanSignal& signal);
+
+   private:
+    /**
+     * @struct SignalNode
+     * @brief Internal representation of a single CAN signal within a frame.
+     */
     struct SignalNode {
-        Core::DecodedSignal signal;
+        Core::DbcCanSignal signal;
         Qt::CheckState checked;
     };
 
+    /**
+     * @struct FrameNode
+     * @brief Internal representation of a CAN frame and its contained signals.
+     */
     struct FrameNode {
-        Core::CanFrame frame;
+        Core::DbcCanMessage message;
         QVector<SignalNode> allSignals;
         Qt::CheckState checked;
     };
 
+    /**
+     * @brief Collection of all tracked CAN frames.
+     *
+     * Each frame node contains its most recent data and associated signals.
+     * The model maintains the hierarchical relationship required by the
+     * tree view.
+     */
     QVector<FrameNode> m_frames;  // contains last 1min/whatever of signal data
 };
-}
+}  // namespace Monitoring
