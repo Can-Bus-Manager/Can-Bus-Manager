@@ -1,0 +1,58 @@
+html {
+    --primary-color: #bd93f9;
+    --primary-dark-color: #9270e4;
+    --primary-light-color: #9270e4;
+
+    --page-background-color: #ffffff;
+    --page-foreground-color: #2f4153;
+    --page-secondary-foreground-color: #6f7e8e;
+
+    --separator-color: #bd93f965;
+
+    --border-radius-large: 22px;
+    --border-radius-small: 9px;
+    --border-radius-medium: 14px;
+
+    --spacing-small: 8px;
+    --spacing-medium: 14px;
+    --spacing-large: 19px;
+
+    --top-height: 125px;
+}
+
+html.dark-mode {
+    color-scheme: dark;
+
+    --primary-color: #bd93f9;
+    --primary-dark-color: #9270e4;
+    --primary-light-color: #9270e4;
+    --primary-lighter-color: #191e21;
+    --primary-lightest-color: #191a1c;
+
+    --page-background-color: #21222c;
+    --page-foreground-color: #d2dbde;
+    --page-secondary-foreground-color: #859399;
+    --separator-color: #3a3246;
+    --side-nav-background: #282a36;
+    --side-nav-foreground: #f8f8f2;
+    --toc-background: #282A36;
+    --searchbar-background: var(--page-background-color);
+}
+
+#projectlogo {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    /* Use the variable you defined earlier */
+    background-color: var(--header-foreground);
+
+    /* The magic: use the SVG as a mask */
+    -webkit-mask: url("vector.svg") no-repeat center;
+    mask: url("vector.svg") no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+#projectlogo img {
+    display: none;
+}
