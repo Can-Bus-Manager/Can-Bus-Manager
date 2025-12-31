@@ -4,10 +4,7 @@
 #include <QWidget>
 #include "LoggingModel.h"
 
-namespace Ui {
-class LoggingView;
-}
-
+namespace logging {
 class LoggingView : public QWidget {
     Q_OBJECT
 
@@ -24,5 +21,5 @@ private:
     Ui::LoggingView *ui;
     LoggingModel *m_model;
 };
-
+}
 #endif // LOGGINGVIEW_H
