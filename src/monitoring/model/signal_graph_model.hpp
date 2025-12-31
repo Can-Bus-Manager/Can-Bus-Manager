@@ -27,8 +27,7 @@ namespace Monitoring {
 class SignalGraphModel : public QObject
 {
     Q_OBJECT
-
-public:
+   public:
     /**
      * @brief Constructs the signal graph model.
      *
@@ -36,7 +35,7 @@ public:
      */
     explicit SignalGraphModel(QObject* parent = nullptr);
 
-public slots:
+   public slots:
     /**
      * @brief Adds a new signal sample to the model.
      *
