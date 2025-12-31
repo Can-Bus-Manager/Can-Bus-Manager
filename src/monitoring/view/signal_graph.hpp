@@ -30,7 +30,7 @@ namespace Monitoring {
 class SignalGraph : QWidget
 {
     Q_OBJECT
-public:
+   public:
     /**
      * @brief Constructs a graph widget for a specific CAN signal.
      *
@@ -39,8 +39,7 @@ public:
      *               transferred to the internal model.
      * @param parent Optional Qt parent widget.
      */
-    explicit SignalGraph(const Core::DbcCanSignal&& signal,
-        QWidget* parent = nullptr);
+    explicit SignalGraph(const Core::DbcCanSignal&& signal, QWidget* parent = nullptr);
 
     /**
      * @brief Destroys the SignalGraph widget and releases associated
@@ -68,7 +67,7 @@ public:
      */
     void deleteGraph(Core::DbcCanSignal& signal);
 
-private:
+   private:
     /**
      * @brief Model holding the time-series data and graph state.
      *

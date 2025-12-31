@@ -7,8 +7,8 @@
 #include "core/interface/i_event_broker.hpp"
 #include "core/interface/i_tab_component.hpp"
 #include "graph_list_view.hpp"
-#include "signal_tree_view.hpp"
 #include "monitoring/model/signal_tree_model.hpp"
+#include "signal_tree_view.hpp"
 
 #endif  // CANBUSMANAGER_MONITORING_TAB_HPP
 
@@ -38,7 +38,7 @@ namespace Monitoring {
 class MonitoringTab : public Core::ITabComponent, public QWidget
 {
     Q_OBJECT
-public:
+   public:
     /**
      * @brief Constructs the Monitoring tab.
      *
@@ -46,8 +46,7 @@ public:
      *               to and emitting application-wide events.
      * @param parent Optional Qt parent widget.
      */
-    explicit MonitoringTab(Core::IEventBroker* broker,
-        QWidget* parent = nullptr);
+    explicit MonitoringTab(Core::IEventBroker* broker, QWidget* parent = nullptr);
 
     /**
      * @brief Initializes internal models, views, delegates, and signal-slot
@@ -58,7 +57,7 @@ public:
      */
     void bootstrap();
 
-private:
+   private:
     /**
      * @brief Event broker used for decoupled communication with other
      * components.

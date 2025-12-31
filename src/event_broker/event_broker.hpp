@@ -13,8 +13,8 @@ class EventBroker final : Core::IEventBroker
 {
    protected:
     void _publish(std::type_index type, const void* data) override;
-    auto _subscribe(std::type_index type, std::function<void(const void*)> callback)
-        -> Core::Connection override;
+    auto _subscribe(std::type_index type,
+                    std::function<void(const void*)> callback) -> Core::Connection override;
 
    private:
     struct Channel {

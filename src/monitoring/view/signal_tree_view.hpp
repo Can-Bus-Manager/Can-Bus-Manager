@@ -27,7 +27,7 @@ namespace Monitoring {
 class SignalTreeView : public QTreeView
 {
     Q_OBJECT
-public:
+   public:
     /**
      * @brief Constructs the signal tree view widget.
      *

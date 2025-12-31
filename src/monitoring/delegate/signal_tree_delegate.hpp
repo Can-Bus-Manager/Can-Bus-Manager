@@ -26,7 +26,7 @@ namespace Monitoring {
 class SignalTreeDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
-public:
+   public:
     /**
      * @brief Constructs the signal tree delegate.
      *
@@ -51,7 +51,6 @@ public:
      * @return Localized, formatted display string.
      */
     [[nodiscard]] auto displayText(const QVariant& value,
-        const QLocale& locale) const
-        -> QString override;
+                                   const QLocale& locale) const -> QString override;
 };
 }  // namespace Monitoring
