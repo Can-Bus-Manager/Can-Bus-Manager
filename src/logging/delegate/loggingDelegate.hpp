@@ -2,7 +2,7 @@
 #define LOGGINGDELEGATE_H
 
 #include <QStyledItemDelegate>
-
+namespace logging {
 class LoggingDelegate : public QStyledItemDelegate {
     Q_OBJECT
 
@@ -18,5 +18,5 @@ public:
     QSize sizeHint(const QStyleOptionViewItem &option, 
                    const QModelIndex &index) const override;
 };
-
+}
 #endif
