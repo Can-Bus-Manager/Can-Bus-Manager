@@ -8,6 +8,7 @@
 #include "core/interface/i_tab_component.hpp"
 #include "graph_list_view.hpp"
 #include "signal_tree_view.hpp"
+#include "monitoring/model/signal_tree_model.hpp"
 
 #endif  // CANBUSMANAGER_MONITORING_TAB_HPP
 
