@@ -47,6 +47,7 @@
 doc/*
 !doc/Doxyfile.in
 !doc/CMakeLists.txt
+!doc/res
 
 # Build
 build/

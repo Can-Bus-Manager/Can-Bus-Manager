@@ -50,10 +50,11 @@ if [ "$CLEAN_BUILD" = true ]; then
     fi
 
     if [ -d "$DOC_DIR" ]; then
-        echo "Cleaning $DOC_DIR (preserving CMakeLists.txt and Doxyfile.in)..."
+        echo "Cleaning $DOC_DIR (preserving res/, CMakeLists.txt and Doxyfile.in)..."
         find "$DOC_DIR" -mindepth 1 -maxdepth 1 \
                     ! -name 'CMakeLists.txt' \
                     ! -name 'Doxyfile.in' \
+                    ! -name 'res' \
                     -exec rm -rf {} +
     fi
 fi
