@@ -6,7 +6,7 @@
 //
 #pragma once
 
-#include <Qt> // Required for Qt::UserRole
+#include <Qt>  // Required for Qt::UserRole
 
 namespace Dbc {
 
@@ -56,34 +56,34 @@ enum DbcRoles {
     // --- Message Specific Attributes ---
 
     /** @brief The CAN ID of the message. @return int */
-    Role_Id         = Qt::UserRole + 10,
+    Role_Id = Qt::UserRole + 10,
     /** @brief The Data Length Code. @return int */
-    Role_Dlc        = Qt::UserRole + 11,
+    Role_Dlc = Qt::UserRole + 11,
     /** @brief The name of the sending Node/ECU. @return QString */
-    Role_Sender     = Qt::UserRole + 12,
+    Role_Sender = Qt::UserRole + 12,
     /** @brief The total number of signals in this message. @return int */
     Role_MsgChildCount = Qt::UserRole + 13,
 
     // --- Signal Specific Attributes ---
 
     /** @brief The start bit of the signal in the payload. @return int */
-    Role_StartBit   = Qt::UserRole + 20,
+    Role_StartBit = Qt::UserRole + 20,
     /** @brief The length of the signal in bits. @return int */
-    Role_BitLength  = Qt::UserRole + 21,
+    Role_BitLength = Qt::UserRole + 21,
     /** @brief The multiplication factor for physical value calculation. @return double */
-    Role_Factor     = Qt::UserRole + 22,
+    Role_Factor = Qt::UserRole + 22,
     /** @brief The offset for physical value calculation. @return double */
-    Role_Offset     = Qt::UserRole + 23,
+    Role_Offset = Qt::UserRole + 23,
     /** @brief The minimum valid physical value. @return double */
-    Role_Min        = Qt::UserRole + 24,
+    Role_Min = Qt::UserRole + 24,
     /** @brief The maximum valid physical value. @return double */
-    Role_Max        = Qt::UserRole + 25,
+    Role_Max = Qt::UserRole + 25,
     /** @brief The byte order (Endianness). @return QString ("Little Endian"/"Big Endian") */
-    Role_ByteOrder  = Qt::UserRole + 26,
+    Role_ByteOrder = Qt::UserRole + 26,
     /** @brief The value type definition. @return QString ("Signed"/"Unsigned") */
-    Role_ValueType  = Qt::UserRole + 27,
+    Role_ValueType = Qt::UserRole + 27,
     /** @brief The name of the receiving Node/ECU. @return QString */
-    Role_Receiver   = Qt::UserRole + 28
+    Role_Receiver = Qt::UserRole + 28
 };
 
-} // namespace Dbc
+}  // namespace Dbc

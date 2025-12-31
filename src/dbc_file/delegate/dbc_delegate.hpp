@@ -20,10 +20,11 @@ namespace Dbc {
  * RESPONSIBILITIES:
  * Intercepts the data before painting to apply text formatting based on Custom Roles.
  */
-class DbcDelegate : public QStyledItemDelegate {
+class DbcDelegate : public QStyledItemDelegate
+{
     Q_OBJECT
 
-public:
+   public:
     explicit DbcDelegate(QObject* parent = nullptr);
     ~DbcDelegate() override = default;
 
@@ -58,7 +59,8 @@ public:
      * @param locale The current system locale.
      * @return The string representation of the value.
      */
-    [[nodiscard]] auto displayText(const QVariant& value, const QLocale& locale) const -> QString override;
+    [[nodiscard]] auto displayText(const QVariant& value,
+                                   const QLocale& locale) const -> QString override;
 };
 
-} // namespace Dbc
+}  // namespace Dbc

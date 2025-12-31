@@ -3,11 +3,10 @@
 //
 #pragma once
 
-
+#include <QComboBox>
+#include <QLineEdit>
 #include <QTableView>
 #include <QTreeView>
-#include <QLineEdit>
-#include <QComboBox>
 
 namespace Dbc {
 
@@ -17,7 +16,8 @@ namespace Dbc {
 
 /**
  * @class SearchableFilterTable
- * @brief A reusable compound widget containing a Search Bar (top), Filter Combo (top), and Table (bottom).
+ * @brief A reusable compound widget containing a Search Bar (top), Filter Combo (top), and Table
+ * (bottom).
  *
  * @details
  * **Layout:**
@@ -26,10 +26,11 @@ namespace Dbc {
  *
  * Used for lists that require flat data representation (Messages, Signals).
  */
-class SearchableFilterTable : public QWidget {
+class SearchableFilterTable : public QWidget
+{
     Q_OBJECT
 
-public:
+   public:
     explicit SearchableFilterTable(QWidget* parent = nullptr);
     ~SearchableFilterTable() override = default;
 
@@ -51,7 +52,7 @@ public:
      */
     [[nodiscard]] auto filterComboBox() const -> QComboBox*;
 
-signals:
+   signals:
     /**
      * @brief Emitted when the text in the search bar changes.
      * @caller Internal QLineEdit signal.
@@ -66,7 +67,7 @@ signals:
      */
     void filterTypeChanged(int index);
 
-private:
+   private:
     /**
      * @brief Initializes layout and connections.
      * @caller Constructor.
@@ -78,14 +79,14 @@ private:
     QComboBox* m_filterCombo;
 };
 
-
 // ==============================================================================
 // 2. Searchable Filter Tree
 // ==============================================================================
 
 /**
  * @class SearchableFilterTree
- * @brief A reusable compound widget containing a Search Bar (top), Filter Combo (top), and Tree (bottom).
+ * @brief A reusable compound widget containing a Search Bar (top), Filter Combo (top), and Tree
+ * (bottom).
  *
  * @details
  * **Layout:**
@@ -94,10 +95,11 @@ private:
  *
  * Used for hierarchical data representation (ECUs).
  */
-class SearchableFilterTree : public QWidget {
+class SearchableFilterTree : public QWidget
+{
     Q_OBJECT
 
-public:
+   public:
     explicit SearchableFilterTree(QWidget* parent = nullptr);
     ~SearchableFilterTree() override = default;
 
@@ -117,7 +119,7 @@ public:
      */
     [[nodiscard]] auto filterComboBox() const -> QComboBox*;
 
-signals:
+   signals:
     /**
      * @brief Emitted when the text in the search bar changes.
      * @caller Internal QLineEdit signal.
@@ -130,7 +132,7 @@ signals:
      */
     void filterTypeChanged(int index);
 
-private:
+   private:
     /**
      * @brief Initializes layout and connections.
      * @caller Constructor.
@@ -142,4 +144,4 @@ private:
     QComboBox* m_filterCombo;
 };
 
-} // namespace Dbc
+}  // namespace Dbc

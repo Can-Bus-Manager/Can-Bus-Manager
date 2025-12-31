@@ -5,21 +5,20 @@
 
 #include <memory>
 
-
 // Core Interfaces
-#include "core/interface/i_tab_component.hpp"
 #include "core/interface/i_event_broker.hpp"
+#include "core/interface/i_tab_component.hpp"
 
 // MVD Classes
+#include "delegate/dbc_delegate.hpp"
 #include "model/dbc_model.hpp"
 #include "view/dbc_view.hpp"
-#include "delegate/dbc_delegate.hpp"
 
 // Forward declarations for Events
 namespace Core::Events {
-    struct DbcParsedEvent;
-    struct DbcParseErrorEvent;
-}
+struct DbcParsedEvent;
+struct DbcParseErrorEvent;
+}  // namespace Core::Events
 
 namespace Dbc {
 
@@ -38,10 +37,11 @@ namespace Dbc {
  * - System Event (`DbcParsedEvent`) -> Component -> View (Unlock Navigation)
  * - System Event (`DbcParsedEvent`) -> Model (Update Data)
  */
-class DbcComponent : public Core::ITabComponent {
+class DbcComponent : public Core::ITabComponent
+{
     Q_OBJECT
 
-public:
+   public:
     /**
      * @brief Constructs the component.
      *
@@ -80,7 +80,7 @@ public:
      */
     void onStop() override;
 
-private slots:
+   private slots:
     /**
      * @brief Handles the file load request from the View.
      *
@@ -94,7 +94,7 @@ private slots:
      */
     void onFileLoadRequested(const QString& filePath);
 
-private:
+   private:
     /**
      * @brief Callback: Triggered when a DBC file was successfully parsed.
      *
@@ -137,4 +137,4 @@ private:
     Core::Connection m_parseErrorConn;
 };
 
-} // namespace Dbc
+}  // namespace Dbc
