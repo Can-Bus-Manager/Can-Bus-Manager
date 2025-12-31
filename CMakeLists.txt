@@ -45,7 +45,8 @@ add_subdirectory(external/libsockcanpp)
 set(RAPIDCSV_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/rapidcsv/src")
 
 # 5. Core Library
-set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp")
+set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp"
+)
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
 list(FILTER SOURCE_FILES EXCLUDE REGEX "src/app_root/entry_point/main.cpp")
