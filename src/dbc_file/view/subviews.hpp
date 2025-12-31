@@ -17,7 +17,7 @@
 class QDragEnterEvent;
 class QDropEvent;
 
-namespace Dbc {
+namespace DbcFile {
 
 // ==============================================================================
 // 1. Load Page
@@ -459,4 +459,4 @@ class SignalsPage : public QWidget
     SearchableFilterTable* m_tableWidget;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile

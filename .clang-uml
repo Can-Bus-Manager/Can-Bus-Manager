@@ -1,13 +1,13 @@
 compilation_database_dir: build
 output_directory: doc/diagrams
+mermaid:
+  cmd: "mmdc -i \"doc/diagrams/{}.mmd\" -o \"doc/diagrams/{}.svg\""
 diagrams:
   core_class_diagram:
     type: class
     glob:
       - src/**/*.cpp
       - src/**/*.hpp
-    using_namespace:
-      - CanBusManager
     include:
       namespaces:
         - Core
@@ -16,11 +16,41 @@ diagrams:
     glob:
       - src/**/*.cpp
       - src/**/*.hpp
-    using_namespace:
-      - CanBusManager
     include:
       namespaces:
         - AppRoot
+  monitoring_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    include:
+      namespaces:
+        - Monitoring
+  dbc_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    include:
+      namespaces:
+        - ::DbcFile
+  can_handler_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    include:
+      namespaces:
+        - CanHandler
+  event_broker_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    include:
+      namespaces:
+        - EventBroker
   overall_class_diagram:
       type: class
       glob:
@@ -32,3 +62,7 @@ diagrams:
         namespaces:
           - AppRoot
           - Core
+          - Monitoring
+          - DbcFile
+          - CanHandler
+          - EventBroker

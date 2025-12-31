@@ -12,7 +12,7 @@
 #include "../model/dbc_roles.hpp"
 #include "core/enum/dbc_itemtype.hpp"
 
-namespace Dbc {
+namespace DbcFile {
 
 // ==============================================================================
 // 1. Flat List Proxy
@@ -213,4 +213,4 @@ class SingleMessageProxy : public QSortFilterProxyModel
     QModelIndex m_parentIndex;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile
