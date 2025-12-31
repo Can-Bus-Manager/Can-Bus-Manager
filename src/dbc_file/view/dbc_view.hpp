@@ -3,12 +3,12 @@
 //
 #pragma once
 
-#include <QWidget>
 #include <QStackedWidget>
+#include <QWidget>
 #include <memory>
 
-#include "subviews.hpp"
 #include "proxies.hpp"
+#include "subviews.hpp"
 
 namespace Dbc {
 
@@ -25,10 +25,11 @@ namespace Dbc {
  * 3. **Interaction Logic:** Connects Search Bars, Filter Combos, and Selection Signals
  *    from the Pages to the corresponding Proxies.
  */
-class DbcView : public QWidget {
+class DbcView : public QWidget
+{
     Q_OBJECT
 
-public:
+   public:
     explicit DbcView(QWidget* parent = nullptr);
     ~DbcView() override;
 
@@ -69,7 +70,7 @@ public:
      */
     void setNavigationEnabled(bool enabled);
 
-signals:
+   signals:
     /**
      * @brief Forwarded signal from LoadPage.
      *
@@ -80,7 +81,7 @@ signals:
      */
     void fileLoadRequested(const QString& filePath);
 
-private slots:
+   private slots:
     /**
      * @brief Handles sidebar navigation to switch the active page in the stack.
      * @caller Sidebar QListView (clicked signal).
@@ -142,7 +143,7 @@ private slots:
      */
     void onSignalFilterTypeChanged(int index);
 
-private:
+   private:
     /**
      * @brief Initializes layout, creates sidebar, stack, and page instances.
      * @caller Constructor.
@@ -208,4 +209,4 @@ private:
     std::unique_ptr<FlatListProxy> m_allSignalsProxy;
 };
 
-} // namespace Dbc
+}  // namespace Dbc

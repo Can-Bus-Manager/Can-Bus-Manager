@@ -3,11 +3,10 @@
 //
 #pragma once
 
+#include <QEvent>
+#include <QPainter>
 #include <QStyledItemDelegate>
 #include <QTreeView>
-#include <QPainter>
-#include <QEvent>
-
 
 namespace Dbc {
 
@@ -23,9 +22,10 @@ namespace Dbc {
  * Used in the QListViews on the Overview Page.
  * Draws a rounded rectangle containing an icon, the name, and a statistic badge.
  */
-class OverviewListsDelegate : public QStyledItemDelegate {
+class OverviewListsDelegate : public QStyledItemDelegate
+{
     Q_OBJECT
-public:
+   public:
     explicit OverviewListsDelegate(QObject* parent = nullptr);
     ~OverviewListsDelegate() override = default;
 
@@ -45,7 +45,8 @@ public:
      * @param option Contains geometry (rect) and state (selected/hovered).
      * @param index The model index providing the data.
      */
-    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override;
 
     /**
      * @brief Determines the size of the card.
@@ -55,7 +56,6 @@ public:
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
-
 
 // ==============================================================================
 // 2. ECU Tree Delegate (ECU Page)
@@ -71,10 +71,11 @@ public:
  * - **Visualization:** Draws custom "Cards" next to the standard arrow/indentation.
  * - **Structure:** Differentiates visuals based on `Role_ItemType` (ECU, Message, Signal).
  */
-class EcuTreeDelegate : public QStyledItemDelegate {
+class EcuTreeDelegate : public QStyledItemDelegate
+{
     Q_OBJECT
 
-public:
+   public:
     /**
      * @brief Constructs the delegate.
      * @param view Reference to the TreeView (useful for checking indentation logic if needed).
@@ -92,7 +93,8 @@ public:
      * - **Message:** Draws a header-like row with an ID Badge.
      * - **Signal:** Draws a detail row with value range [min, max] and Unit Badge.
      */
-    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override;
 
     /**
      * @brief Calculates height based on Item Type.
@@ -102,18 +104,21 @@ public:
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-private:
+   private:
     // --- Painting Helpers ---
-    void paintEcuCard(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    void paintMessageRow(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
-    void paintSignalRow(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+    void paintEcuCard(QPainter* painter, const QStyleOptionViewItem& option,
+                      const QModelIndex& index) const;
+    void paintMessageRow(QPainter* painter, const QStyleOptionViewItem& option,
+                         const QModelIndex& index) const;
+    void paintSignalRow(QPainter* painter, const QStyleOptionViewItem& option,
+                        const QModelIndex& index) const;
 
     /** @brief Helper to draw a rounded gray badge with text. */
-    void drawBadge(QPainter* painter, const QRect& rect, const QString& text, const QColor& bg, const QColor& fg) const;
+    void drawBadge(QPainter* painter, const QRect& rect, const QString& text, const QColor& bg,
+                   const QColor& fg) const;
 
     QTreeView* m_treeView;
 };
-
 
 // ==============================================================================
 // 3. Message Signal Card Delegate (Message Detail Pane)
@@ -127,9 +132,10 @@ private:
  * Used in the Detail View (QListView) when a message is selected.
  * Displays all technical signal attributes (StartBit, Length, Factor, etc.) in a grid layout.
  */
-class MessagesSignalCardDelegate : public QStyledItemDelegate {
+class MessagesSignalCardDelegate : public QStyledItemDelegate
+{
     Q_OBJECT
-public:
+   public:
     explicit MessagesSignalCardDelegate(QObject* parent = nullptr);
     ~MessagesSignalCardDelegate() override = default;
 
@@ -145,7 +151,8 @@ public:
      * 2. Header: Name + Unit.
      * 3. Grid: Draws labels ("Start Bit") and values ("0") in a structured layout.
      */
-    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override;
 
     /**
      * @brief Returns a large fixed height.
@@ -154,11 +161,11 @@ public:
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-private:
-    void drawGridItem(QPainter* painter, const QRect& rect, const QString& label, const QString& value) const;
+   private:
+    void drawGridItem(QPainter* painter, const QRect& rect, const QString& label,
+                      const QString& value) const;
     void drawBadge(QPainter* painter, const QRect& rect, const QString& text) const;
 };
-
 
 // ==============================================================================
 // 4. Signal Table Delegate (Global Signals Page)
@@ -173,10 +180,11 @@ private:
  * Provides custom rendering for specific columns (like Message ID badges) while
  * maintaining standard text rendering for others.
  */
-class SignalTableDelegate : public QStyledItemDelegate {
+class SignalTableDelegate : public QStyledItemDelegate
+{
     Q_OBJECT
 
-public:
+   public:
     explicit SignalTableDelegate(QObject* parent = nullptr);
     ~SignalTableDelegate() override = default;
 
@@ -188,9 +196,11 @@ public:
      * @details
      * 1. Checks if the column corresponds to the "Message" column.
      * 2. If yes: Draws a gray badge with the Message ID (`Role_Id`) and the Message Name.
-     * 3. If no: Falls back to standard text rendering (optionally formatting hex/units via `initStyleOption` logic if implemented).
+     * 3. If no: Falls back to standard text rendering (optionally formatting hex/units via
+     * `initStyleOption` logic if implemented).
      */
-    void paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override;
 
     /**
      * @brief Ensures rows are tall enough for badges.
@@ -200,4 +210,4 @@ public:
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
 
-} // namespace Dbc
+}  // namespace Dbc

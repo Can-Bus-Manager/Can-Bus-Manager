@@ -3,14 +3,14 @@
 //
 #pragma once
 
-#include <QSortFilterProxyModel>
 #include <QAbstractProxyModel>
 #include <QList>
 #include <QPersistentModelIndex>
+#include <QSortFilterProxyModel>
 
 // Required for DbcItemType enum & Roles
-#include "core/enum/dbc_itemtype.hpp"
 #include "../model/dbc_roles.hpp"
+#include "core/enum/dbc_itemtype.hpp"
 
 namespace Dbc {
 
@@ -30,10 +30,11 @@ namespace Dbc {
  * It does NOT use QSortFilterProxyModel because it structurally transforms the data
  * (Tree -> List). It performs a manual recursive scan to find all items of `m_targetType`.
  */
-class FlatListProxy : public QAbstractProxyModel {
+class FlatListProxy : public QAbstractProxyModel
+{
     Q_OBJECT
 
-public:
+   public:
     /**
      * @brief Constructs the proxy for a specific target type.
      * @param targetType The DbcItemType to collect (e.g. Message).
@@ -70,7 +71,8 @@ public:
      */
     [[nodiscard]] auto mapToSource(const QModelIndex& proxyIndex) const -> QModelIndex override;
 
-    [[nodiscard]] auto index(int row, int column, const QModelIndex& parent = QModelIndex()) const -> QModelIndex override;
+    [[nodiscard]] auto index(int row, int column, const QModelIndex& parent = QModelIndex()) const
+        -> QModelIndex override;
     [[nodiscard]] auto parent(const QModelIndex& child) const -> QModelIndex override;
     [[nodiscard]] auto rowCount(const QModelIndex& parent = QModelIndex()) const -> int override;
     [[nodiscard]] auto columnCount(const QModelIndex& parent = QModelIndex()) const -> int override;
@@ -81,7 +83,7 @@ public:
      */
     void setSourceModel(QAbstractItemModel* sourceModel) override;
 
-public slots:
+   public slots:
     /**
      * @brief Scans the source tree and rebuilds the internal index list.
      * @caller
@@ -90,7 +92,7 @@ public slots:
      */
     void rebuildMapping();
 
-private:
+   private:
     /**
      * @brief Recursive scanner helper.
      * @caller Internal (rebuildMapping).
@@ -106,7 +108,6 @@ private:
     /** @brief The flattened list of persistent pointers to the source items. */
     QList<QPersistentModelIndex> m_mapping;
 };
-
 
 // ==============================================================================
 // 2. Tree Filter Proxy
@@ -126,10 +127,11 @@ private:
  * - Filters ECUs based on category (Filter Box).
  * - Maintains parent-child relationship (Recursive Filtering).
  */
-class TreeFilterProxy : public QSortFilterProxyModel {
+class TreeFilterProxy : public QSortFilterProxyModel
+{
     Q_OBJECT
 
-public:
+   public:
     explicit TreeFilterProxy(QObject* parent = nullptr);
     ~TreeFilterProxy() override = default;
 
@@ -145,7 +147,7 @@ public:
      */
     void setFilterCategory(int index);
 
-protected:
+   protected:
     /**
      * @brief Decides if a row is included in the view.
      * @caller Qt Internal (QSortFilterProxyModel) whenever the filter changes.
@@ -155,13 +157,13 @@ protected:
      * 2. Checks search text against DisplayRole.
      * 3. Checks category index against model data.
      */
-    [[nodiscard]] auto filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const -> bool override;
+    [[nodiscard]] auto filterAcceptsRow(int sourceRow,
+                                        const QModelIndex& sourceParent) const -> bool override;
 
-private:
+   private:
     QString m_filterText;
     int m_filterCategory = 0;
 };
-
 
 // ==============================================================================
 // 3. Single Message Proxy
@@ -180,10 +182,11 @@ private:
  * It filters out everything except the direct children (Signals) of the
  * configured parent index.
  */
-class SingleMessageProxy : public QSortFilterProxyModel {
+class SingleMessageProxy : public QSortFilterProxyModel
+{
     Q_OBJECT
 
-public:
+   public:
     explicit SingleMessageProxy(QObject* parent = nullptr);
     ~SingleMessageProxy() override = default;
 
@@ -196,17 +199,18 @@ public:
      */
     void setFilterParentIndex(const QModelIndex& parentIndex);
 
-protected:
+   protected:
     /**
      * @brief Decides if a row is included.
      * @caller Qt Internal (QSortFilterProxyModel).
      *
      * Logic: Returns true ONLY if `sourceParent == m_parentIndex`.
      */
-    [[nodiscard]] auto filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const -> bool override;
+    [[nodiscard]] auto filterAcceptsRow(int sourceRow,
+                                        const QModelIndex& sourceParent) const -> bool override;
 
-private:
+   private:
     QModelIndex m_parentIndex;
 };
 
-} // namespace Dbc
+}  // namespace Dbc

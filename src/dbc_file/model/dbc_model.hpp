@@ -7,8 +7,8 @@
 #include <memory>
 
 // Core Interfaces & Events
-#include "core/interface/i_event_broker.hpp"
 #include "core/event/dbc_event.hpp"
+#include "core/interface/i_event_broker.hpp"
 
 // Model Internal Components
 #include "dbc_item.hpp"
@@ -31,7 +31,7 @@ class DbcModel : public QAbstractItemModel
 {
     Q_OBJECT
 
-public:
+   public:
     /**
      * @brief Constructs the model and subscribes to system events.
      * @caller DbcComponent (in constructor).
@@ -47,7 +47,8 @@ public:
      * @brief Creates an index for the given row/column and parent.
      * @caller Qt Views (QTreeView, QListView) and Proxies during navigation.
      */
-    [[nodiscard]] auto index(int row, int column, const QModelIndex& parent) const -> QModelIndex override;
+    [[nodiscard]] auto index(int row, int column,
+                             const QModelIndex& parent) const -> QModelIndex override;
 
     /**
      * @brief Returns the parent index of the given child.
@@ -82,7 +83,8 @@ public:
      * @brief Returns the header labels for the columns.
      * @caller Qt HeaderViews (horizontal/vertical headers).
      */
-    [[nodiscard]] auto headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const -> QVariant override;
+    [[nodiscard]] auto headerData(int section, Qt::Orientation orientation,
+                                  int role = Qt::DisplayRole) const -> QVariant override;
 
     // --- Helper Methods ---
 
@@ -93,7 +95,7 @@ public:
      */
     [[nodiscard]] auto getItemType(const QModelIndex& index) const -> Core::DbcItemType;
 
-private:
+   private:
     /**
      * @brief Callback: Triggered when the EventBroker publishes a parsing success event.
      * @caller Core::IEventBroker (via lambda callback).
@@ -120,4 +122,4 @@ private:
     std::unique_ptr<DbcItem> m_rootItem;
 };
 
-} // namespace Dbc
+}  // namespace Dbc

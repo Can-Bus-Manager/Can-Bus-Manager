@@ -3,12 +3,12 @@
 //
 #pragma once
 
-#include <QWidget>
+#include <QDataWidgetMapper>
+#include <QFrame>
 #include <QLabel>
 #include <QListView>
 #include <QSplitter>
-#include <QDataWidgetMapper>
-#include <QFrame>
+#include <QWidget>
 
 // Include generic widgets (SearchableFilterTable, SearchableFilterTree)
 #include "searchable_filter_widgets.hpp"
@@ -34,10 +34,11 @@ namespace Dbc {
  * **LOGIC:**
  * Allows uploading a DBC file via Drag & Drop or by clicking to open a file dialog.
  */
-class LoadPage : public QWidget {
+class LoadPage : public QWidget
+{
     Q_OBJECT
 
-public:
+   public:
     /**
      * @brief Constructs the LoadPage widget.
      * @caller DbcView::createSubViews().
@@ -46,7 +47,7 @@ public:
     explicit LoadPage(QWidget* parent = nullptr);
     ~LoadPage() override = default;
 
-signals:
+   signals:
     /**
      * @brief Emitted when a file is successfully selected by the user.
      *
@@ -57,7 +58,7 @@ signals:
      */
     void fileSelected(const QString& filePath);
 
-protected:
+   protected:
     /**
      * @brief Handles drag enter events to validate dropped data.
      * @caller Qt Event Loop (when dragging over widget).
@@ -78,14 +79,14 @@ protected:
      */
     auto eventFilter(QObject* watched, QEvent* event) -> bool override;
 
-private slots:
+   private slots:
     /**
      * @brief Opens a QFileDialog to let the user browse for a DBC file.
      * @caller Internal (on click event).
      */
     void onBrowseButtonClicked();
 
-private:
+   private:
     /**
      * @brief Initializes the visual components and layout.
      * @caller Constructor.
@@ -96,7 +97,6 @@ private:
     /** @brief The clickable area for file upload. */
     QFrame* m_uploadBoxFrame;
 };
-
 
 // ==============================================================================
 // 2. Overview Page
@@ -115,10 +115,11 @@ private:
  * **LOGIC:**
  * Uses QDataWidgetMapper for Sections 1 & 2, and QListViews for Section 3.
  */
-class OverviewPage : public QWidget {
+class OverviewPage : public QWidget
+{
     Q_OBJECT
 
-public:
+   public:
     explicit OverviewPage(QWidget* parent = nullptr);
     ~OverviewPage() override = default;
 
@@ -127,23 +128,32 @@ public:
      * @caller DbcView::setSourceModel() to inject data.
      * @return Pointer to the internal mapper.
      */
-    [[nodiscard]] auto getMapper() const -> QDataWidgetMapper* { return m_mapper; }
+    [[nodiscard]] auto getMapper() const -> QDataWidgetMapper*
+    {
+        return m_mapper;
+    }
 
     /**
      * @brief Returns the list view for the ECUs section.
      * @caller DbcView::setSourceModel() to set the ECU Proxy.
      * @return Pointer to the ECU list view.
      */
-    [[nodiscard]] auto getEcuList() const -> QListView* { return m_ecuList; }
+    [[nodiscard]] auto getEcuList() const -> QListView*
+    {
+        return m_ecuList;
+    }
 
     /**
      * @brief Returns the list view for the Messages section.
      * @caller DbcView::setSourceModel() to set the Message Proxy.
      * @return Pointer to the Message list view.
      */
-    [[nodiscard]] auto getMessageList() const -> QListView* { return m_messageList; }
+    [[nodiscard]] auto getMessageList() const -> QListView*
+    {
+        return m_messageList;
+    }
 
-private:
+   private:
     /**
      * @brief Assembles the dashboard layout.
      * @caller Constructor.
@@ -155,7 +165,8 @@ private:
      * @brief Helper to create one of the 4 Statistics cards in the middle section.
      * @caller Internal setupUi().
      */
-    auto createStatCard(const QString& title, QLabel*& valueLabelPtr, const QString& iconName) -> QWidget*;
+    auto createStatCard(const QString& title, QLabel*& valueLabelPtr,
+                        const QString& iconName) -> QWidget*;
 
     QDataWidgetMapper* m_mapper;
 
@@ -171,7 +182,6 @@ private:
     QListView* m_ecuList;
     QListView* m_messageList;
 };
-
 
 // ==============================================================================
 // 3. ECUs Page
@@ -190,9 +200,10 @@ private:
  * **LOGIC:**
  * Acts as a wrapper around the tree view and forwards user input signals.
  */
-class EcusPage : public QWidget {
+class EcusPage : public QWidget
+{
     Q_OBJECT
-public:
+   public:
     explicit EcusPage(QWidget* parent = nullptr);
     ~EcusPage() override = default;
 
@@ -210,7 +221,7 @@ public:
      */
     [[nodiscard]] auto getFilterCombo() const -> QComboBox*;
 
-signals:
+   signals:
     /**
      * @brief Emitted when the user types text into the search bar.
      * @caller Internal SearchableFilterTree signal forwarding.
@@ -225,7 +236,7 @@ signals:
      */
     void filterTypeChanged(int index);
 
-private:
+   private:
     /**
      * @brief Initializes the page layout.
      * @caller Constructor.
@@ -235,7 +246,6 @@ private:
 
     SearchableFilterTree* m_treeWidget;
 };
-
 
 // ==============================================================================
 // 4. Message Detail View (Bottom Pane)
@@ -253,9 +263,10 @@ private:
  * **LOGIC:**
  * Updates content based on selection in the Master table.
  */
-class MessageDetailView : public QWidget {
+class MessageDetailView : public QWidget
+{
     Q_OBJECT
-public:
+   public:
     explicit MessageDetailView(QWidget* parent = nullptr);
 
     /**
@@ -272,7 +283,7 @@ public:
      */
     void setMessageTitle(const QString& title);
 
-private:
+   private:
     /**
      * @brief Initializes the detail view layout.
      * @caller Constructor.
@@ -283,7 +294,6 @@ private:
     QLabel* m_lblTitle;
     QListView* m_signalList;
 };
-
 
 // ==============================================================================
 // 5. Messages Page (Master-Detail)
@@ -302,10 +312,11 @@ private:
  * - Emits `messageSelectionChanged` when the user selects a row.
  * - Receives updates from DbcView via `setDetailTitle` to update the bottom pane.
  */
-class MessagesPage : public QWidget {
+class MessagesPage : public QWidget
+{
     Q_OBJECT
 
-public:
+   public:
     explicit MessagesPage(QWidget* parent = nullptr);
     ~MessagesPage() override = default;
 
@@ -347,7 +358,7 @@ public:
      */
     void setDetailTitle(const QString& title);
 
-signals:
+   signals:
     /**
      * @brief Emitted when the user selects a message in the master table.
      * @caller Internal slot `onSelectionChanged`.
@@ -367,26 +378,26 @@ signals:
      */
     void masterFilterTypeChanged(int index);
 
-private slots:
+   private slots:
     /**
      * @brief Internal slot connected to the TableView's selection model.
      * @caller Qt ItemSelectionModel.
      */
     void onSelectionChanged(const QModelIndex& current, const QModelIndex& previous);
 
-private:
+   private:
     /**
      * @brief Assembles the master-detail layout.
      * @caller Constructor.
-     * @details Creates the Splitter, SearchableFilterTable (Master), and MessageDetailView (Detail).
+     * @details Creates the Splitter, SearchableFilterTable (Master), and MessageDetailView
+     * (Detail).
      */
     void setupUi();
 
     QSplitter* m_splitter;
-    SearchableFilterTable* m_messagesTable; // Master (Top)
-    MessageDetailView* m_detailView;        // Detail (Bottom)
+    SearchableFilterTable* m_messagesTable;  // Master (Top)
+    MessageDetailView* m_detailView;         // Detail (Bottom)
 };
-
 
 // ==============================================================================
 // 6. Signals Page
@@ -404,10 +415,11 @@ private:
  * **LOGIC:**
  * Wraps a SearchableFilterTable and forwards user interaction signals.
  */
-class SignalsPage : public QWidget {
+class SignalsPage : public QWidget
+{
     Q_OBJECT
 
-public:
+   public:
     explicit SignalsPage(QWidget* parent = nullptr);
     ~SignalsPage() override = default;
 
@@ -423,7 +435,7 @@ public:
      */
     [[nodiscard]] auto getFilterCombo() const -> QComboBox*;
 
-signals:
+   signals:
     /**
      * @brief Emitted when the user types in the search bar.
      * @caller Internal SearchableFilterTable signal forwarding.
@@ -436,7 +448,7 @@ signals:
      */
     void filterTypeChanged(int index);
 
-private:
+   private:
     /**
      * @brief Initializes the page layout.
      * @caller Constructor.
@@ -447,4 +459,4 @@ private:
     SearchableFilterTable* m_tableWidget;
 };
 
-} // namespace Dbc
+}  // namespace Dbc

@@ -26,14 +26,15 @@ namespace Dbc {
  */
 class DbcItem
 {
-public:
+   public:
     /**
      * @brief Constructs a new item.
      * @param data The column data for this item (Name, Value, Unit, etc.).
      * @param type The semantic type (ECU, Message, Signal).
      * @param parent The parent item (nullptr for root).
      */
-    explicit DbcItem(const QList<QVariant>& data, Core::DbcItemType type, DbcItem* parent = nullptr);
+    explicit DbcItem(const QList<QVariant>& data, Core::DbcItemType type,
+                     DbcItem* parent = nullptr);
 
     /**
      * @brief Destructor. Automatically destroys all children (via unique_ptr).
@@ -89,9 +90,9 @@ public:
      */
     [[nodiscard]] auto type() const -> Core::DbcItemType;
 
-private:
+   private:
     Core::DbcItemType m_type;
-    DbcItem* m_parent; // Raw pointer (non-owning) to prevent circular references
+    DbcItem* m_parent;  // Raw pointer (non-owning) to prevent circular references
 
     // Ownership of children is managed here
     std::vector<std::unique_ptr<DbcItem>> m_children;
@@ -100,4 +101,4 @@ private:
     QList<QVariant> m_data;
 };
 
-} // namespace Dbc
+}  // namespace Dbc
