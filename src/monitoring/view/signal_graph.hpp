@@ -65,13 +65,6 @@ class SignalGraph : QWidget
     */
     void deleteGraph(Core::DbcCanSignal& signal);
 
-    /**
-    * @brief Triggers a visual update of the graph.
-    *
-    * Forces a redraw to reflect newly appended data or layout changes.
-    */
-    void update();
-
     private:
     /**
     * @brief Model holding the time-series data and graph state.
