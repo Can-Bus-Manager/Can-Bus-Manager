@@ -83,13 +83,13 @@ class SignalTreeModel : public QAbstractItemModel
 
    public slots:
     /**
-    * @brief Updates the model when a CAN frame is received.
-    *
-    * Adds new frames or updates existing ones and refreshes the signal
-    * values associated with the frame.
-    *
-    * @param message Reference to the received CAN message.
-    */
+     * @brief Updates the model when a CAN frame is received.
+     *
+     * Adds new frames or updates existing ones and refreshes the signal
+     * values associated with the frame.
+     *
+     * @param message Reference to the received CAN message.
+     */
     void onFrameReceived(Core::DbcCanMessage& message);
 
    signals:

@@ -4,8 +4,8 @@
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 
-#include "core/interface/i_tab_component.hpp"
 #include "core/interface/i_event_broker.hpp"
+#include "core/interface/i_tab_component.hpp"
 #include "graph_list_view.hpp"
 #include "signal_tree_view.hpp"
 

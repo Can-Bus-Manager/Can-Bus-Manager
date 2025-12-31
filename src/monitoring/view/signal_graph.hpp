@@ -46,32 +46,32 @@ class SignalGraph : QWidget
     ~SignalGraph() override;
 
     /**
-    * @brief Appends a new data sample to the graph.
-    *
-    * This method is typically called when a new CAN message for the
-    * corresponding signal is received.
-    *
-    * @param signal Rvalue reference containing the latest signal value
-    *               to be appended.
-    */
+     * @brief Appends a new data sample to the graph.
+     *
+     * This method is typically called when a new CAN message for the
+     * corresponding signal is received.
+     *
+     * @param signal Rvalue reference containing the latest signal value
+     *               to be appended.
+     */
     void appendDataToGraph(Core::DbcCanSignal&& signal);
 
     /**
-    * @brief Removes the graph corresponding to the given signal.
-    *
-    * Used when a signal is deselected or removed from monitoring.
-    *
-    * @param signal Reference to the signal identifying the graph to remove.
-    */
+     * @brief Removes the graph corresponding to the given signal.
+     *
+     * Used when a signal is deselected or removed from monitoring.
+     *
+     * @param signal Reference to the signal identifying the graph to remove.
+     */
     void deleteGraph(Core::DbcCanSignal& signal);
 
-    private:
+   private:
     /**
-    * @brief Model holding the time-series data and graph state.
-    *
-    * Responsible for managing signal samples, scaling, and any preprocessing
-    * required for visualization.
-    */
+     * @brief Model holding the time-series data and graph state.
+     *
+     * Responsible for managing signal samples, scaling, and any preprocessing
+     * required for visualization.
+     */
     SignalGraphModel model;
 };
 }  // namespace Monitoring

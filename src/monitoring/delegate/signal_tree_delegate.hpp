@@ -26,7 +26,7 @@ namespace Monitoring {
 class SignalTreeDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
-    public:
+   public:
     /**
      * @brief Constructs the signal tree delegate.
      *
