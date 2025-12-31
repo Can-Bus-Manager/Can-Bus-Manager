@@ -50,7 +50,8 @@ class SignalTreeDelegate : public QStyledItemDelegate
      * @param locale The locale used for formatting.
      * @return Localized, formatted display string.
      */
-    [[nodiscard]] auto displayText(const QVariant& value, const QLocale& locale) const
+    [[nodiscard]] auto displayText(const QVariant& value,
+        const QLocale& locale) const
         -> QString override;
 };
 }  // namespace Monitoring
