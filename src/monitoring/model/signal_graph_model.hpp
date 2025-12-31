@@ -27,7 +27,6 @@ namespace Monitoring {
 class SignalGraphModel : public QObject
 {
     Q_OBJECT
-
    public:
     /**
      * @brief Constructs the signal graph model.
