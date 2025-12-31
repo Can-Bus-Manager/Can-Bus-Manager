@@ -14,20 +14,21 @@
 
 /**
  * @namespace Monitoring
- * @brief Contains UI components related to CAN signal monitoring and visualization.
+ * @brief Contains UI components related to CAN signal monitoring and
+ * visualization.
  */
 namespace Monitoring {
 
 /**
  * @class MonitoringTab
- * @brief UI tab component responsible for monitoring CAN signals and managing
- *        their visualization.
+ * @brief UI tab component responsible for monitoring CAN signals and
+ * managing their visualization.
  *
- * MonitoringTab integrates a hierarchical signal tree with a graph list view
- * to allow users to inspect available CAN signals and select signals for
- * graphical visualization. The component subscribes to system events via the
- * event broker and acts as a composition root for its internal models, views,
- * and delegates.
+ * MonitoringTab integrates a hierarchical signal tree with a graph list
+ * view to allow users to inspect available CAN signals and select signals
+ * for graphical visualization. The component subscribes to system events
+ * via the event broker and acts as a composition root for its internal
+ * models, views, and delegates.
  *
  * Architectural roles:
  * - UI tab entry (via ITabComponent)
@@ -37,7 +38,7 @@ namespace Monitoring {
 class MonitoringTab : public Core::ITabComponent, public QWidget
 {
     Q_OBJECT
-   public:
+    public:
     /**
      * @brief Constructs the Monitoring tab.
      *
@@ -45,7 +46,8 @@ class MonitoringTab : public Core::ITabComponent, public QWidget
      *               to and emitting application-wide events.
      * @param parent Optional Qt parent widget.
      */
-    explicit MonitoringTab(Core::IEventBroker* broker, QWidget* parent = nullptr);
+    explicit MonitoringTab(Core::IEventBroker* broker,
+        QWidget* parent = nullptr);
 
     /**
      * @brief Initializes internal models, views, delegates, and signal-slot
@@ -56,9 +58,10 @@ class MonitoringTab : public Core::ITabComponent, public QWidget
      */
     void bootstrap();
 
-   private:
+    private:
     /**
-     * @brief Event broker used for decoupled communication with other components.
+     * @brief Event broker used for decoupled communication with other
+     * components.
      *
      * Ownership is transferred to this component to ensure a well-defined
      * lifecycle and prevent dangling subscriptions.

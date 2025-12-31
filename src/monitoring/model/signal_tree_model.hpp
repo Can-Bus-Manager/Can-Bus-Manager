@@ -28,7 +28,7 @@ namespace Monitoring {
 class SignalTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
-   public:
+    public:
     /**
      * @brief Constructs the signal tree model.
      *
@@ -81,7 +81,7 @@ class SignalTreeModel : public QAbstractItemModel
      */
     auto setData(const QModelIndex& index, const QVariant& value, int role) -> bool override;
 
-   public slots:
+    public slots:
     /**
      * @brief Updates the model when a CAN frame is received.
      *
@@ -91,8 +91,7 @@ class SignalTreeModel : public QAbstractItemModel
      * @param message Reference to the received CAN message.
      */
     void onFrameReceived(Core::DbcCanMessage& message);
-
-   signals:
+    signals:
     /**
      * @brief Emitted when a signal is checked by the user.
      *
@@ -107,7 +106,7 @@ class SignalTreeModel : public QAbstractItemModel
      */
     void signalUnchecked(Core::DbcCanSignal& signal);
 
-   private:
+    private:
     /**
      * @struct SignalNode
      * @brief Internal representation of a single CAN signal within a frame.

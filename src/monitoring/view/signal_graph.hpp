@@ -7,7 +7,8 @@
 
 /**
  * @namespace Monitoring
- * @brief Contains components related to CAN signal visualization and monitoring.
+ * @brief Contains components related to CAN signal visualization
+ * and monitoring.
  */
 namespace Monitoring {
 
@@ -29,7 +30,7 @@ namespace Monitoring {
 class SignalGraph : QWidget
 {
     Q_OBJECT
-   public:
+    public:
     /**
      * @brief Constructs a graph widget for a specific CAN signal.
      *
@@ -38,10 +39,12 @@ class SignalGraph : QWidget
      *               transferred to the internal model.
      * @param parent Optional Qt parent widget.
      */
-    explicit SignalGraph(const Core::DbcCanSignal&& signal, QWidget* parent = nullptr);
+    explicit SignalGraph(const Core::DbcCanSignal&& signal,
+        QWidget* parent = nullptr);
 
     /**
-     * @brief Destroys the SignalGraph widget and releases associated resources.
+     * @brief Destroys the SignalGraph widget and releases associated
+     * resources.
      */
     ~SignalGraph() override;
 
@@ -65,12 +68,12 @@ class SignalGraph : QWidget
      */
     void deleteGraph(Core::DbcCanSignal& signal);
 
-   private:
+    private:
     /**
      * @brief Model holding the time-series data and graph state.
      *
-     * Responsible for managing signal samples, scaling, and any preprocessing
-     * required for visualization.
+     * Responsible for managing signal samples, scaling, and any
+     * preprocessing required for visualization.
      */
     SignalGraphModel model;
 };
