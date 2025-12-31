@@ -6,7 +6,7 @@
 #include "IEventBroker.h"
 
 
-//move to core?
+namespace sending {
 struct MessageConfig {
     uint32_t canId;           
     std::vector<uint8_t> data; 
@@ -17,5 +17,5 @@ struct MessageConfig {
 };
 
 std::vector<MessageConfig> m_messages;
-
+}
 #endif

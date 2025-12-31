@@ -5,6 +5,8 @@
 #include <vector>
 #include "IEventBroker.h"
 
+namespace logging {
+
 struct LogEntry {
     QString timestamp;
     uint32_t canId;
@@ -30,5 +32,5 @@ private:
     IEventBroker* m_broker;
     std::vector<LogEntry> m_logs; //history of messages
 };
-
+}
 #endif

@@ -2,9 +2,7 @@
 #include "SendingModel.h"
 #include "SendingDelegate.h"
 
-namespace Ui {
-class SendingView;
-}
+namespace sending {
 
 class SendingView : public QWidget {
     Q_OBJECT
@@ -23,5 +21,5 @@ private:
     SendingModel *m_model;        //data source
     SendingDelegate *m_delegate;  //custom editor
 };
-
+}
 #endif

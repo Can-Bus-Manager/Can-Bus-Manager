@@ -2,6 +2,8 @@
 #include <QPainter>
 #include <QFontDatabase>
 
+namespace logging {
+
 LoggingDelegate::LoggingDelegate(QObject *parent)
     : QStyledItemDelegate(parent) {
 }
@@ -37,4 +39,5 @@ QSize LoggingDelegate::sizeHint(const QStyleOptionViewItem &option,
      * It can suggest different heights or widths based on the column index 
      * (e.g., ensuring the Timestamp column is wide enough for millisecond precision).
      */
+}
 }
