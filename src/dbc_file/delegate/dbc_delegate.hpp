@@ -8,7 +8,7 @@
 // Include Roles to access semantic data (Hex, Unit)
 #include "../model/dbc_roles.hpp"
 
-namespace Dbc {
+namespace DbcFile {
 
 /**
  * @class DbcDelegate
@@ -63,4 +63,4 @@ class DbcDelegate : public QStyledItemDelegate
                                    const QLocale& locale) const -> QString override;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile

@@ -10,7 +10,7 @@
 #include "proxies.hpp"
 #include "subviews.hpp"
 
-namespace Dbc {
+namespace DbcFile {
 
 /**
  * @class DbcView
@@ -209,4 +209,4 @@ class DbcView : public QWidget
     std::unique_ptr<FlatListProxy> m_allSignalsProxy;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile
