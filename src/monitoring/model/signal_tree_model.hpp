@@ -28,7 +28,7 @@ namespace Monitoring {
 class SignalTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
-    public:
+public:
     /**
      * @brief Constructs the signal tree model.
      *
@@ -88,7 +88,7 @@ class SignalTreeModel : public QAbstractItemModel
     auto setData(const QModelIndex& index,
         const QVariant& value, int role) -> bool override;
 
-    public slots:
+public slots:
     /**
      * @brief Updates the model when a CAN frame is received.
      *

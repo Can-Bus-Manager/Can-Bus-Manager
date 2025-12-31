@@ -28,7 +28,7 @@ class SignalGraphModel : public QObject
 {
     Q_OBJECT
 
-    public:
+public:
     /**
      * @brief Constructs the signal graph model.
      *
@@ -36,7 +36,7 @@ class SignalGraphModel : public QObject
      */
     explicit SignalGraphModel(QObject* parent = nullptr);
 
-    public slots:
+public slots:
     /**
      * @brief Adds a new signal sample to the model.
      *

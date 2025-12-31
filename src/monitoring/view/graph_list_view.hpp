@@ -33,7 +33,7 @@ namespace Monitoring {
 class GraphListView : public QWidget
 {
     Q_OBJECT
-    public:
+public:
     /**
      * @brief Constructs the graph list view widget.
      *
@@ -60,7 +60,7 @@ class GraphListView : public QWidget
      */
     void deleteGraph(Core::DbcCanSignal& signal);
 
-    private:
+private:
     /**
      * @brief Layout arranging SignalGraph widgets vertically.
      */

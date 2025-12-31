@@ -38,7 +38,7 @@ namespace Monitoring {
 class MonitoringTab : public Core::ITabComponent, public QWidget
 {
     Q_OBJECT
-    public:
+public:
     /**
      * @brief Constructs the Monitoring tab.
      *
@@ -58,7 +58,7 @@ class MonitoringTab : public Core::ITabComponent, public QWidget
      */
     void bootstrap();
 
-    private:
+private:
     /**
      * @brief Event broker used for decoupled communication with other
      * components.
