@@ -1,4 +1,4 @@
-#include "LoggingModel.h"
+#include "LoggingModel.hpp"
 #include <QDateTime>
 
 LoggingModel::LoggingModel(IEventBroker* broker, QObject* parent)

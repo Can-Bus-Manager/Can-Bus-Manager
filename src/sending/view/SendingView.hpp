@@ -1,6 +1,6 @@
 #include <QWidget>
-#include "SendingModel.h"
-#include "SendingDelegate.h"
+#include "SendingModel.hpp"
+#include "SendingDelegate.hpp"
 
 namespace sending {
 
