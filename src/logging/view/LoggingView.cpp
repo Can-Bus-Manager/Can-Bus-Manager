@@ -1,5 +1,5 @@
-#include "LoggingView.h"
-#include "ui_LoggingView.h"
+#include "LoggingView.hpp"
+#include "ui_LoggingView.hpp"
 
 LoggingView::LoggingView(IEventBroker* broker, QWidget *parent)
     : QWidget(parent)

@@ -1,5 +1,5 @@
-#include "SendingView.h"
-#include "ui_SendingView.h"
+#include "SendingView.hpp"
+#include "ui_SendingView.hpp"
 
 SendingView::SendingView(IEventBroker* broker, QWidget *parent)
     : QWidget(parent)
