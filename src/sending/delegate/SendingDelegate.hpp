@@ -1,5 +1,5 @@
 #include <QStyledItemDelegate>
-#include "IEventBroker.h"
+#include "IEventBroker.hpp"
 
 namespace sending {
 class SendingDelegate : public QStyledItemDelegate {

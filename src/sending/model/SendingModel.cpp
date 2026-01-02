@@ -1,4 +1,4 @@
-#include "SendingModel.h"
+#include "SendingModel.hpp"
 
 
 class SendingModel : public QAbstractTableModel {

@@ -1,4 +1,4 @@
-#include "LoggingDelegate.h"
+#include "LoggingDelegate.hpp"
 #include <QPainter>
 #include <QFontDatabase>
 
