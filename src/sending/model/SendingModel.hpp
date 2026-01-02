@@ -2,20 +2,40 @@
 #define SENDINGMODEL_H
 #include <cstdint>
 #include <vector>
-#include <QAbstractTableModel> // oder QAbstractItemModel
-#include "IEventBroker.h"
+#include <QAbstractTableModel>
+#include <QTimer>
+#include "core/interface/i_event_broker.hpp"
+using Core::IEventBroker;
 
 
-namespace sending {
-struct MessageConfig {
+namespace Sending {
+    class SendingModel : public QAbstractTableModel {
+    Q_OBJECT
+
+public:
+    explicit SendingModel(IEventBroker* eventBroker, QObject* parent = nullptr);
+    ~SendingModel() override;
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    void triggerSend(int row);
+    void toggleCyclicMode(int row, bool isActive);
+
+private:
+    IEventBroker* m_eventBroker;
+
+    struct MessageConfig {
     uint32_t canId;           
     std::vector<uint8_t> data; 
     int cycleTimeMs;
     bool isCyclicActive;
     bool isDbcBased;
     QTimer* timer = nullptr;
+    };
+    std::vector<MessageConfig> m_messages;
 };
-
-std::vector<MessageConfig> m_messages;
 }
-#endif
+
+#endif // SENDINGMODEL_H

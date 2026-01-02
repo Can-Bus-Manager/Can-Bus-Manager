@@ -3,9 +3,11 @@
 
 #include <QAbstractTableModel>
 #include <vector>
-#include "IEventBroker.h"
+#include "core/interface/i_event_broker.hpp"
 
-namespace logging {
+using Core::IEventBroker;
+
+namespace Logging {
 
 struct LogEntry {
     QString timestamp;
@@ -33,4 +35,4 @@ private:
     std::vector<LogEntry> m_logs; //history of messages
 };
 }
-#endif
+#endif // LOGGINGMODEL_H
