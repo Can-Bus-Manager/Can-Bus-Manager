@@ -6,6 +6,8 @@
 
 #include "core/interface/i_event_broker.hpp"
 
+using Core::IEventBroker;
+
 namespace Logging {
 
 struct LogEntry {
@@ -20,7 +22,7 @@ class LoggingModel : public QAbstractTableModel
     Q_OBJECT
 
    public:
-    explicit LoggingModel(Core::IEventBroker* broker, QObject* parent = nullptr);
+    explicit LoggingModel(IEventBroker* broker, QObject* parent = nullptr);
 
     // Standard TableModel overrides
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -31,7 +33,7 @@ class LoggingModel : public QAbstractTableModel
     void appendLogEntry(const LogEntry& entry);
 
    private:
-    Core::IEventBroker* m_broker;
+    IEventBroker* m_broker;
     std::vector<LogEntry> m_logs;  // history of messages
 };
 }  // namespace Logging
