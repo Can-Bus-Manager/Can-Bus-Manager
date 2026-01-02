@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "core/interface/i_event_broker.hpp"
-using Core::IEventBroker;
 
 namespace Sending {
 class SendingModel : public QAbstractTableModel
@@ -14,7 +13,7 @@ class SendingModel : public QAbstractTableModel
     Q_OBJECT
 
    public:
-    explicit SendingModel(IEventBroker *eventBroker, QObject *parent = nullptr);
+    explicit SendingModel(Core::IEventBroker *eventBroker, QObject *parent = nullptr);
     ~SendingModel() override;
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

@@ -7,14 +7,13 @@
 #include <QWidget>
 
 #include "core/interface/i_event_broker.hpp"
-using Core::IEventBroker;
 
 namespace Sending {
 class SendingDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
    public:
-    explicit SendingDelegate(IEventBroker *eventBroker, QObject *parent = nullptr);
+    explicit SendingDelegate(Core::IEventBroker *eventBroker, QObject *parent = nullptr);
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index);
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const override;
