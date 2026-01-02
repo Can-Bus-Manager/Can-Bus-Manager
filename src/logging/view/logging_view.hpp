@@ -3,8 +3,8 @@
 
 #include <QWidget>
 
-#include "logging/model/LoggingModel.hpp"
-using Core::IEventBroker;
+#include "logging/model/logging_model.hpp"
+#include "core/interface/i_event_broker.hpp"
 
 namespace Logging {
 class LoggingView : public QWidget

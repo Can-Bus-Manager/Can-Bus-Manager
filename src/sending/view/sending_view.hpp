@@ -4,8 +4,8 @@
 #include <QWidget>
 
 #include "core/interface/i_event_broker.hpp"
-#include "sending/delegate/SendingDelegate.hpp"
-#include "sending/model/SendingModel.hpp"
+#include "sending/delegate/sending_delegate.hpp"
+#include "sending/model/sending_model.hpp"
 
 namespace Sending {
 
@@ -14,7 +14,7 @@ class SendingView : public QWidget
     Q_OBJECT
 
    public:
-    explicit SendingView(IEventBroker *broker, QWidget *parent = nullptr);
+    explicit SendingView(Core::IEventBroker *broker, QWidget *parent = nullptr);
     ~SendingView();
 
    private slots:
