@@ -1,8 +1,12 @@
-#include <QWidget>
-#include "SendingModel.hpp"
-#include "SendingDelegate.hpp"
 
-namespace sending {
+#ifndef SENDINGVIEW_HPP
+#define SENDINGVIEW_HPP
+#include <QWidget>
+#include "core/interface/i_event_broker.hpp"
+#include "sending/model/SendingModel.hpp"
+#include "sending/delegate/SendingDelegate.hpp"
+
+namespace Sending {
 
 class SendingView : public QWidget {
     Q_OBJECT
@@ -17,9 +21,9 @@ private slots:
     void on_btnToggleCyclic_clicked();
     
 private:
-    Ui::SendingView *ui;
+    Sending::SendingView *ui;
     SendingModel *m_model;        //data source
     SendingDelegate *m_delegate;  //custom editor
 };
 }
-#endif
+#endif // SENDINGVIEW_HPP

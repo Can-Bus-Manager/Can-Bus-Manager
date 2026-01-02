@@ -1,8 +1,8 @@
 #ifndef LOGGINGDELEGATE_H
 #define LOGGINGDELEGATE_H
-
 #include <QStyledItemDelegate>
-namespace logging {
+
+namespace Logging {
 class LoggingDelegate : public QStyledItemDelegate {
     Q_OBJECT
 
@@ -19,4 +19,4 @@ public:
                    const QModelIndex &index) const override;
 };
 }
-#endif
+#endif // LOGGINGDELEGATE_H

@@ -2,9 +2,10 @@
 #define LOGGINGVIEW_H
 
 #include <QWidget>
-#include "LoggingModel.h"
+#include "logging/model/LoggingModel.hpp"
+using Core::IEventBroker;
 
-namespace logging {
+namespace Logging {
 class LoggingView : public QWidget {
     Q_OBJECT
 
@@ -14,11 +15,11 @@ public:
 
 private slots:
 
-    void on_btnExport_clicked();//link to sending tab?
+    void on_btnExport_clicked();
     void on_btnClear_clicked();//optional clear button
 
 private:
-    Ui::LoggingView *ui;
+    Logging::LoggingView *ui;
     LoggingModel *m_model;
 };
 }
