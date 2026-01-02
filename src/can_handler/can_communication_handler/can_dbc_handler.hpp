@@ -14,8 +14,10 @@ class CanDbcHandler final : public ICanParser
    public:
     explicit CanDbcHandler(Core::IEventBroker& eventBroker) : ICanParser(eventBroker)
     {
-        dbcSendEventConnection = eventBroker.subscribe<Core::SendCanMessageDbc>(
-            [this](const Core::SendCanMessageDbc& event) -> void { handleSendMessage(event); });
+        dbcSendEventConnection = eventBroker.subscribe<Core::SendCanMessageDbcEvent>(
+            [this](const Core::SendCanMessageDbcEvent& event) -> void {
+                handleSendMessage(event);
+            });
         dbcConfigChangeConnection = eventBroker.subscribe<Core::DBCParsedEvent>(
             [this](const Core::DBCParsedEvent& event) -> void { handleNewDbc(event); });
     };
@@ -23,7 +25,7 @@ class CanDbcHandler final : public ICanParser
 
    private:
     void parseReceivedMessage(const sockcanpp::CanMessage* canMessage) override;
-    void handleSendMessage(const Core::SendCanMessageDbc& event);
+    void handleSendMessage(const Core::SendCanMessageDbcEvent& event);
     void handleNewDbc(const Core::DBCParsedEvent& event);
 
     Core::Connection dbcSendEventConnection;
