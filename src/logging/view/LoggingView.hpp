@@ -2,25 +2,27 @@
 #define LOGGINGVIEW_H
 
 #include <QWidget>
+
 #include "logging/model/LoggingModel.hpp"
 using Core::IEventBroker;
 
 namespace Logging {
-class LoggingView : public QWidget {
+class LoggingView : public QWidget
+{
     Q_OBJECT
 
-public:
-    explicit LoggingView(IEventBroker* broker, QWidget *parent = nullptr);
+   public:
+    explicit LoggingView(IEventBroker *broker, QWidget *parent = nullptr);
     ~LoggingView();
 
-private slots:
+   private slots:
 
     void on_btnExport_clicked();
-    void on_btnClear_clicked();//optional clear button
+    void on_btnClear_clicked();  // optional clear button
 
-private:
+   private:
     Logging::LoggingView *ui;
     LoggingModel *m_model;
 };
-}
-#endif // LOGGINGVIEW_H
+}  // namespace Logging
+#endif  // LOGGINGVIEW_H
