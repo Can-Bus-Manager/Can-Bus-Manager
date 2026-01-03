@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <typeindex>
 
 #include "core/dto/lifecycle_dto.hpp"
 #include "event.hpp"
@@ -22,20 +23,20 @@ struct AppStoppedEvent : public Event {
  * @brief Fired when a module of the application starts.
  */
 struct ModuleStartedEvent : public Event {
-    std::string moduleName;
+    std::type_index module_index;
 
-    explicit ModuleStartedEvent(std::string name) : moduleName(std::move(name)) {}
+    explicit ModuleStartedEvent(std::type_index index) : module_index(std::move(index)) {}
 };
 
 /**
  * @brief Fired when a module stops, containing performance and status data.
  */
 struct ModuleStoppedEvent : public Event {
-    std::string moduleName;
+    std::type_index module_index;
     ModuleDiagnostics diagnostics;
 
-    ModuleStoppedEvent(std::string name, ModuleDiagnostics diag)
-        : moduleName(std::move(name)), diagnostics(std::move(diag))
+    ModuleStoppedEvent(std::type_index index, ModuleDiagnostics diag)
+        : module_index(std::move(index)), diagnostics(std::move(diag))
     {
     }
 };

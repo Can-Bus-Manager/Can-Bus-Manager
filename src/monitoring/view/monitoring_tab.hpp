@@ -20,11 +20,11 @@
 namespace Monitoring {
 
 /**
- * @class MonitoringTab
+ * @class MonitoringComponent
  * @brief UI tab component responsible for monitoring CAN signals and
  * managing their visualization.
  *
- * MonitoringTab integrates a hierarchical signal tree with a graph list
+ * MonitoringComponent integrates a hierarchical signal tree with a graph list
  * view to allow users to inspect available CAN signals and select signals
  * for graphical visualization. The component subscribes to system events
  * via the event broker and acts as a composition root for its internal
@@ -35,7 +35,7 @@ namespace Monitoring {
  * - Event consumer / dispatcher (via IEventBroker)
  * - MVC coordinator for signal models and views
  */
-class MonitoringTab : public Core::ITabComponent, public QWidget
+class MonitoringComponent : public Core::ITabComponent, public QWidget
 {
     Q_OBJECT
    public:
@@ -44,18 +44,24 @@ class MonitoringTab : public Core::ITabComponent, public QWidget
      *
      * @param broker Pointer to the global event broker used for subscribing
      *               to and emitting application-wide events.
-     * @param parent Optional Qt parent widget.
      */
-    explicit MonitoringTab(Core::IEventBroker* broker, QWidget* parent = nullptr);
+    explicit MonitoringComponent(Core::IEventBroker& broker);
 
     /**
-     * @brief Initializes internal models, views, delegates, and signal-slot
-     *        connections.
-     *
-     * This method must be called after construction to fully wire up the
-     * component and register event subscriptions.
+     * @brief Returns the main widget (MonitoringView) for display in the application window.
+     * @caller AppRoot.
      */
-    void bootstrap();
+    auto getView() -> QWidget* override;
+
+    /**
+     * @brief Called when the application starts/module is activated.
+     */
+    void onStart() override;
+
+    /**
+     * @brief Called when the application stops/module is deactivated.
+     */
+    void onStop() override;
 
    private:
     /**

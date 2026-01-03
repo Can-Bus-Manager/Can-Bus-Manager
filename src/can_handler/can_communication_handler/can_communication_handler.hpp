@@ -10,7 +10,7 @@
 #include "i_can_parser.hpp"
 
 namespace CanHandler {
-class CanCommunicationHandler final : Core::ILifecycle
+class CanCommunicationHandler final : public Core::ILifecycle
 {
    public:
     explicit CanCommunicationHandler(Core::IEventBroker& event_broker)

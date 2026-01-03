@@ -7,6 +7,7 @@
 #include "core/interface/i_event_broker.hpp"
 #include "core/interface/i_lifecycle.hpp"
 #include "core/interface/i_tab_component.hpp"
+#include "tab_factory.hpp"
 
 namespace AppRoot {
 
@@ -59,12 +60,59 @@ class AppRoot
     void shutdown();
 
     /**
+     * @brief This function is called when a module had an Error and stopped.
+     * @details It will try to restart the Tabs but prevents an infinite loop.
+     * When the event broker or can handler fail the program will shut down.
+     *
+     * @param event the event of the module that had an Error
+     */
+    void restartModule(const Core::ModuleStoppedEvent& event);
+
+    /**
+     * @brief Registers a tab type in the factory and spawns the initial instance.
+     * @tparam T Concrete class inheriting from ITabComponent.
+     */
+    template <typename T>
+    void initTab() {
+        m_tabFactory.registerCreator<T>([&]() -> auto {
+            return std::make_unique<T>(*m_broker);
+        });
+
+        if (auto tab = m_tabFactory.create<T>()) {
+            m_model->addTab(tab.get());
+            m_tabs.push_back(std::move(tab));
+        }
+    }
+
+    /**
+     * @brief A Connection to the QT Quit command.
+     */
+    QMetaObject::Connection m_qt_quit_connection;
+
+    /**
      * @brief Pointer to the event broker of the application which handles the communication between
      * components.
      * @related Core::IEventBroker
      */
     std::unique_ptr<Core::IEventBroker> m_broker;
     std::unique_ptr<Core::ILifecycle> m_can_handler;
+
+    /**
+     * @brief A tab factory which safes the initialization procedure of tabs.
+     * @details This map maps the type of the tabs
+     */
+    TabFactory m_tabFactory;
+
+    /**
+     * @brief Handle for the ModuleStoppedEvent subscription.
+     */
+    Core::Connection m_module_stop_connection;
+
+    /** * @brief Memory ownership of the tab components.
+     * @details The Model only holds raw pointers; this vector ensures the objects
+     * live as long as the AppRoot kernel.
+     */
+    std::vector<std::unique_ptr<Core::ITabComponent>> m_tabs;
 
     /**
      * @brief Pointer to the Model component of the app root to instantiate it.
@@ -78,7 +126,7 @@ class AppRoot
      * @relationship "Instantiates" AppRootDelegate pointer.
      * @related AppRootDelegate
      */
-    std::unique_ptr<QAbstractItemDelegate> m_delegate;
+    std::unique_ptr<AppRootDelegate> m_delegate;
 
     /**
      * @brief Pointer to the View component of the app root to instantiate it.
@@ -86,12 +134,6 @@ class AppRoot
      * @related AppRootView
      */
     std::unique_ptr<AppRootView> m_mainView;
-
-    /** * @brief Memory ownership of the tab components.
-     * @details The Model only holds raw pointers; this vector ensures the objects
-     * live as long as the AppRoot kernel.
-     */
-    std::vector<std::unique_ptr<Core::ITabComponent>> m_tabs;
 };
 
 }  // namespace AppRoot

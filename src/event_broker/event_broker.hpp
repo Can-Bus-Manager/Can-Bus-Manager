@@ -9,7 +9,7 @@
 
 #include "core/interface/i_event_broker.hpp"
 namespace EventBroker {
-class EventBroker final : Core::IEventBroker
+class EventBroker final : public Core::IEventBroker
 {
    protected:
     void _publish(std::type_index type, const void* data) override;
