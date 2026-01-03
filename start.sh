@@ -75,10 +75,6 @@ cmake -S . -B $BUILD_DIR \
       $COV_OPTS \
       -DCMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu/cmake/Qt6
 
-if command -v clang-format &> /dev/null; then
-     cmake --build build --target format
-fi
-
 echo "--- 3. Building Project ---"
 cmake --build $BUILD_DIR --parallel $CORES
 

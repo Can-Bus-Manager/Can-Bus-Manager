@@ -68,17 +68,10 @@ target_link_libraries(${PROJECT_NAME}Lib PUBLIC
         Threads::Threads
 )
 
-#logging
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(DEFAULT_LOG_LEVEL 2)
-    message(STATUS "Logging Level: 2 (Full Debug)")
-else()
-    # Production: Errors only
-    set(DEFAULT_LOG_LEVEL 1)
-    message(STATUS "Logging Level: 1 (Errors Only)")
-endif()
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE LOGGING_LEVEL=${DEFAULT_LOG_LEVEL})
+target_compile_definitions(${PROJECT_NAME}Lib
+        PUBLIC
+        LOGGING_LEVEL=$<IF:$<CONFIG:Debug>,2,1>
+)
 
 # 6. Executable
 add_executable(${PROJECT_NAME} ${ENTRY_POINT_FILE})

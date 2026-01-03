@@ -4,6 +4,7 @@
 #include <memory>
 #include <typeindex>
 #include <unordered_map>
+
 #include "core/interface/i_tab_component.hpp"
 
 /** @brief Default number of restart attempts allowed before fatal exit. */
@@ -19,8 +20,9 @@ namespace AppRoot {
  * * This factory uses C++ Run-Time Type Information (RTTI) to map class types
  * to their respective constructor functions, eliminating the need for manual string IDs.
  */
-class TabFactory {
-public:
+class TabFactory
+{
+   public:
     /** @brief Signature for the creation function. */
     using Creator = std::function<std::unique_ptr<Core::ITabComponent>()>;
 
@@ -33,8 +35,9 @@ public:
      * @param creator A lambda or function returning a unique_ptr to the new instance.
      */
     template <typename T>
-    void registerCreator(Creator creator) {
-        m_creators[std::type_index(typeid(T))] = { std::move(creator), DEFAULT_RESTART_LIMIT };
+    void registerCreator(Creator creator)
+    {
+        m_creators[std::type_index(typeid(T))] = {std::move(creator), DEFAULT_RESTART_LIMIT};
     }
 
     /**
@@ -43,7 +46,8 @@ public:
      * @return std::unique_ptr<Core::ITabComponent> The new instance, or nullptr if not registered.
      */
     template <typename T>
-    auto create() const -> std::unique_ptr<Core::ITabComponent> {
+    auto create() const -> std::unique_ptr<Core::ITabComponent>
+    {
         return createByTypeIndex(std::type_index(typeid(T)));
     }
 
@@ -68,7 +72,7 @@ public:
      */
     auto canRestart(std::type_index index) -> bool;
 
-private:
+   private:
     /** @brief Internal storage for creator and restart state. */
     struct TabEntry {
         Creator creator;
@@ -79,4 +83,4 @@ private:
     std::unordered_map<std::type_index, TabEntry> m_creators;
 };
 
-} // namespace AppRoot
+}  // namespace AppRoot

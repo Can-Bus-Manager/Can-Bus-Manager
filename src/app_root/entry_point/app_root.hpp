@@ -73,12 +73,12 @@ class AppRoot
      * @tparam T Concrete class inheriting from ITabComponent.
      */
     template <typename T>
-    void initTab() {
-        m_tabFactory.registerCreator<T>([&]() -> auto {
-            return std::make_unique<T>(*m_broker);
-        });
+    void initTab()
+    {
+        m_tabFactory.registerCreator<T>([&]() -> auto { return std::make_unique<T>(*m_broker); });
 
-        if (auto tab = m_tabFactory.create<T>()) {
+        if (auto tab = m_tabFactory.create<T>())
+        {
             m_model->addTab(tab.get());
             m_tabs.push_back(std::move(tab));
         }

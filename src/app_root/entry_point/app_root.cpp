@@ -14,27 +14,30 @@ namespace AppRoot {
 
 AppRoot::AppRoot() = default;
 
-AppRoot::~AppRoot() {
+AppRoot::~AppRoot()
+{
     // The kernel should shut down all dependencies in the correct order first.
     shutdown();
 }
 
-void AppRoot::bootstrap() {
-    LOG_INF(AppRoot, "Starting bootstrap...");
+void AppRoot::bootstrap()
+{
+    LOG_INF("AppRoot", "Starting bootstrap...");
 
-    LOG_INF(AppRoot, "Instantiating Event Broker...");
+    LOG_INF("AppRoot", "Instantiating Event Broker...");
     m_broker = std::make_unique<EventBroker::EventBroker>();
 
-    LOG_INF(AppRoot, "Instantiating Can Handler...");
+    LOG_INF("AppRoot", "Instantiating Can Handler...");
     m_can_handler = std::make_unique<CanHandler::CanCommunicationHandler>(*m_broker);
 
-    LOG_INF(AppRoot, "Instantiating App Root MVD...");
+    LOG_INF("AppRoot", "Instantiating App Root MVD...");
     m_model = std::make_unique<AppRootModel>();
     m_delegate = std::make_unique<AppRootDelegate>();
     m_mainView = std::make_unique<AppRootView>();
 
     //  Wiring Model and Delegate of App Root to View
-    if (m_mainView && m_model) {
+    if (m_mainView && m_model)
+    {
         m_mainView->setModel(m_model.get());
     }
 
@@ -43,46 +46,44 @@ void AppRoot::bootstrap() {
         m_mainView->setDelegate(m_delegate.get());
     }
 
-    LOG_INF(AppRoot, "Adding and Instatiating Tabs...");
+    LOG_INF("AppRoot", "Adding and Instatiating Tabs...");
     m_tabs.clear();
 
     // Helper to keep bootstrap readable
     initTab<DbcFile::DbcComponent>();
     initTab<Monitoring::MonitoringComponent>();
 
-    LOG_INF(AppRoot, "Bootstrap Complete: launching internal logic.");
+    LOG_INF("AppRoot", "Bootstrap Complete: launching internal logic.");
     start();
 }
 
-void AppRoot::start() {
-
+void AppRoot::start()
+{
     // Connect shutdown to QT Core for window close etc.
-    m_qt_quit_connection = QObject::connect(
-        QCoreApplication::instance(),
-        &QCoreApplication::aboutToQuit,
-        [this]() -> void {
-            shutdown();
-        }
-    );
-
+    m_qt_quit_connection =
+        QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
+                         [this]() -> void { shutdown(); });
 
     // Tabs Restart on Error while the Broker and Can Handler are fatal
-    m_module_stop_connection = m_broker->subscribe<Core::ModuleStoppedEvent>([this](const Core::ModuleStoppedEvent& event) -> void{
-        if (event.diagnostics.wasError)
-        {
-            restartModule(event);
-        }
-    });
+    m_module_stop_connection = m_broker->subscribe<Core::ModuleStoppedEvent>(
+        [this](const Core::ModuleStoppedEvent& event) -> void {
+            if (event.diagnostics.wasError)
+            {
+                restartModule(event);
+            }
+        });
 
-    LOG_INF(AppRoot, "Application started: publishing AppStartedEvent!");
+    LOG_INF("AppRoot", "Application started: publishing AppStartedEvent!");
     m_broker->publish<Core::AppStartedEvent>(Core::AppStartedEvent());
 
-    if (m_mainView) {
+    if (m_mainView)
+    {
         m_mainView->show();
     }
 }
 
-void AppRoot::shutdown() {
+void AppRoot::shutdown()
+{
     // to prevent being called twice
     static bool shuttingDown = false;
     if (shuttingDown) return;
@@ -91,13 +92,11 @@ void AppRoot::shutdown() {
     // disconnect to not be called by qt again
     QObject::disconnect(m_qt_quit_connection);
 
-    LOG_INF(AppRoot, "Shutting down...");
+    LOG_INF("AppRoot", "Shutting down...");
 
-    if (m_module_stop_connection)
-        m_module_stop_connection.release();
+    if (m_module_stop_connection) m_module_stop_connection.release();
 
-    if (m_broker)
-        m_broker->publish<Core::AppStoppedEvent>({});
+    if (m_broker) m_broker->publish<Core::AppStoppedEvent>({});
 
     m_tabs.clear();
     m_mainView.reset();
@@ -119,26 +118,25 @@ void AppRoot::restartModule(const Core::ModuleStoppedEvent& event)
     // Event Broker and Can Handler are Fatal
     if (it == m_tabs.end() || !m_tabFactory.canRestart(event.module_index))
     {
-        LOG_ERR(AppRoot, "Received stop event for type {} which can't be restarted. Shutting down.", event.module_index.name());
+        LOG_ERR("AppRoot", "Received stop event for type {} which can't be restarted. Shutting down.",
+                event.module_index.name());
         QMetaObject::invokeMethod(
-            QCoreApplication::instance(),
-            []() -> void {
-                QCoreApplication::exit(EXIT_FAILURE);
-            },
-            Qt::QueuedConnection
-        );
+            QCoreApplication::instance(), []() -> void { QCoreApplication::exit(EXIT_FAILURE); },
+            Qt::QueuedConnection);
         return;
     }
 
-    LOG_ERR(AppRoot, "Received stop event for Tab: {}. Attempting restart", event.module_index.name());
+    LOG_ERR("AppRoot", "Received stop event for Tab: {}. Attempting restart",
+            event.module_index.name());
 
     // Restart new tab
-    if (auto newTab = m_tabFactory.createByTypeIndex(event.module_index)) {
+    if (auto newTab = m_tabFactory.createByTypeIndex(event.module_index))
+    {
         m_model->replaceTab(it->get(), newTab.get());
         *it = std::move(newTab);
 
-        LOG_INF(AppRoot, "Restarted: {}", event.module_index.name());
+        LOG_INF("AppRoot", "Restarted: {}", event.module_index.name());
     }
 }
 
-} // namespace AppRoot
+}  // namespace AppRoot
