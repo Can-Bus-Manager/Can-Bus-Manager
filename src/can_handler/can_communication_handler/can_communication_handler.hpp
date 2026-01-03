@@ -25,7 +25,8 @@ class CanCommunicationHandler final : Core::ILifecycle
 {
    public:
     explicit CanCommunicationHandler(Core::IEventBroker& event_broker)
-        : ILifecycle(event_broker), deviceHandler(CanDeviceHandler(event_broker)) {
+        : ILifecycle(event_broker),
+          deviceHandler(CanDeviceHandler(event_broker)){
 
           };
     /**
@@ -36,8 +37,6 @@ class CanCommunicationHandler final : Core::ILifecycle
      * @brief Called automatically when the application publishes AppStoppedEvent.
      */
     void onStop() override;
-
-
 
    private:
     /**
@@ -54,7 +53,6 @@ class CanCommunicationHandler final : Core::ILifecycle
      * @brief The CAN device handler, that handles all events related to the actual CAN device
      */
     CanDeviceHandler deviceHandler;
-
 };
 }  // namespace CanHandler
 

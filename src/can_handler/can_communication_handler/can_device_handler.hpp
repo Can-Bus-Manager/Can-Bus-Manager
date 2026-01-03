@@ -12,27 +12,31 @@ using sockcanpp::CanMessage;
 namespace CanHandler {
 class CanDeviceHandler
 {
-public:
-    explicit CanDeviceHandler(Core::IEventBroker& event_broker) : broker(event_broker){
+   public:
+    explicit CanDeviceHandler(Core::IEventBroker& event_broker) : broker(event_broker)
+    {
         canDriverChangeEventConnection = event_broker.subscribe<Core::CanDriverChangeEvent>(
-                [this](const Core::CanDriverChangeEvent& event) -> void { updateCanDevice(event); });};
+            [this](const Core::CanDriverChangeEvent& event) -> void { updateCanDevice(event); });
+    };
 
     /**
      * @brief Checks if new messages were received over the CAN bus.
      * @return A list of received messages
      */
     auto checkForCanMessage() -> std::list<CanMessage>;
-protected:
+
+   protected:
     /**
      * @brief Sends a message to the current can driver
      * @param canMessage The message to be sent
      * @return A bool indicating if the sending was successful
      */
     auto sendCanMessage(const CanMessage* canMessage) -> bool;
-private:
+
+   private:
     /**
-     * @brief Called, when a @code Core::CanDriverChangeEvent@endcode is registered. Updates the can driver
-     * accordingly
+     * @brief Called, when a @code Core::CanDriverChangeEvent@endcode is registered. Updates the can
+     * driver accordingly
      * @param event The event, that contains the new device name
      *
      */
@@ -48,5 +52,5 @@ private:
      */
     Core::Connection canDriverChangeEventConnection;
 };
-}
+}  // namespace CanHandler
 #endif  // CANBUSMANAGER_CAN_DEVICE_HANDLER_H
