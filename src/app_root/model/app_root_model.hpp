@@ -58,6 +58,13 @@ class AppRootModel : public QAbstractListModel
     void addTab(Core::ITabComponent* component);
 
     /**
+     * @brief Replaces a tab in the data through a new one.
+     * @param old_tab the old tab to replace
+     * @param new_tab the new tab which takes its place
+     */
+    void replaceTab(Core::ITabComponent* old_tab, Core::ITabComponent* new_tab);
+
+    /**
      * @brief Removes a tab component from the model by its unique ID.
      * @param id The unique identifier string.
      */

@@ -6,7 +6,7 @@ project(CanBusManager
         LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -67,6 +67,18 @@ target_link_libraries(${PROJECT_NAME}Lib PUBLIC
         sockcanpp
         Threads::Threads
 )
+
+#logging
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(DEFAULT_LOG_LEVEL 2)
+    message(STATUS "Logging Level: 2 (Full Debug)")
+else()
+    # Production: Errors only
+    set(DEFAULT_LOG_LEVEL 1)
+    message(STATUS "Logging Level: 1 (Errors Only)")
+endif()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE LOGGING_LEVEL=${DEFAULT_LOG_LEVEL})
 
 # 6. Executable
 add_executable(${PROJECT_NAME} ${ENTRY_POINT_FILE})
