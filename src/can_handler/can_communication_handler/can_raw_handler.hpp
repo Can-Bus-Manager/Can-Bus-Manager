@@ -8,6 +8,13 @@
 #include "i_can_parser.hpp"
 
 namespace CanHandler {
+/**
+ * @brief Handles all events based on raw CAN messages.
+ * It provides two main functionalities:
+ * It receives CAN messages from the CanCommunicationHandler, which it publishes in raw form to the
+ * event handler. Equally, it listens to send raw CAN message events and then sends them to the CAN
+ * device via the CanCommunicationHandler.
+ */
 class CanRawHandler final : ICanParser
 {
    public:
@@ -19,10 +26,22 @@ class CanRawHandler final : ICanParser
             });
     };
     ~CanRawHandler() override = default;
+    /**
+     * @brief Publishes the received CAN message in its raw form to the event handler.
+     * @param canMessage The received CAN message
+     */
     void parseReceivedMessage(const sockcanpp::CanMessage* canMessage) override;
+    /**
+     * @brief Handles @code SendRawCanMessageEvent by sending the encoded CAN message to the CAN
+     * device via the CanCommunicationHandler
+     * @param event The sending event
+     */
     void handleSendMessage(const Core::SendCanMessageRawEvent& event);
 
    private:
+    /**
+     * @brief A connection containing the subscription to sendRawCanMessage events
+     */
     Core::Connection rawSendEventConnection;
 };
 }  // namespace CanHandler

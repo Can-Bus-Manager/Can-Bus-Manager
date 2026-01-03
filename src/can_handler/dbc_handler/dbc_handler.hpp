@@ -7,6 +7,9 @@
 #include "core/event/dbc_event.hpp"
 #include "core/interface/i_lifecycle.hpp"
 namespace CanHandler {
+/**
+ * @brief The DbcHandler is responsible for parsing DBC configurations from a file.
+ */
 class DbcHandler final : Core::ILifecycle
 {
    public:

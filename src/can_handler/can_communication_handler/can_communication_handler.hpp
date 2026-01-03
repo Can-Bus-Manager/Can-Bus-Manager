@@ -6,7 +6,7 @@
 #define CANBUSMANAGER_CAN_COMMUNICATION_HANDLER_HPP
 #include <list>
 
-#include "CanDriver.hpp"
+#include "can_device_handler.hpp"
 #include "core/interface/i_lifecycle.hpp"
 #include "i_can_parser.hpp"
 
@@ -25,7 +25,7 @@ class CanCommunicationHandler final : Core::ILifecycle
 {
    public:
     explicit CanCommunicationHandler(Core::IEventBroker& event_broker)
-        : ILifecycle(event_broker){
+        : ILifecycle(event_broker), deviceHandler(CanDeviceHandler(event_broker)) {
 
           };
     /**
@@ -37,13 +37,7 @@ class CanCommunicationHandler final : Core::ILifecycle
      */
     void onStop() override;
 
-   protected:
-    /**
-     * @brief Sends a message to the current can driver
-     * @param canMessage The message to be sent
-     * @return A bool indicating if the sending was successful
-     */
-    auto sendCanMessage(const sockcanpp::CanMessage* canMessage) -> bool;
+
 
    private:
     /**
@@ -57,13 +51,10 @@ class CanCommunicationHandler final : Core::ILifecycle
      */
     std::list<ICanParser> can_handlers;
     /**
-     * @brief The current configuration of the can driver, containing the device info for libsockcan
+     * @brief The CAN device handler, that handles all events related to the actual CAN device
      */
-    sockcanpp::CanDriver canDriver;
-    /**
-     * @brief A connection containing the subscription to the can driver change event
-     */
-    Core::Connection canDriverChangeEventConnection;
+    CanDeviceHandler deviceHandler;
+
 };
 }  // namespace CanHandler
 
