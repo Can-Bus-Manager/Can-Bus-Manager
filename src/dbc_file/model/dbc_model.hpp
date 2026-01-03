@@ -14,7 +14,7 @@
 #include "dbc_item.hpp"
 #include "dbc_roles.hpp"
 
-namespace Dbc {
+namespace DbcFile {
 
 /**
  * @class DbcModel
@@ -101,7 +101,7 @@ class DbcModel : public QAbstractItemModel
      * @caller Core::IEventBroker (via lambda callback).
      * Resets model and calls setupData() to rebuild the tree.
      */
-    void onDbcParsed(const Core::DbcParsedEvent& event);
+    void onDbcParsed(const Core::DBCParsedEvent& event);
 
     /**
      * @brief Rebuilds the internal DbcItem tree structure from the DTO.
@@ -122,4 +122,4 @@ class DbcModel : public QAbstractItemModel
     std::unique_ptr<DbcItem> m_rootItem;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile

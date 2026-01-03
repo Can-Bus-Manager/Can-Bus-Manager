@@ -10,7 +10,7 @@
 // Ensure this path is correct in your project structure
 #include "core/enum/dbc_itemtype.hpp"
 
-namespace Dbc {
+namespace DbcFile {
 
 /**
  * @brief Represents a single node in the internal DBC tree structure.
@@ -101,4 +101,4 @@ class DbcItem
     QList<QVariant> m_data;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile

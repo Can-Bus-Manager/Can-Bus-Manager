@@ -8,7 +8,7 @@
 #include <QTableView>
 #include <QTreeView>
 
-namespace Dbc {
+namespace DbcFile {
 
 // ==============================================================================
 // 1. Searchable Filter Table
@@ -144,4 +144,4 @@ class SearchableFilterTree : public QWidget
     QComboBox* m_filterCombo;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile

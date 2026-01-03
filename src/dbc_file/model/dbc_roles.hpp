@@ -8,7 +8,7 @@
 
 #include <Qt>  // Required for Qt::UserRole
 
-namespace Dbc {
+namespace DbcFile {
 
 /**
  * @brief Custom model roles for accessing specific DBC data attributes.
@@ -86,4 +86,4 @@ enum DbcRoles {
     Role_Receiver = Qt::UserRole + 28
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile

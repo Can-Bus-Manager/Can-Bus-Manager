@@ -8,7 +8,7 @@
 #include <QStyledItemDelegate>
 #include <QTreeView>
 
-namespace Dbc {
+namespace DbcFile {
 
 // ==============================================================================
 // 1. Overview Lists Delegate (Overview Page)
@@ -210,4 +210,4 @@ class SignalTableDelegate : public QStyledItemDelegate
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile

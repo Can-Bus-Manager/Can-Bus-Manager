@@ -15,12 +15,12 @@
 #include "view/dbc_view.hpp"
 
 // Forward declarations for Events
-namespace Core::Events {
+namespace Core {
 struct DbcParsedEvent;
 struct DbcParseErrorEvent;
-}  // namespace Core::Events
+}  // namespace Core
 
-namespace Dbc {
+namespace DbcFile {
 
 /**
  * @class DbcComponent
@@ -104,14 +104,14 @@ class DbcComponent : public Core::ITabComponent
      * Used to update the UI state (e.g., call `m_view->setNavigationEnabled(true)`).
      * The Model updates its data automatically via its own subscription.
      */
-    void onDbcParsed(const Core::Events::DbcParsedEvent& event);
+    void onDbcParsed(const Core::DbcParsedEvent& event);
 
     /**
      * @brief Callback: Triggered when parsing failed.
      * @caller EventBroker (lambda callback).
      * @details Shows an error message to the user (e.g., via QMessageBox).
      */
-    void onDbcParseError(const Core::Events::DbcParseErrorEvent& event);
+    void onDbcParseError(const Core::DbcParseErrorEvent& event);
 
     /**
      * @brief Sets up internal connections between View signals and Component slots.
@@ -137,4 +137,4 @@ class DbcComponent : public Core::ITabComponent
     Core::Connection m_parseErrorConn;
 };
 
-}  // namespace Dbc
+}  // namespace DbcFile
