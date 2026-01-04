@@ -1,15 +1,13 @@
 #pragma once
 
-#include <QWidget>
 #include <QListView>
-#include <QStackedWidget>
+#include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QStackedWidget>
 #include <QString>
 #include <QStringList>
-#include <QPushButton>
+#include <QWidget>
 #include <memory>
-
-
 
 namespace Logging {
 
@@ -108,16 +106,16 @@ class LoggingView : public QWidget
     void editSettingsRequested();
 
     // --- Mode & Interface Selection ---
-    void modeSelected(int mode); // e.g., 0 for Raw, 1 for DBC
-    void interfaceChanged(const QString &interfaceName);
-    void dbcFileSelected(const QString &filePath);
+    void modeSelected(int mode);  // e.g., 0 for Raw, 1 for DBC
+    void interfaceChanged(const QString& interfaceName);
+    void dbcFileSelected(const QString& filePath);
 
     // --- DBC Specific Actions ---
-    void ecuVisibilityChanged(const QString &ecuName, bool visible);
+    void ecuVisibilityChanged(const QString& ecuName, bool visible);
     void changeDbcFileRequested();
 
     // --- Export Actions ---
-    void exportPathEntered(const QString &path);
+    void exportPathEntered(const QString& path);
     void retryExportRequested();
     void exportProcessFinished();
 
@@ -137,21 +135,21 @@ class LoggingView : public QWidget
     void setRawModeLayout();
     void setDbcModeLayout();
     void setLoggingActive(bool active);
-    void updateSignalPreview(const QString &data);
-    void showErrorMessage(const QString &message);
+    void updateSignalPreview(const QString& data);
+    void showErrorMessage(const QString& message);
 
     // --- Export Management ---
     void openFileSelectionDialog();
-    void updateExportStatus(const QString &status);
+    void updateExportStatus(const QString& status);
 
-    public slots:
+   public slots:
     // Slots to handle internal UI logic or feedback from Controller
-    void onIncomingSignal(const QString &signalData);
+    void onIncomingSignal(const QString& signalData);
     void onConversionStatusChanged(bool successful);
 
-    private:
+   private:
     // --- Member Variables (UI Components & State) ---
-    
+
     // Helper setup methods
     void setupUi();
     void createSubViews();
@@ -186,9 +184,3 @@ class LoggingView : public QWidget
     QPushButton* m_exportBtn;
 };
 }  // namespace Logging
-
-#endif // LOGGING_VIEW_HPP
-    
-    
-
-    

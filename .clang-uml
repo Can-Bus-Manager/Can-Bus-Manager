@@ -51,6 +51,14 @@ diagrams:
     include:
       namespaces:
         - EventBroker
+  sending_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    include:
+      namespaces:
+        - Sending
   overall_class_diagram:
       type: class
       glob:
@@ -66,3 +74,4 @@ diagrams:
           - DbcFile
           - CanHandler
           - EventBroker
+          - Sending
