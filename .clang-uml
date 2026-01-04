@@ -1,5 +1,9 @@
 compilation_database_dir: build
 output_directory: doc/diagrams
+add_compile_flags:
+  - -fparse-all-comments
+remove_compile_flags:
+  - -mno-direct-extern-access
 mermaid:
   cmd: "mmdc -i \"doc/diagrams/{}.mmd\" -o \"doc/diagrams/{}.svg\""
 diagrams:
@@ -11,6 +15,8 @@ diagrams:
     include:
       namespaces:
         - Core
+    generate_packages: true
+    package_type: namespace
   app_root_class_diagram:
     type: class
     glob:
@@ -19,6 +25,8 @@ diagrams:
     include:
       namespaces:
         - AppRoot
+    generate_packages: true
+    package_type: namespace
   monitoring_class_diagram:
     type: class
     glob:
@@ -27,6 +35,8 @@ diagrams:
     include:
       namespaces:
         - Monitoring
+    generate_packages: true
+    package_type: namespace
   dbc_class_diagram:
     type: class
     glob:
@@ -35,6 +45,8 @@ diagrams:
     include:
       namespaces:
         - ::DbcFile
+    generate_packages: true
+    package_type: namespace
   can_handler_class_diagram:
     type: class
     glob:
@@ -51,6 +63,8 @@ diagrams:
     include:
       namespaces:
         - EventBroker
+    generate_packages: true
+    package_type: namespace
   sending_class_diagram:
     type: class
     glob:
@@ -59,7 +73,6 @@ diagrams:
     include:
       namespaces:
         - Sending
-        - Common
   logging_class_diagram:
     type: class
     glob:
@@ -68,7 +81,6 @@ diagrams:
     include:
       namespaces:
         - Logging
-        - Common
   overall_class_diagram:
       type: class
       glob:
@@ -86,4 +98,56 @@ diagrams:
           - EventBroker
           - Sending
           - Logging
-          - Common
+      generate_packages: true
+      package_type: namespace
+  # Sequence Diagrams
+  bootstrap_sequence_diagram:
+    type: sequence
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    include:
+      paths:
+        - src
+    exclude:
+      namespaces:
+        - std
+      elements:
+        - type: method
+          name:
+            r: '.*TabFactory::create.*'
+        - type: method
+          name: "Core::Connection::operator bool() const"
+        - type: method
+          name:
+            r: '.*AppRoot::addTab.*'
+        - type: method
+          name: AppRoot::AppRoot::shutdown
+      method_types:
+        - destructor
+        - assignment
+        - operator
+      callee_types:
+        - operator
+        - function_template
+    from:
+      - function: "main(int,char **)"
+    to:
+      - function: "AppRoot::AppRoot::start()"
+    participants_order:
+      - "main(int,char **)"
+      - "AppRoot::AppRoot"
+      - "AppRoot::AppRootModel"
+      - "AppRoot::AppRootDelegate"
+      - "AppRoot::AppRootView"
+      - "EventBroker::EventBroker"
+      - "CanHandler::CanCommunicationHandler"
+      - "DbcFile::DbcComponent"
+      - "Monitoring::MonitoringComponent"
+    generate_condition_statements: true
+    generate_return_values: false
+    generate_return_types: false
+    fold_repeated_activities: true
+    generate_message_comments: true
+    inline_lambda_messages: true
+

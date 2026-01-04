@@ -6,7 +6,7 @@ project(CanBusManager
         LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -66,6 +66,11 @@ target_link_libraries(${PROJECT_NAME}Lib PUBLIC
         EnTT::EnTT
         sockcanpp
         Threads::Threads
+)
+
+target_compile_definitions(${PROJECT_NAME}Lib
+        PUBLIC
+        LOGGING_LEVEL=$<IF:$<CONFIG:Debug>,2,1>
 )
 
 # 6. Executable

@@ -5,7 +5,7 @@
 #include <QLineEdit>
 #include <QWidget>
 
-namespace Common::Widgets {
+namespace Core {
 /**
  * @class DbcSignalRowWidget
  * @brief Represents a single signal line item within a message card.
@@ -45,4 +45,4 @@ class DbcSignalRowWidget final : public QWidget
     QCheckBox* m_funcToggle;   ///< The "Use value function" switch
 };
 
-}  // namespace Common::Widgets
+}  // namespace Core

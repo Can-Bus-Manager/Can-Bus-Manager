@@ -21,7 +21,7 @@ namespace CanHandler {
  * It inherits from Core::ILifecycle, allowing it to automatically respond to
  * system-wide start and stop events via the provided EventBroker.
  */
-class CanCommunicationHandler final : Core::ILifecycle
+class CanCommunicationHandler final : public Core::ILifecycle
 {
    public:
     explicit CanCommunicationHandler(Core::IEventBroker& event_broker)
