@@ -46,6 +46,10 @@ set(RAPIDCSV_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/rapidcsv/src")
 
 # 5. Core Library
 set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp"
+        src/monitoring/view/monitoring_view.cpp
+        src/monitoring/view/monitoring_view.hpp
+        src/monitoring/delegate/monitoring_delegate.cpp
+        src/monitoring/delegate/monitoring_delegate.hpp
 )
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
