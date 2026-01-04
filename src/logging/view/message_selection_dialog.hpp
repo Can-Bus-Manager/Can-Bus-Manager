@@ -48,7 +48,7 @@ class MessageSelectionDialog final : public QDialog
      * @brief Injects a DBC message card into the scrollable selection list.
      * @param card Pointer to a DbcMessageCard configured in 'Selection' mode.
      */
-    void addMessageCard(Common::Widgets::DbcMessageCard* card);
+    void addMessageCard(Core::DbcMessageCard* card);
 
     /**
      * @brief Removes and deletes all current message cards.

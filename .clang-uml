@@ -73,7 +73,6 @@ diagrams:
     include:
       namespaces:
         - Sending
-        - Common
   logging_class_diagram:
     type: class
     glob:
@@ -82,7 +81,6 @@ diagrams:
     include:
       namespaces:
         - Logging
-        - Common
   overall_class_diagram:
       type: class
       glob:
@@ -100,7 +98,6 @@ diagrams:
           - EventBroker
           - Sending
           - Logging
-          - Common
       generate_packages: true
       package_type: namespace
   # Sequence Diagrams

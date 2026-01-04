@@ -32,7 +32,7 @@ class DbcSendingSubView final : public QWidget
      * @name Dynamic Content API
      * The Delegate uses these to populate the scroll area based on the loaded DBC.
      */
-    void addMessageCard(Common::Widgets::DbcMessageCard* card);
+    void addMessageCard(Core::DbcMessageCard* card);
     void clearMessages();
 
     /**
