@@ -16,10 +16,10 @@ namespace Sending {
 /**
  * @class DbcSendingSubView
  * @brief The primary container for the DBC-based workflow.
- * * @section Hierarchy
- * 1. **Configuration:** Top card for interface selection.
- * 2. **Message List:** A scrollable area where the Delegate injects @ref DbcMessageCardWidget.
- * 3. **Footer:** A floating or fixed area for the "Send Message" action.
+ * Hierarchy
+ * 1. Configuration: Top card for interface selection.
+ * 2. Message List: A scrollable area where the Delegate injects DbcMessageCardWidget.
+ * 3. Footer: A floating or fixed area for the "Send Message" action.
  */
 class DbcSendingSubView final : public QWidget
 {
@@ -52,18 +52,15 @@ class DbcSendingSubView final : public QWidget
    private:
     void setupUi();
 
-    // --- Section 1: Config Header ---
     QGroupBox* m_configGroup;
     QComboBox* m_interfaceCombo;
 
-    // --- Section 2: Scrollable Message List ---
-    QLabel* m_listHeader;  ///< "Messages" label
+    QLabel* m_listHeader;
     QScrollArea* m_scrollArea;
-    QWidget* m_scrollContent;    ///< The widget inside the scroll area
-    QVBoxLayout* m_cardsLayout;  ///< Layout holding the MessageCards
+    QWidget* m_scrollContent;
+    QVBoxLayout* m_cardsLayout;
 
-    // --- Section 3: Floating Footer ---
-    QPushButton* m_sendButton;  ///< "Send Message" button (bottom right)
+    QPushButton* m_sendButton;
 };
 
 }  // namespace Sending

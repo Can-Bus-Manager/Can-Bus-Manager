@@ -14,7 +14,6 @@ class SendingModel final : public QAbstractItemModel
     Q_OBJECT
 
    public:
-
     enum class Mode { Raw = 0, Dbc = 1 };
 
     /**

@@ -15,9 +15,9 @@ namespace Sending {
  * @brief The specialized view for bit-level CAN frame composition.
  * * @section Layout Architecture
  * The view is organized into three vertical logical groups based on the transmission workflow:
- * 1. **Header (Frame Config):** Arbitration ID, Extended Flag, and DLC.
- * 2. **Body (Payload):** A visual grid of 8 byte editors.
- * 3. **Footer (Control):** Physical interface selection and the execution trigger.
+ * 1. Header (Frame Config): Arbitration ID, Extended Flag, and DLC.
+ * 2. Body (Payload): A visual grid of 8 byte editors.
+ * 3. Footer (Control): Physical interface selection and the execution trigger.
  *
  * @note This class is a "Passive View." It exposes widgets via accessors
  * so the @ref SendingDelegate can map them to the @ref SendingModel.
@@ -79,15 +79,15 @@ class RawSendingSubView final : public QWidget
     void setupUi();
 
     QGroupBox* m_configGroup;
-    QLineEdit* m_idEditor;  ///< Input for Hex ID (e.g., "123")
-    QSpinBox* m_dlcSpin;    ///< Data Length Code (0-8)
+    QLineEdit* m_idEditor;
+    QSpinBox* m_dlcSpin;
 
     QGroupBox* m_payloadGroup;
-    std::vector<QLineEdit*> m_byteEditors;  ///< Fixed size array of 8 inputs
+    std::vector<QLineEdit*> m_byteEditors;
 
     QGroupBox* m_actionGroup;
-    QComboBox* m_deviceCombo;   ///< Selects the physical bus
-    QPushButton* m_sendButton;  ///< Triggers the one-shot send
+    QComboBox* m_deviceCombo;
+    QPushButton* m_sendButton;
 };
 
 }  // namespace Sending

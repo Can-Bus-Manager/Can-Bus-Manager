@@ -59,6 +59,16 @@ diagrams:
     include:
       namespaces:
         - Sending
+        - Common
+  logging_class_diagram:
+    type: class
+    glob:
+      - src/**/*.cpp
+      - src/**/*.hpp
+    include:
+      namespaces:
+        - Logging
+        - Common
   overall_class_diagram:
       type: class
       glob:
@@ -75,3 +85,5 @@ diagrams:
           - CanHandler
           - EventBroker
           - Sending
+          - Logging
+          - Common

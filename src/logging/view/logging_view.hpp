@@ -1,186 +1,81 @@
 #pragma once
 
-#include <QListView>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QModelIndex>
 #include <QPushButton>
-#include <QSortFilterProxyModel>
 #include <QStackedWidget>
-#include <QString>
-#include <QStringList>
+#include <QTreeView>
+#include <QVBoxLayout>
 #include <QWidget>
-#include <memory>
 
 namespace Logging {
 
 /**
  * @class LoggingView
- * @brief The main container for the Logging Tab (Composite View).
- *
- * @details
- * **RESPONSIBILITIES:**
- * 1. **Layout:** Manages the Sidebar navigation and the central Page Stack
- *    (Load, Overview, ECUs, Messages, Signals).
- * 2. **Data Wiring:** Owns the Proxy Models, connects them to the Source Model,
- *    and injects them into the specific Pages.
- * 3. **Interaction Logic:** Connects Search Bars, Filter Combos, and Selection Signals
- *    from the Pages to the corresponding Proxies.
+ * @brief The primary interface for the Logging module, implementing a multi-state Dashboard.
+ * It handles the display of the previous log sessions and the detail view of a session.
  */
-class LoggingView : public QWidget
+class LoggingView final : public QWidget
 {
     Q_OBJECT
 
    public:
-    explicit LoggingView(IEventBroker* broker, QWidget* parent = nullptr);
+    /**
+     * @brief Constructs the LoggingView with a framed dashboard and internal stack.
+     */
     explicit LoggingView(QWidget* parent = nullptr);
-    ~LoggingView() override;
+
+    /** @brief Provides access to the tree view for Model/Delegate binding. */
+    auto getHistoryTable() const -> QTreeView*
+    {
+        return m_historyTable;
+    }
+
+    /** * @brief Switches the content frame to show the Detail View.
+     * @details This hides the history table and populates the detail container.
+     * @param detailWidget The widget containing specific log data (e.g., charts or signal lists).
+     */
+    void showDetailView(QWidget* detailWidget);
+
+    /** * @brief Switches the content frame back to the History Table.
+     */
+    void hideDetailView();
 
     /**
-     * @brief Initializes the view with the source data.
-     *
-     * @caller LoggingComponent::onSignalLogged().
-     * @caller LoggingComponent::onLoggingError().
-     *
-     * @param model The raw LoggingModel containing the data tree.
+     * @brief Updates the global Action button and Status label.
+     * @param isRecording If true, UI reflects an active session (Red 'Stop' button).
      */
-    void setSourceModel(QAbstractItemModel* model);
-
-    /**
-     * @brief Sets the formatting delegate for tables.
-     *
-     * @caller LoggingComponent (Constructor).
-     *
-     * @details
-     * Applies the `LoggingDelegate` to the Messages Master Table and the Signals Table
-     * to ensure Hex values and Units are displayed correctly.
-     */
-    void setDataItemDelegate(QAbstractItemDelegate* delegate);
-
-    /**
-     * @brief Unlocks navigation (Sidebar) after the logging source is ready.
-     *
-     * @caller LoggingComponent::onLoggingStarted().
-     */
-    void setNavigationEnabled(bool enabled);
+    void setRecordingState(bool isRecording);
 
    signals:
-    // --- Export & Logging Actions ---
-    /**
-     * @brief Signal: Emitted when the user requests to export the log data.
-     * @caller on_btnExport_clicked().
-     */
-    void exportRequested();
+    /** @brief Emitted when user wants to start; triggers the Modal Selection Dialog. */
+    void startRequested();
+    /** @brief Emitted to stop the active session and finalize the log. */
+    void stopRequested();
 
-    /**
-     * @brief Signal: Emitted when the user requests to start a live preview.
-     * @caller UI.
-     */
-    void startPreviewRequested();
-
-    /**
-     * @brief Signal: Emitted when the user requests to start logging.
-     */
-    void startLoggingRequested();
-
-    /**
-     * @brief Signal: Emitted when the user requests to pause logging.
-     */
-    void pauseLogging();
-
-    /**
-     * @brief Signal: Emitted when the user requests to pause logging (requested variant).
-     */
-    void pauseLoggingRequested();
-
-    /**
-     * @brief Resume logging.
-     */
-    void resumeLoggingRequested();
-
-    /**
-     * @brief Signal: Emitted when the user requests to stop logging.
-     */
-    void stopLogging();
-
-    /**
-     * @brief Misc logging UI actions.
-     */
-    void editSettingsRequested();
-
-    // --- Mode & Interface Selection ---
-    void modeSelected(int mode);  // e.g., 0 for Raw, 1 for DBC
-    void interfaceChanged(const QString& interfaceName);
-    void dbcFileSelected(const QString& filePath);
-
-    // --- DBC Specific Actions ---
-    void ecuVisibilityChanged(const QString& ecuName, bool visible);
-    void changeDbcFileRequested();
-
-    // --- Export Actions ---
-    void exportPathEntered(const QString& path);
-    void retryExportRequested();
-    void exportProcessFinished();
-
-   private slots:
-    /**
-     * @brief Handles sidebar navigation to switch the active page in the stack.
-     * @caller Sidebar QListView (clicked signal).
-     */
-    void onSidebarSelectionChanged(const QModelIndex& index);
-
-    // Button actions from UI
-    void on_btnExport_clicked();
-    void on_btnClear_clicked();
-
-    // --- State & UI Control ---
-    void setIdleState();
-    void setRawModeLayout();
-    void setDbcModeLayout();
-    void setLoggingActive(bool active);
-    void updateSignalPreview(const QString& data);
-    void showErrorMessage(const QString& message);
-
-    // --- Export Management ---
-    void openFileSelectionDialog();
-    void updateExportStatus(const QString& status);
-
-   public slots:
-    // Slots to handle internal UI logic or feedback from Controller
-    void onIncomingSignal(const QString& signalData);
-    void onConversionStatusChanged(bool successful);
+    /** @brief Triggered by an 'Export' button within a specific table row. */
+    void exportRequested(const QModelIndex& index);
+    /** @brief Triggered by a 'Details' button within a specific table row. */
+    void detailRequested(const QModelIndex& index);
 
    private:
-    // --- Member Variables (UI Components & State) ---
-
-    // Helper setup methods
+    /** @brief Initializes the persistent header and the swappable content frame. */
     void setupUi();
-    void createSubViews();
-    void setupConnections();
 
-    // UI Layout state
-    enum class ViewState { Idle, RawConfig, DbcConfig, Logging, Exporting };
-    ViewState m_currentState;
+    QWidget* m_headerBox;
+    QLabel* m_statusLabel;    /**< Displays status (e.g., "Idle", "Recording..."). */
+    QPushButton* m_btnAction; /**< The Start/Stop toggle button. */
 
-    // Input Data
-    QString m_selectedInterface;
-    QString m_currentDbcPath;
-    QString m_exportPath;
+    QFrame* m_mainFrame;            /**< The bordered container for consistent UI. */
+    QStackedWidget* m_contentStack; /**< Handles swapping between Table and Details. */
 
-    // Configuration Lists
-    QStringList m_availableInterfaces;
-    QStringList m_parsedEcus;
+    QWidget* m_historyPage;
+    QTreeView* m_historyTable;
 
-    // UI containers
-    QListView* m_sidebarList = nullptr;
-    QStackedWidget* m_contentStack = nullptr;
-
-    // Proxy models and delegates
-    std::unique_ptr<QSortFilterProxyModel> m_messageFilterProxy;
-    std::unique_ptr<QSortFilterProxyModel> m_signalFilterProxy;
-    std::unique_ptr<QAbstractItemDelegate> m_delegate;
-
-    // Qt UI Elements (Placeholders for actual Widgets)
-    QPushButton* m_startLoggingBtn;
-    QPushButton* m_pauseLoggingBtn;
-    QPushButton* m_stopLoggingBtn;
-    QPushButton* m_exportBtn;
+    QWidget* m_detailPage;
+    QVBoxLayout* m_detailLayout;
 };
+
 }  // namespace Logging

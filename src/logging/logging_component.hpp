@@ -8,15 +8,11 @@
 #include "core/interface/i_tab_component.hpp"
 
 // MVD Classes
+#include "core/dto/can_dto.hpp"
+#include "core/dto/dbc_dto.hpp"
 #include "logging/delegate/logging_delegate.hpp"
 #include "logging/model/logging_model.hpp"
 #include "logging/view/logging_view.hpp"
-
-// Forward declarations for Events
-namespace Core {
-struct SignalLoggedEvent;
-struct LoggingErrorEvent;
-}  // namespace Core
 
 namespace Logging {
 
@@ -34,7 +30,7 @@ namespace Logging {
  * - User Input (View) -> Component -> EventBroker (Publish `ParseDbcRequestEvent`)
  * - System Event (`SignalLoggedEvent`) -> Model (Update Data)
  */
-class LoggingComponent : public Core::ITabComponent
+class LoggingComponent final : public Core::ITabComponent
 {
     Q_OBJECT
 
@@ -57,15 +53,11 @@ class LoggingComponent : public Core::ITabComponent
      */
     ~LoggingComponent() override;
 
-    // --- Core::ITabComponent Interface Implementation ---
-
     /**
      * @brief Returns the main widget (LoggingView) for display in the application window.
      * @caller AppRoot.
      */
     auto getView() -> QWidget* override;
-
-    // --- Core::ILifecycle Interface Implementation ---
 
     /**
      * @brief Called when the application starts/module is activated.
@@ -77,41 +69,53 @@ class LoggingComponent : public Core::ITabComponent
      */
     void onStop() override;
 
-   private slots:
+   signals:
     /**
-     * @brief Slot: Triggered when the user clicks the "Export" button in the View.
-     *
-     * @caller LoggingView (signal).
-     *
-     * @details
-     * Gathers current log data from the Model and initiates export logic
-     * (e.g., saving to CSV file). Actual file dialog and writing logic
-     * would be implemented here or delegated to a helper class.
+     * @brief Signal emitted when a new DBC configuration is available.
+     * The Delegate will connect to this.
      */
-    void onExportRequested();
+    void dbcConfigurationChanged(const Core::DbcConfig& config);
+
+    /** @brief Signal to delegate to record a raw hexadecimal frame */
+    void recordRawFrame(const Core::RawCanMessage& message);
+
+    /** @brief Signal to delegate to record decoded DBC signal values */
+    void recordDbcSignals(const Core::DbcCanMessage& message);
+
+   private slots:
+
+    /**
+     * @brief Triggered when the user selects a different CAN device/interface.
+     * It also publishes the CanDriverChangeEvent.
+     * @param deviceName The identifier of the newly selected hardware.
+     */
+    void onDeviceChanged(const std::string& deviceName);
+
+    /**
+     * @brief Activates Broker subscriptions.
+     * Depending on user selection, it connects to Raw, DBC, or both.
+     */
+    void startLogging();
+
+    /**
+     * @brief Releases Broker subscriptions.
+     * Calling .disconnect() on the Connection handles stops the data flow.
+     */
+    void stopLogging();
+
+    /**
+     * @brief Performs the actual file writing.
+     * @param sessionId Unique ID of the log to export.
+     * @param filePath Destination on the disk (from Delegate's file dialog).
+     */
+    void exportLogSession(const QString& sessionId, const QString& filePath);
 
    private:
     /**
-     * @brief Callback: Triggered when a new signal log event is published.
-     * @caller EventBroker (lambda callback).
-     * @details Appends the new log entry to the Model.
+     * @brief The actual CSV "Instance" logic.
+     * Logic for iterating through the Model's data and writing to the stream.
      */
-    void onSignalLogged(const Core::SignalLoggedEvent& event);
-
-    /**
-     * @brief Callback: Triggered when a logging error event is published.
-     * @caller EventBroker (lambda callback).
-     * @details Displays an error message to the user via the View.
-     */
-    void onLoggingError(const Core::LoggingErrorEvent& event);
-
-    /**
-     * @brief Sets up internal connections between View signals and Component slots.
-     * @caller Constructor.
-     */
-    void setupConnections();
-
-    // --- Members ---
+    bool writeToCsv(const QString& sessionId, const QString& filePath);
 
     /** @brief Ownership of the Data Model (Smart Model). */
     std::unique_ptr<LoggingModel> m_model;
@@ -121,11 +125,21 @@ class LoggingComponent : public Core::ITabComponent
 
     /** @brief Ownership of the Formatting Delegate (passed to View). */
     std::unique_ptr<LoggingDelegate> m_delegate;
-    /** @brief RAII Handle for signal log event subscription. */
-    Core::Connection m_signalLoggedConn;
 
-    /** @brief RAII Handle for logging error event subscription. */
-    Core::Connection m_loggingErrorConn;
+    /** @brief RAII Handle for raw message reveived event subscription. */
+    Core::Connection m_rawMsgConn;
+
+    /** @brief RAII Handle for dbc message received event subscription. */
+    Core::Connection m_dbcMsgConn;
+
+    /**
+     * @brief RAII Handle for success event subscription.
+     * This connects to the dbcConfigurationChanged signal in onStart()
+     */
+    Core::Connection m_parseSuccessConn;
+
+    /** @brief RAII Handle for error event subscription. */
+    Core::Connection m_parseErrorConn;
 };
 
 }  // namespace Logging

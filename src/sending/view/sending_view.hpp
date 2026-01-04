@@ -59,7 +59,6 @@ class SendingView final : public QWidget
     QPushButton* m_btnRawMode;
     QPushButton* m_btnDbcMode;
 
-    // Central stack
     QStackedWidget* m_contentStack;
     RawSendingSubView* m_rawView;
     DbcSendingSubView* m_dbcView;
