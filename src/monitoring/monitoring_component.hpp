@@ -4,8 +4,8 @@
 #include "core/interface/i_event_broker.hpp"
 #include "core/interface/i_tab_component.hpp"
 #include "monitoring/delegate/monitoring_delegate.hpp"
-#include "monitoring/view/monitoring_view.hpp"
 #include "monitoring/model/monitoring_model.hpp"
+#include "monitoring/view/monitoring_view.hpp"
 
 #endif  // CANBUSMANAGER_MONITORING_COMPONENT_HPP
 
@@ -75,22 +75,22 @@ class MonitoringComponent final : public Core::ITabComponent
     void dbcConfigurationChanged();
 
     /**
-    * @brief Updates the message data when a CAN frame is received.
-    *
-    * Adds new frames or updates existing ones and refreshes the signal
-    * values associated with the frame.
-    *
-    * @param message Reference to the received CAN message.
-    */
+     * @brief Updates the message data when a CAN frame is received.
+     *
+     * Adds new frames or updates existing ones and refreshes the signal
+     * values associated with the frame.
+     *
+     * @param message Reference to the received CAN message.
+     */
     void frameReceived(Core::DbcCanMessage& message);
 
 
    private slots:
     /**
-    * @brief Triggered when the user selects a different CAN interface.
-    * It also publishes the CanDriverChangeEvent.
-    * @param deviceName The identifier of the newly selected hardware.
-    */
+     * @brief Triggered when the user selects a different CAN interface.
+     * It also publishes the CanDriverChangeEvent.
+     * @param deviceName The identifier of the newly selected hardware.
+     */
     void onSourceChanged(const std::string& deviceName);
 
     /**

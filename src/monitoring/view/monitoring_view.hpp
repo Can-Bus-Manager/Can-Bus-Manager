@@ -3,9 +3,9 @@
 
 #include <QSortFilterProxyModel>
 #include <QSplitter>
+#include <QTreeView>
 
 #include "graph_list_view.hpp"
-#include <QTreeView>
 
 /**
  * @namespace Monitoring
@@ -14,7 +14,7 @@
 namespace Monitoring {
 class MonitoringView : public QWidget
 {
-public:
+   public:
     explicit MonitoringView(QWidget* parent = nullptr);
     ~MonitoringView() override = default;
     // Accessors for the Delegate to wire up signals/slots
@@ -26,7 +26,7 @@ public:
     {
         return m_graphListView;
     }
-private:
+   private:
     void setupUi();
     /**
      * @brief Proxy model used to filter and sort the signal tree data.
@@ -40,5 +40,5 @@ private:
     QSplitter* m_splitter;  // For Signals and Graphs scalable split view
     GraphListView* m_graphListView;
 };
-}
+} //namespa
 #endif  // CANBUSMANAGER_MONITORING_VIEW_HPP
