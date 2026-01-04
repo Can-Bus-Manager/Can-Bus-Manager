@@ -42,6 +42,8 @@
 
 # Idea
 .idea
+.vscode
+.devcontainer
 
 # Doc
 doc/*
