@@ -45,19 +45,19 @@ class MonitoringDelegate : QStyledItemDelegate
     [[nodiscard]] auto displayText(const QVariant& value,
                                    const QLocale& locale) const -> QString override;
     /**
-    * @brief Paints a rounded card with an icon and a count badge.
-    *
-    * @caller Qt View (QListView) during paint events.
-    *
-    * @details
-    * 1. Draws a rounded rectangle background.
-    * 2. Draws a placeholder icon on the left.
-    * 3. Draws the item name (ECU or Signal) in the center.
-    *
-    * @param painter The painter object used for drawing.
-    * @param option Contains geometry (rect) and state (selected/hovered).
-    * @param index The model index providing the data.
-    */
+     * @brief Paints a rounded card with an icon and a count badge.
+     *
+     * @caller Qt View (QListView) during paint events.
+     *
+     * @details
+     * 1. Draws a rounded rectangle background.
+     * 2. Draws a placeholder icon on the left.
+     * 3. Draws the item name (ECU or Signal) in the center.
+     *
+     * @param painter The painter object used for drawing.
+     * @param option Contains geometry (rect) and state (selected/hovered).
+     * @param index The model index providing the data.
+     */
     void paint(QPainter* painter, const QStyleOptionViewItem& option,
                const QModelIndex& index) const override;
 
@@ -69,6 +69,6 @@ class MonitoringDelegate : QStyledItemDelegate
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
-}
+} //namespace Monitoring
 
 #endif  // CANBUSMANAGER_MONITORING_DELEGATE_HPP
