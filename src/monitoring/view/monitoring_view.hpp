@@ -41,5 +41,5 @@ class MonitoringView : public QWidget
     QSplitter* m_splitter;  // For Signals and Graphs scalable split view
     GraphListView* m_graphListView;
 };
-} // namespace Monitoring
+}  // namespace Monitoring
 #endif  // CANBUSMANAGER_MONITORING_VIEW_HPP
