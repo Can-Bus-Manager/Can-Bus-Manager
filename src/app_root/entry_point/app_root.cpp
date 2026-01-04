@@ -35,7 +35,7 @@ void AppRoot::bootstrap()
     m_delegate = std::make_unique<AppRootDelegate>();
     m_mainView = std::make_unique<AppRootView>();
 
-    //  Wiring Model and Delegate of App Root to View
+    //  Wiring Model, Delegate nad View of App Root
     if (m_mainView && m_model)
     {
         m_mainView->setModel(m_model.get());
@@ -118,7 +118,8 @@ void AppRoot::restartModule(const Core::ModuleStoppedEvent& event)
     // Event Broker and Can Handler are Fatal
     if (it == m_tabs.end() || !m_tabFactory.canRestart(event.module_index))
     {
-        LOG_ERR("AppRoot", "Received stop event for type {} which can't be restarted. Shutting down.",
+        LOG_ERR("AppRoot",
+                "Received stop event for type {} which can't be restarted. Shutting down.",
                 event.module_index.name());
         QMetaObject::invokeMethod(
             QCoreApplication::instance(), []() -> void { QCoreApplication::exit(EXIT_FAILURE); },

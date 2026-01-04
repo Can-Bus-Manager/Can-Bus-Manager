@@ -15,7 +15,7 @@ namespace EventBroker {
  * @details It is based on Entt dispatchers: For every event type a dispatcher is registered
  * It provides all logic to subscribe/publish events for that event type.
  */
-class EventBroker final : Core::IEventBroker
+class EventBroker final : public Core::IEventBroker
 {
    protected:
     /**
