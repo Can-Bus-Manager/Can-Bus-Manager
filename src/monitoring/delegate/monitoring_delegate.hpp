@@ -69,6 +69,6 @@ class MonitoringDelegate : QStyledItemDelegate
      */
     QSize sizeHint(const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 };
-} //namespace Monitoring
+} // namespace Monitoring
 
 #endif  // CANBUSMANAGER_MONITORING_DELEGATE_HPP

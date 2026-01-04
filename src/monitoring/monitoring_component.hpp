@@ -84,7 +84,6 @@ class MonitoringComponent final : public Core::ITabComponent
      */
     void frameReceived(Core::DbcCanMessage& message);
 
-
    private slots:
     /**
      * @brief Triggered when the user selects a different CAN interface.
@@ -102,8 +101,9 @@ class MonitoringComponent final : public Core::ITabComponent
     void onSignalChecked(char messageId, const std::string& signalName);
 
     /**
-     * @brief Triggered when the user unchecks a signal currently checked (therefor plotted in a graph)
-     * Notifies GraphListView to erase graph of the checked signal and discontinue the plotting
+     * @brief Triggered when the user unchecks a signal currently checked (therefor plotted in a
+     * graph) Notifies GraphListView to erase graph of the checked signal and discontinue the
+     * plotting
      * @param messageId the id of the message the unchecked signal belongs to
      * @param signalName the name of the unchecked signal
      */
