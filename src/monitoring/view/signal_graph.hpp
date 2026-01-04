@@ -4,7 +4,9 @@
 
 #include "monitoring/model/signal_graph_model.hpp"
 
-class QLineSeries {};
+class QLineSeries
+{
+};
 
 #endif  // CANBUSMANAGER_SIGNAL_GRAPH_HPP
 
