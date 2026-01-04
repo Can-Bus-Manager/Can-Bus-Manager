@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "common/widgets/dbc_message_card.hpp"
+#include "core/widgets/dbc_message_card.hpp"
 
 namespace Sending {
 

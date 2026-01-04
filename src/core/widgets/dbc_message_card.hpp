@@ -7,7 +7,7 @@
 #include <QWidget>
 #include <vector>
 
-namespace Common::Widgets {
+namespace Core {
 
 class DbcSignalRowWidget;  // Forward declaration
 
@@ -52,4 +52,4 @@ class DbcMessageCard : public QWidget
     QVBoxLayout* m_signalsLayout;
 };
 
-}  // namespace Common::Widgets
+}  // namespace Core
