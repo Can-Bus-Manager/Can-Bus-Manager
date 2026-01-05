@@ -1,10 +1,10 @@
-#ifndef CANBUSMANAGER_SIGNAL_TREE_MODEL_HPP
-#define CANBUSMANAGER_SIGNAL_TREE_MODEL_HPP
+#ifndef CANBUSMANAGER_MONITORING_MODEL_HPP
+#define CANBUSMANAGER_MONITORING_MODEL_HPP
 #include <QAbstractItemModel>
 
 #include "core/dto/can_dto.hpp"
 
-#endif  // CANBUSMANAGER_SIGNAL_TREE_MODEL_HPP
+#endif  // CANBUSMANAGER_MONITORING_MODEL_HPP
 
 /**
  * @namespace Monitoring
@@ -13,10 +13,10 @@
 namespace Monitoring {
 
 /**
- * @class SignalTreeModel
+ * @class MonitoringModel
  * @brief Hierarchical model representing CAN frames and their contained signals.
  *
- * SignalTreeModel implements a two-level tree structure:
+ * MonitoringModel implements a two-level tree structure:
  * - Top level: CAN frames
  * - Child level: Signals belonging to each frame
  *
@@ -25,7 +25,7 @@ namespace Monitoring {
  * via dedicated Qt signals, enabling loose coupling with visualization
  * components.
  */
-class SignalTreeModel : public QAbstractItemModel
+class MonitoringModel final : public QAbstractItemModel
 {
     Q_OBJECT
    public:
@@ -34,7 +34,7 @@ class SignalTreeModel : public QAbstractItemModel
      *
      * @param parent Optional Qt parent object.
      */
-    explicit SignalTreeModel(QObject* parent = nullptr);
+    explicit MonitoringModel(QObject* parent = nullptr);
 
     /**
      * @name QAbstractItemModel interface implementation
@@ -80,31 +80,6 @@ class SignalTreeModel : public QAbstractItemModel
      * Primarily used to handle check state changes initiated by the view.
      */
     auto setData(const QModelIndex& index, const QVariant& value, int role) -> bool override;
-
-   public slots:
-    /**
-     * @brief Updates the model when a CAN frame is received.
-     *
-     * Adds new frames or updates existing ones and refreshes the signal
-     * values associated with the frame.
-     *
-     * @param message Reference to the received CAN message.
-     */
-    void onFrameReceived(Core::DbcCanMessage& message);
-   signals:
-    /**
-     * @brief Emitted when a signal is checked by the user.
-     *
-     * Used to trigger creation or activation of a corresponding graph.
-     */
-    void signalChecked(Core::DbcCanSignal& signal);
-
-    /**
-     * @brief Emitted when a signal is unchecked by the user.
-     *
-     * Used to trigger removal of the corresponding graph.
-     */
-    void signalUnchecked(Core::DbcCanSignal& signal);
 
    private:
     /**

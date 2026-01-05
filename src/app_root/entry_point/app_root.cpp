@@ -8,7 +8,7 @@
 #include "core/macro/console_logging.hpp"
 #include "dbc_file/dbc_component.hpp"
 #include "event_broker/event_broker.hpp"
-#include "monitoring/view/monitoring_tab.hpp"
+#include "monitoring/monitoring_component.hpp"
 
 namespace AppRoot {
 

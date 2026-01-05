@@ -3,6 +3,8 @@
 #include <QWidget>
 
 #include "monitoring/model/signal_graph_model.hpp"
+#include "qwt_plot.h"
+
 #endif  // CANBUSMANAGER_SIGNAL_GRAPH_HPP
 
 /**
@@ -68,6 +70,8 @@ class SignalGraph : QWidget
     void deleteGraph(Core::DbcCanSignal& signal);
 
    private:
+    QwtPlot graph;
+
     /**
      * @brief Model holding the time-series data and graph state.
      *
