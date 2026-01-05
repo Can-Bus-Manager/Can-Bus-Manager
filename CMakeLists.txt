@@ -36,21 +36,17 @@ if(ENABLE_CLANG_TIDY)
 endif()
 
 # 4. Dependencies (Runtime Libraries)
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Widgets PrintSupport OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 
 add_subdirectory(external/entt)
 add_subdirectory(external/libsockcanpp)
+add_subdirectory(external/qwt)
 
 set(RAPIDCSV_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/rapidcsv/src")
 
 # 5. Core Library
-set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp"
-        src/monitoring/view/monitoring_view.cpp
-        src/monitoring/view/monitoring_view.hpp
-        src/monitoring/delegate/monitoring_delegate.cpp
-        src/monitoring/delegate/monitoring_delegate.hpp
-)
+set(ENTRY_POINT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/app_root/entry_point/main.cpp")
 
 file(GLOB_RECURSE SOURCE_FILES "src/*.cpp" "src/*.hpp")
 list(FILTER SOURCE_FILES EXCLUDE REGEX "src/app_root/entry_point/main.cpp")
@@ -69,6 +65,7 @@ target_link_libraries(${PROJECT_NAME}Lib PUBLIC
         Qt6::Widgets
         EnTT::EnTT
         sockcanpp
+        qwt
         Threads::Threads
 )
 

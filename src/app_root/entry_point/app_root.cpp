@@ -2,13 +2,13 @@
 
 #include <qcoreapplication.h>
 
-#include "../../monitoring/monitoring_component.hpp"
 #include "app_root/model/app_root_model.hpp"
 #include "app_root/view/app_root_view.hpp"
 #include "can_handler/can_communication_handler/can_communication_handler.hpp"
 #include "core/macro/console_logging.hpp"
 #include "dbc_file/dbc_component.hpp"
 #include "event_broker/event_broker.hpp"
+#include "monitoring/monitoring_component.hpp"
 
 namespace AppRoot {
 
