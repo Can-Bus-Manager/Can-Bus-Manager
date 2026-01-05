@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QListView>
 #include <QStackedWidget>
 #include <QTabBar>
 #include <QVBoxLayout>
@@ -13,10 +14,13 @@ namespace AppRoot {
 
 /**
  * @class AppRootView
- * @brief The main UI Shell (Compositor).
+ * @brief The main UI Shell acting as the Window.
  * @details
- * Manages a QTabBar at the top and a QStackedWidget for the main content.
- * It uses a standard QVBoxLayout to stack the navigation and content areas.
+ * implements the Strict MVD pattern.
+ * - Tabs: Rendered by QListView (via AppRootDelegate).
+ * - Content: Rendered by QStackedWidget.
+ * The View acts as a mediator, syncing the SelectionModel of the list
+ * with the ActiveIndex of the stack.
  */
 class AppRootView : public QWidget
 {
@@ -63,7 +67,7 @@ class AppRootView : public QWidget
     /**
      * @brief The tab bar populated by the options provided in the m_tabs.
      */
-    QTabBar* m_tabBar;
+    QListView* m_tabView;
 
     /**
      * @brief The different Widgets of the tabs with one selected.

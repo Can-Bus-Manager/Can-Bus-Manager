@@ -6,7 +6,7 @@ project(CanBusManager
         LANGUAGES CXX
 )
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -36,11 +36,12 @@ if(ENABLE_CLANG_TIDY)
 endif()
 
 # 4. Dependencies (Runtime Libraries)
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
+find_package(Qt6 COMPONENTS Widgets PrintSupport OpenGL REQUIRED)
 find_package(Threads REQUIRED)
 
 add_subdirectory(external/entt)
 add_subdirectory(external/libsockcanpp)
+add_subdirectory(external/qwt)
 
 set(RAPIDCSV_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/rapidcsv/src")
 
@@ -64,7 +65,13 @@ target_link_libraries(${PROJECT_NAME}Lib PUBLIC
         Qt6::Widgets
         EnTT::EnTT
         sockcanpp
+        qwt
         Threads::Threads
+)
+
+target_compile_definitions(${PROJECT_NAME}Lib
+        PUBLIC
+        LOGGING_LEVEL=$<IF:$<CONFIG:Debug>,2,1>
 )
 
 # 6. Executable

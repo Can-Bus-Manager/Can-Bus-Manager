@@ -1,0 +1,81 @@
+#pragma once
+
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QModelIndex>
+#include <QPushButton>
+#include <QStackedWidget>
+#include <QTreeView>
+#include <QVBoxLayout>
+#include <QWidget>
+
+namespace Logging {
+
+/**
+ * @class LoggingView
+ * @brief The primary interface for the Logging module, implementing a multi-state Dashboard.
+ * It handles the display of the previous log sessions and the detail view of a session.
+ */
+class LoggingView final : public QWidget
+{
+    Q_OBJECT
+
+   public:
+    /**
+     * @brief Constructs the LoggingView with a framed dashboard and internal stack.
+     */
+    explicit LoggingView(QWidget* parent = nullptr);
+
+    /** @brief Provides access to the tree view for Model/Delegate binding. */
+    auto getHistoryTable() const -> QTreeView*
+    {
+        return m_historyTable;
+    }
+
+    /** * @brief Switches the content frame to show the Detail View.
+     * @details This hides the history table and populates the detail container.
+     * @param detailWidget The widget containing specific log data (e.g., charts or signal lists).
+     */
+    void showDetailView(QWidget* detailWidget);
+
+    /** * @brief Switches the content frame back to the History Table.
+     */
+    void hideDetailView();
+
+    /**
+     * @brief Updates the global Action button and Status label.
+     * @param isRecording If true, UI reflects an active session (Red 'Stop' button).
+     */
+    void setRecordingState(bool isRecording);
+
+   signals:
+    /** @brief Emitted when user wants to start; triggers the Modal Selection Dialog. */
+    void startRequested();
+    /** @brief Emitted to stop the active session and finalize the log. */
+    void stopRequested();
+
+    /** @brief Triggered by an 'Export' button within a specific table row. */
+    void exportRequested(const QModelIndex& index);
+    /** @brief Triggered by a 'Details' button within a specific table row. */
+    void detailRequested(const QModelIndex& index);
+
+   private:
+    /** @brief Initializes the persistent header and the swappable content frame. */
+    void setupUi();
+
+    QWidget* m_headerBox;
+    QLabel* m_statusLabel;    /**< Displays status (e.g., "Idle", "Recording..."). */
+    QPushButton* m_btnAction; /**< The Start/Stop toggle button. */
+
+    QFrame* m_mainFrame;            /**< The bordered container for consistent UI. */
+    QStackedWidget* m_contentStack; /**< Handles swapping between Table and Details. */
+
+    QWidget* m_historyPage;
+    QTreeView* m_historyTable;
+
+    QWidget* m_detailPage;
+    QVBoxLayout* m_detailLayout;
+};
+
+}  // namespace Logging
