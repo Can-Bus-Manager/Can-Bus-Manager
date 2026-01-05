@@ -54,6 +54,8 @@ void AppRoot::bootstrap()
     // Helper to keep bootstrap readable
     initTab<DbcFile::DbcComponent>();
     initTab<Monitoring::MonitoringComponent>();
+    initTab<Sending::SendingComponent>();
+    initTab<Logging::LoggingComponent>();
 
     LOG_INF("AppRoot", "Bootstrap Complete: launching internal logic.");
     start();
