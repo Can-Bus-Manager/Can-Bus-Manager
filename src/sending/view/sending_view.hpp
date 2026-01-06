@@ -7,6 +7,7 @@
 
 #include "dbc_based_sending_subview.hpp"
 #include "raw_sending_subview.hpp"
+#include "sending/model/sending_model.hpp"
 
 namespace Sending {
 

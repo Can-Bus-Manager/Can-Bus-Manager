@@ -1,9 +1,7 @@
 #pragma once
 
 #include <QObject>
-
-#include "sending/model/sending_model.hpp"
-#include "sending/view/sending_view.hpp"
+#include <QStyledItemDelegate>
 
 namespace Sending {
 
@@ -34,7 +32,6 @@ class SendingDelegate final : public QStyledItemDelegate
      */
     void setModelData(QWidget* editor, QAbstractItemModel* model,
                       const QModelIndex& index) const override;
-
 };
 
 }  // namespace Sending

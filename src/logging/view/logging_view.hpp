@@ -10,6 +10,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "logging/model/logging_model.hpp"
+
 namespace Logging {
 
 /**
