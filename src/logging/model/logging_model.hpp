@@ -6,8 +6,6 @@
 #include <map>
 #include <vector>
 
-#include "core/dto/can_dto.hpp"
-
 namespace Logging {
 
 /** * @struct LogEntry
@@ -58,7 +56,7 @@ class LoggingModel final : public QAbstractTableModel
         Col_StartTime,
         Col_Duration,
         Col_Count,
-        Col_Actions,  // New column for Delegate-painted buttons
+        Col_Actions, // New column for Delegate-painted buttons
         Col_MAX
     };
 
@@ -91,7 +89,7 @@ class LoggingModel final : public QAbstractTableModel
      */
     [[nodiscard]] bool isRecording() const;
 
-   public slots:
+public slots:
     /** @brief Triggered by Component's bridge signal */
     void onRawFrameReceived(const Core::RawCanMessage& msg);
 
@@ -99,9 +97,9 @@ class LoggingModel final : public QAbstractTableModel
     void onDbcSignalsReceived(const Core::DbcCanMessage& msg);
 
     /**
-     * @brief Creates a new session and sets it as the active target for data.
-     * @param deviceName The hardware interface used for this session.
-     */
+    * @brief Creates a new session and sets it as the active target for data.
+    * @param deviceName The hardware interface used for this session.
+    */
     void startNewSession(const QString& deviceName);
 
     /**
