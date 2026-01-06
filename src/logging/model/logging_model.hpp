@@ -29,6 +29,7 @@ struct LogSession {
     QDateTime startDateTime;
     QString duration;
     bool isRecording = false;
+    QString deviceName;
     std::vector<LogEntry> entries;
 };
 
@@ -49,6 +50,16 @@ class LoggingModel final : public QAbstractTableModel
      */
     enum Roles { SessionIdRole = Qt::UserRole + 1, SessionDataRole, IsActiveRole, EntryCountRole };
 
+    /** @brief Column definitions for the History Table. */
+    enum Columns {
+        Col_ID = 0,
+        Col_StartTime,
+        Col_Duration,
+        Col_Count,
+        Col_Actions, // New column for Delegate-painted buttons
+        Col_MAX
+    };
+
     explicit LoggingModel(QObject* parent = nullptr);
 
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
@@ -56,17 +67,6 @@ class LoggingModel final : public QAbstractTableModel
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
-
-    /**
-     * @brief Creates a new session and sets it as the active target for data.
-     * @param deviceName The hardware interface used for this session.
-     */
-    void startNewSession(const QString& deviceName);
-
-    /**
-     * @brief Finalizes the active session, locking it for export.
-     */
-    void stopActiveSession();
 
     /**
      * @brief Appends data to the current recording.
@@ -84,14 +84,35 @@ class LoggingModel final : public QAbstractTableModel
      */
     QString sessionIdAt(const QModelIndex& index) const;
 
+    /**
+     * @brief Checks if a recording is currently in progress.
+     */
+    [[nodiscard]] bool isRecording() const;
+
+public slots:
+    /** @brief Triggered by Component's bridge signal */
+    void onRawFrameReceived(const Core::RawCanMessage& msg);
+
+    /** @brief Triggered by Component's bridge signal */
+    void onDbcSignalsReceived(const Core::DbcCanMessage& msg);
+
+    /**
+    * @brief Creates a new session and sets it as the active target for data.
+    * @param deviceName The hardware interface used for this session.
+    */
+    void startNewSession(const QString& deviceName);
+
+    /**
+     * @brief Finalizes the active session, locking it for export.
+     */
+    void stopActiveSession();
+
    private:
     /** @brief Updates the duration string of the active session based on current time. */
     void updateActiveDuration();
 
     std::vector<LogSession> m_sessions;
     int m_activeSessionIndex = -1;
-
-    enum Columns { Col_ID = 0, Col_StartTime, Col_Duration, Col_Count, Col_MAX };
 };
 
 }  // namespace Logging

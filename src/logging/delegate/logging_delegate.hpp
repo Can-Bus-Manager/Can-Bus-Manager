@@ -29,9 +29,17 @@ class LoggingDelegate final : public QObject
     explicit LoggingDelegate(LoggingView* view, LoggingModel* model, QObject* parent = nullptr);
 
     /**
-     * @brief Connects all signals from the View and Component to their respective slots.
+     * @brief Renders simulated buttons in the "Actions" column.
      */
-    void setupConnections();
+    void paint(QPainter* painter, const QStyleOptionViewItem& option,
+               const QModelIndex& index) const override;
+
+    /**
+     * @brief Handles mouse clicks to detect if a "button" was pressed.
+     * @details If a button area is clicked, it emits the corresponding signal from the View.
+     */
+    bool editorEvent(QEvent* event, QAbstractItemModel* model,
+                     const QStyleOptionViewItem& option, const QModelIndex& index) override;
 
    public slots:
     /**

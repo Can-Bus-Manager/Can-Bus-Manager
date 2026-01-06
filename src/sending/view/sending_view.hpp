@@ -32,6 +32,13 @@ class SendingView final : public QWidget
         return m_dbcView;
     }
 
+    /**
+     * @brief Binds the View to the Model.
+     * Use this to setup QDataWidgetMappers for the Raw view or
+     * set the model on the DBC QListView.
+     */
+    void setModel(SendingModel* model);
+
     // UI Interaction API
     void setAvailableDevices(const std::vector<std::string>& devices);
     void setAvailableSpeeds(const std::vector<uint32_t>& speeds);
