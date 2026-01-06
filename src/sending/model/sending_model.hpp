@@ -64,8 +64,36 @@ class SendingModel final : public QAbstractItemModel
 
     void updateDbcConfig(const Core::DbcConfig& config);
     void setTransmissionStatus(bool isActive);
+   signals:
+    /** * @brief Emitted when the Model determines a Raw message should be sent.
+     * Triggered by manual user action or the internal cyclic timer.
+     */
+    void requestSendRaw(const std::string& device, const Core::RawCanMessage& message);
+
+    /** * @brief Emitted when the Model determines a DBC message should be sent.
+     * Triggered by manual user action or the internal cyclic timer.
+     */
+    void requestSendDbc(const std::string& device, const Core::DbcCanMessage& message);
+
+   public slots:
+    /**
+     * @brief Triggers the immediate transmission of the currently configured message.
+     */
+    void transmitCurrent();
+
+   private slots:
+    /**
+     * @brief Internal slot handling the cyclic timer timeout.
+     * Calls transmitCurrent() automatically.
+     */
+    void onCyclicTimerTimeout();
 
    private:
+    /**
+     * @brief internal helper to start/stop QTimer based on m_cyclicState.
+     */
+    void updateTimerState();
+
     // Navigation & Mode
     Mode m_currentMode = Mode::Raw;
     // Cyclic Transmission State
@@ -91,6 +119,9 @@ class SendingModel final : public QAbstractItemModel
     std::vector<uint32_t> m_selectedMessageIds;
 
     Core::DbcConfig m_currentDbc;
+
+    // Moved from SendingDelegate: The Model now owns the timing source of truth
+    QTimer* m_cyclicTimer;
 };
 
 }  // namespace Sending

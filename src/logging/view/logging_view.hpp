@@ -10,6 +10,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include "logging/model/logging_model.hpp"
+
 namespace Logging {
 
 /**
@@ -26,6 +28,12 @@ class LoggingView final : public QWidget
      * @brief Constructs the LoggingView with a framed dashboard and internal stack.
      */
     explicit LoggingView(QWidget* parent = nullptr);
+
+    /**
+     * @brief Binds the Model to the internal TreeView and installs the strict Delegate.
+     * @param model Pointer to the LoggingModel.
+     */
+    void setModel(LoggingModel* model);
 
     /** @brief Provides access to the tree view for Model/Delegate binding. */
     auto getHistoryTable() const -> QTreeView*
