@@ -10,56 +10,54 @@
 namespace CanHandler {
 class DbcParser
 {
-public:
+   public:
     /**
-     * @brief Tries to parse the provided string to a DBC object
-     * @param file The dbc file parsed to a single string
+     * @brief Provides a new file for parsing to a DBC config
+     * @param file The file to parse.
      */
-    auto parseDbc(std::string& file) -> Core::DbcConfig;
-private:
+    void provideNewFile(std::string file);
+    /**
+     * @brief Tries to parse the provided file to a DBC object
+     * @return The parsed dbc config
+     */
+    auto parseDbc() -> Core::DbcConfig*;
+
+   private:
     /**
      * @brief tries to parse the start of the provided file to a signal (SG_:)
-     * @param file The provided rest of a DBC file (truncated to after the signal if a signal is
-     * parsed)
      * @return The parsed signal or a null pointer if no signal was parsed
      */
-    auto parseSignal(std::string& file) -> Core::DbcSignalDescription;
+    auto parseSignal() -> Core::DbcSignalDescription*;
     /**
      * @brief tries to parse the start of the provided file to a message (BO_:)
-     * @param file The provided rest of a DBC file (truncated to after the signal if a message is
-     * parsed)
      * @return The parsed message or a null pointer if no message was parsed
      */
-    auto parseMessage(std::string& file) -> Core::DbcMessageDescription;
+    auto parseMessage() -> Core::DbcMessageDescription*;
     /**
      * @brief tries to parse the start of the provided file to a value description
-     * @param file The provided rest of a DBC file (truncated to after the value description if a
-     * message is parsed)
      * @return The parsed value description or a null pointer if no value description was parsed
      */
-    auto parseValueDescription(std::string& file) -> Core::DbcValueDescription;
+    auto parseValueDescription() -> Core::DbcValueDescription*;
     /**
      * @brief tries to parse the start of the provided file to a signal value description (VAL_:)
-     * @param file The provided rest of a DBC file (truncated to after the signal value description
-     * if a message is parsed)
      * @return The parsed signal value description or a null pointer if no signal value description
      * was parsed
      */
-    auto parseSignalValue(std::string& file) -> Core::DbcSignalValueDescription;
+    auto parseSignalValue() -> Core::DbcSignalValueDescription*;
     /**
      * @brief tries to parse the start of the provided file to a list of nodes (BU_:)
-     * @param file The provided rest of a DBC file
-     * (truncated to after the signal if a list of nodes is parsed)
      * @return The parsed list of nodes or a null pointer if no list of nodes was parsed
      */
-    auto parseNodes(std::string& file) -> std::list<std::string>;
+    auto parseNodes() -> std::list<std::string>*;
     /**
      * @brief tries to parse the start of the provided file to a comment (CM_:)
-     * @param file The provided rest of a DBC file
-     * (truncated to after the signal if a comment is parsed)
      * @return The parsed comment or a null pointer if no comment was parsed
      */
-    auto parseComment(std::string& file) -> std::string;
+    auto parseComment() -> std::string*;
+    /**
+     * @brief The current file to parse, truncated to the point of the current parse
+     */
+    std::string file;
 };
-}
+}  // namespace CanHandler
 #endif  // CANBUSMANAGER_DBC_PARSER_HPP

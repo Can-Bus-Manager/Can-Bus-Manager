@@ -26,7 +26,7 @@ class DbcHandler final : Core::ILifecycle
     void onStart() override;
     void onStop() override;
 
-private:
+   private:
     void parseNewDbc(const Core::ParseDBCRequestEvent& event);
 
     DbcParser dbcParser;

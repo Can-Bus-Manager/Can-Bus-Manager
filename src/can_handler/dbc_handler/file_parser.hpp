@@ -8,8 +8,8 @@
 namespace CanHandler {
 class FileParser
 {
-public:
-    auto parseFile(std::string filePath) -> std::string;
+   public:
+    auto parseFile(std::string filePath) -> std::string*;
 };
-}
+}  // namespace CanHandler
 #endif  // CANBUSMANAGER_FILE_PARSER_HPP
