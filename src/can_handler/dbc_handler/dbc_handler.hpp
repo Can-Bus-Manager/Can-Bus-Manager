@@ -12,7 +12,7 @@ namespace CanHandler {
 /**
  * @brief The DbcHandler is responsible for parsing DBC configurations from a file.
  */
-class DbcHandler final : Core::ILifecycle
+class DbcHandler final : public Core::ILifecycle
 {
    public:
     explicit DbcHandler(Core::IEventBroker& eventBroker) : Core::ILifecycle(eventBroker)
