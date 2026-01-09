@@ -76,11 +76,11 @@ class LoggingComponent final : public Core::ITabComponent
      */
     void dbcConfigurationChanged(const Core::DbcConfig& config);
 
-    /** @brief Signal to delegate to record a raw hexadecimal frame */
-    void recordRawFrame(const Core::RawCanMessage& message);
+    /** @brief Signal to model to record a raw hexadecimal frame */
+    void receiveRawFrame(const Core::RawCanMessage& message);
 
     /** @brief Signal to delegate to record decoded DBC signal values */
-    void recordDbcSignals(const Core::DbcCanMessage& message);
+    void receiveDbcSignals(const Core::DbcCanMessage& message);
 
    private slots:
 
@@ -110,6 +110,12 @@ class LoggingComponent final : public Core::ITabComponent
      */
     void exportLogSession(const QString& sessionId, const QString& filePath);
 
+    /**
+     * @brief Triggered by the Delegate -> View when "Details" is clicked.
+     * Fetches data from Model, builds the detail widget, and tells View to swap stack.
+     */
+    void onDetailRequested(const QModelIndex& index);
+
    private:
     /**
      * @brief The actual CSV "Instance" logic.
@@ -117,14 +123,16 @@ class LoggingComponent final : public Core::ITabComponent
      */
     bool writeToCsv(const QString& sessionId, const QString& filePath);
 
+    /**
+     * @brief Helper to generate the detail widget for a specific session.
+     */
+    QWidget* createDetailWidget(const LogSession* session);
+
     /** @brief Ownership of the Data Model (Smart Model). */
     std::unique_ptr<LoggingModel> m_model;
 
     /** @brief Ownership of the Composite View. */
     std::unique_ptr<LoggingView> m_view;
-
-    /** @brief Ownership of the Formatting Delegate (passed to View). */
-    std::unique_ptr<LoggingDelegate> m_delegate;
 
     /** @brief RAII Handle for raw message reveived event subscription. */
     Core::Connection m_rawMsgConn;

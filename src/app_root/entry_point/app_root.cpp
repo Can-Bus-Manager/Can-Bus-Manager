@@ -9,7 +9,9 @@
 #include "core/macro/console_logging.hpp"
 #include "dbc_file/dbc_component.hpp"
 #include "event_broker/event_broker.hpp"
-#include "monitoring/view/monitoring_tab.hpp"
+#include "logging/logging_component.hpp"
+#include "monitoring/monitoring_component.hpp"
+#include "sending/sending_component.hpp"
 
 namespace AppRoot {
 
@@ -56,6 +58,8 @@ void AppRoot::bootstrap()
     // Helper to keep bootstrap readable
     initTab<DbcFile::DbcComponent>();
     initTab<Monitoring::MonitoringComponent>();
+    initTab<Sending::SendingComponent>();
+    initTab<Logging::LoggingComponent>();
 
     LOG_INF("AppRoot", "Bootstrap Complete: launching internal logic.");
     start();
