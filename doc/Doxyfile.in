@@ -1013,7 +1013,8 @@ INPUT                  = "@CMAKE_SOURCE_DIR@/src" \
                          "@CMAKE_SOURCE_DIR@/doc/res/performance.md" \
                          "@CMAKE_SOURCE_DIR@/doc/res/download.md" \
                          "@CMAKE_SOURCE_DIR@/doc/res/dbc_format.md" \
-                         "@CMAKE_SOURCE_DIR@/doc/res/model_json.md"
+                         "@CMAKE_SOURCE_DIR@/doc/res/model_json.md" \
+                         "@CMAKE_SOURCE_DIR@/doc/res/cancept_appendix.md"
 
 # This tag can be used to specify the character encoding of the source files
 # that Doxygen parses. Internally Doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1454,7 +1455,8 @@ HTML_EXTRA_STYLESHEET  = @DOXYGEN_AWESOME_DIR@/doxygen-awesome.css \
 HTML_EXTRA_FILES =  @DOXYGEN_AWESOME_DIR@/doxygen-awesome-darkmode-toggle.js \
                     @DOXYGEN_AWESOME_DIR@/doxygen-awesome-fragment-copy-button.js \
                     @DOXYGEN_AWESOME_DIR@/doxygen-awesome-interactive-toc.js \
-                    @CMAKE_SOURCE_DIR@/doc/test/plotly.min.js
+                    @CMAKE_SOURCE_DIR@/doc/test/plotly.min.js \
+                    "@CMAKE_SOURCE_DIR@/doc/res/cancept_appendix.pdf"
 
 # The HTML_COLORSTYLE tag can be used to specify if the generated HTML output
 # should be rendered with a dark or light theme.
